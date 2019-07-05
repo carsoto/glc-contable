@@ -1,6 +1,7 @@
 vendor/
 !resources/views/vendor
 !public/vendor
+!public/vendor/adminlte/vendor
 node_modules/
 npm-debug.log
 
