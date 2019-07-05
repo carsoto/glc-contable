@@ -45,7 +45,7 @@ return [
     |
     */
 
-    'skin' => 'blue',
+    'skin' => 'red',
 
     /*
     |--------------------------------------------------------------------------
@@ -109,9 +109,9 @@ return [
 
     'menu' => [
         [
-            'text'        => 'Home',
+            'text'        => 'Dashboard',
             'url'         => '/home',
-            'icon'        => 'home',
+            'icon'        => 'bar-chart-o',
         ],
         [
             'text'        => 'Comisiones Charter',

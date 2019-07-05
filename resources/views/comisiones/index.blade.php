@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
+    <div class="box box-danger">
     	<div class="box-header">
     		<button class="btn btn-sm btn-success btn-flat" data-toggle="modal" data-target="#registrarCharter"><i class="fa fa-plus"></i> Nuevo charter</button>
     	</div>

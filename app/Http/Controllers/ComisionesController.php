@@ -183,7 +183,7 @@ class ComisionesController extends Controller
 
             $tipos_gastos = TipoGasto::all();
 
-            $contabilidad_adicional = array('OPERADOR' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker);
+            $contabilidad_adicional = array('OPERADOR NETO' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker);
             
             foreach ($tipos_gastos as $key => $t) {
                 $new_gasto = new Gasto();

@@ -44,7 +44,7 @@
             <a href="{{ url(config('adminlte.dashboard_url', 'home')) }}" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <!--<span class="logo-mini">{! config('adminlte.logo_mini', '<b>A</b>LT') !!}</span>-->
-                <span class="logo-mini"><img src="{{ asset('images/logo-glc-blanco.png') }}" width="150px"></span>
+                <span class="logo-mini"><img src="{{ asset('images/logo-glc-blanco-mini.png') }}" width="50px"></span>
                 <!-- logo for regular state and mobile devices -->
                 <!--<span class="logo-lg">{! config('adminlte.logo', '<b>Admin</b>LTE') !!}</span>-->
                 <span class="logo-lg"><img src="{{ asset('images/logo-glc-blanco.png') }}" width="150px"></span>
@@ -135,13 +135,15 @@
 @stop
 
 @section('adminlte_js')
-    <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+    <script src="{{ asset('/vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
     <script src="{{ asset('/plugins/datepicker/bootstrap-datepicker.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/plugins/datepicker/locales/bootstrap-datepicker.es.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/plugins/sweetalert/sweetalert.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('/plugins/iCheck/icheck.js') }}"></script>
-    <script src="{{ asset('js/notify.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('js/funciones.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('/js/notify.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('/plugins/chart-js/Chart.js') }}"></script>
+    <script src="{{ asset('/js/funciones.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('/js/demo.js') }}"></script>
     @stack('js')
     @yield('js')
 @stop

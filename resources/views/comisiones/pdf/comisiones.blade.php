@@ -8,7 +8,7 @@
 </div>
 <hr>
 
-<span style="font-size: 11px;"><strong>YACHT:</strong> {{ $charter->yacht }}</span>
+<span style="font-size: 12px;"><strong>YACHT:</strong> {{ $charter->yacht }}</span>
 <br><span style="font-size: 12px;"><strong>YACHT RACK:</strong> $ {{ number_format($charter->yacht_rack, 2, '.', ',') }}</span>
 <br><span style="font-size: 12px;"><strong>BROKER:</strong> {{ $charter->broker }}</span>
 <br><span style="font-size: 12px;"><strong>CHARTER RATE:</strong> $ {{ number_format($charter->precio_venta, 2, '.', ',') }}</span>

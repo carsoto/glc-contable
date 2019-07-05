@@ -6,7 +6,7 @@
 @stop
 
 @section('content')
-    <div class="box box-primary">
+    <div class="box box-danger">
         <div class="box-header">
             <h3><a href="{{ URL::previous() }}"><i class="fa fa-arrow-circle-o-left"></i></a> {{ $charter->descripcion }}</h3>
         </div>
@@ -115,13 +115,13 @@
                     @endif
                 </div>
 
-                <div class="panel with-nav-tabs panel-primary">
+                <div class="box with-nav-tabs box-danger">
                     <div class="panel-heading">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#entradas" data-toggle="tab">ENTRADAS</a></li>
-                            <li><a href="#salidas" data-toggle="tab">SALIDAS</a></li>
-                            <li><a href="#comisiones" data-toggle="tab">COMISIONES</a></li>
-                            <li><a href="#resumen" data-toggle="tab">RESUMEN</a></li>
+                            <li class="active"><a style="color: #E42223;" href="#entradas" data-toggle="tab">ENTRADAS</a></li>
+                            <li><a style="color: #E42223;" href="#salidas" data-toggle="tab">SALIDAS</a></li>
+                            <li><a style="color: #E42223;" href="#comisiones" data-toggle="tab">COMISIONES</a></li>
+                            <li><a style="color: #E42223;" href="#resumen" data-toggle="tab">RESUMEN</a></li>
                         </ul>
                     </div>
                     <div class="panel-body">
