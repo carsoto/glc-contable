@@ -81,6 +81,8 @@ class ComisionesController extends Controller
         $charter->broker = strtoupper($request->broker);
         $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d') ;
         $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
+        $charter->anyo = date('Y');
+        $charter->mes = date('m');
         $charter->precio_venta = $request->precio_venta;
         $charter->yacht_rack = $request->yacht_rack;
         $charter->neto = $request->neto;
@@ -159,6 +161,8 @@ class ComisionesController extends Controller
         $charter->broker = strtoupper($request->broker);
         $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
         $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
+        $charter->anyo = date('Y');
+        $charter->mes = date('m');
         $charter->precio_venta = $request->precio_venta;
         $charter->yacht_rack = $request->yacht_rack;
         $charter->neto = $request->neto;

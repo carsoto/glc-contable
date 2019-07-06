@@ -18,6 +18,7 @@ Route::get('/', 'Auth\LoginController@showLoginForm');
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
+	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 	Route::get('/comisiones-charters', 'ComisionesController@index')->name('admin.comisiones-charters');
 	Route::post('/crear-charter', 'ComisionesController@store')->name('admin.comisiones-crear-charter');
 	Route::get('/editar-charter/{charter_id}', 'ComisionesController@edit')->name('admin.comisiones-editar-charter');

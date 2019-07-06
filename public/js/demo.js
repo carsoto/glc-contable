@@ -1,108 +1,96 @@
-/*var url = "{{url('stock/chart')}}";
-var Years = new Array();
-var Labels = new Array();
-var Prices = new Array();*
-$(document).ready(function(){
-  $.get(url, function(response){
-    response.forEach(function(data){
-        Years.push('2018', '2019', '2020');
-        Labels.push('ENERO', 'FEBRERO', 'MARZO');
-        Prices.push('100', '200', '300');
-    });
-    
-  });*
-  var ctx = document.getElementById("bar-chart-uno").getContext('2d');
-        var myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: ['Mes 5', 'Mes 4', 'Mes 3', 'Mes 2', 'Mes 1', 'Mes Actual'],
-              datasets: [{
-                  label: 'Infosys Price',
-                  data: ["8954", "9521", "8594", "5847", "5784", "5628"],
-                  borderWidth: 1
-              }]
-          },
-          options: {
-              scales: {
-                  yAxes: [{
-                      ticks: {
-                          beginAtZero:true
-                      }
-                  }]
-              }
-          }
+
+function colorRandom() {
+  /*var r = Math.floor(Math.random() * 255);
+  var g = Math.floor(Math.random() * 255);
+  var b = Math.floor(Math.random() * 255);
+  return "rgb(" + r + "," + g + "," + b + ")";*/
+  var letters = '0123456789ABCDEF'.split('');
+  var color = '#';
+  for (var i = 0; i < 6; i++ ) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
+var variable_data = new Array();
+var variable_data2 = new Array();
+$.ajax({
+  url: 'admin/dashboard',
+  type: 'GET',
+  processData: false,
+  contentType: false,
+    success: function(response){
+      $.each(response.ventas, function(key, valores) {
+        var color = colorRandom();
+        var data = {
+            label: key,
+            data: valores,
+            lineTension: 0.7,
+            //fill: true,
+            //spanGaps: true,
+            //fillColor : "blue",
+            backgroundColor: color,
+            borderColor: color,
+        };
+        variable_data.push(data);
+
       });
-});*/
 
-/*var ctx = document.getElementById('bar-chart-uno').getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
-            }]
-        }
-    }
-});*/
-
-var dataFirst = {
-    label: "2018",
-    data: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-    lineTension: 0,
-    fill: true,
-    //fillColor : "red",
-    //borderColor: 'red'
-};
-
-var dataSecond = {
-    label: "2019",
-    data: [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1],
-    lineTension: 0,
-    fill: true,
-    //fillColor : "blue",
-    //borderColor: 'blue'
-};
-   
-var speedData = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-    datasets: [dataFirst, dataSecond]
-};
+      var speedData1 = {
+        labels: ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."],
+        datasets: variable_data
+      };
  
-var ctx = document.getElementById('bar-chart-uno').getContext('2d');
-var lineChart = new Chart(ctx, {
-    type: 'line',
-    animation: true,
-    animationSteps: 100,
-    animationEasing: "easeOutQuart",
-    scaleFontSize: 16,
-    responsive: true,
-    showTooltip: true,
-    data: speedData,
+      var ctx = document.getElementById('ventas-por-meses').getContext('2d');
+      var lineChart = new Chart(ctx, {
+          type: 'bar',
+          animation: true,
+          animationSteps: 100,
+          animationEasing: "easeOutQuart",
+          scaleFontSize: 16,
+          responsive: true,
+          showTooltip: true,
+          data: speedData1,
+      });
+
+      $.each(response.ganancias, function(key, valores) {
+        var color = colorRandom();
+        var data = {
+            label: key,
+            data: valores,
+            lineTension: 0.7,
+            //fill: true,
+            //spanGaps: true,
+            //fillColor : "blue",
+            backgroundColor: color,
+            borderColor: color,
+        };
+        variable_data2.push(data);
+
+      });
+
+      var speedData2 = {
+        labels: ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."],
+        datasets: variable_data2
+      };
+ 
+      var ctx2 = document.getElementById('ganancias-por-meses').getContext('2d');
+      var lineChart = new Chart(ctx2, {
+          type: 'bar',
+          animation: true,
+          animationSteps: 100,
+          animationEasing: "easeOutQuart",
+          scaleFontSize: 16,
+          responsive: true,
+          showTooltip: true,
+          data: speedData2,
+      });
+    },
+
+    error: function (xhr, ajaxOptions, thrownError) {
+      swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+  }
 });
+
+//var variable_data = [dataFirst, dataSecond];
+//console.log(variable_data);

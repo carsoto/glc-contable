@@ -8,14 +8,22 @@
 
 @section('content')
     <div class="box box-danger">
-    	<div class="box-header">
-    		<div class="text-center">
-    			<span style="font-size: 15px; color: #E42223; font-family: Arial, Helvetica, sans-serif;"><strong>VENTAS POR MESES</strong></span>
-    		</div>
-    	</div>
     	<div class="box-body">
-				<canvas id="bar-chart-uno" data-render="chart-js"></canvas>
-				<canvas id="bar-chart-dos" data-render="chart-js"></canvas>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="text-center">
+                    <span style="font-size: 15px; color: #E42223; font-family: Arial, Helvetica, sans-serif;"><strong>VENTAS POR MESES</strong></span>
+                </div>
+                <hr>
+                <canvas id="ventas-por-meses" data-render="chart-js"></canvas>    
+            </div>
+            <div class="hidden-lg"><hr></div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="text-center">
+                    <span style="font-size: 15px; color: #E42223; font-family: Arial, Helvetica, sans-serif;"><strong>GANANCIAS POR MESES</strong></span>
+                </div>
+                <hr>
+                <canvas id="ganancias-por-meses" data-render="chart-js"></canvas>    
+            </div>
     	</div>
     </div>
 @stop
