@@ -682,4 +682,10 @@ class ComisionesController extends Controller
         $pdf = PDF::loadView('comisiones.pdf.comisiones', ['charter' => $charter, 'tipos_gastos' => $tipos_gastos, 'entradas' => $totales['entradas'], 'salidas' => $totales['salidas'], 'comisiones' => $totales['comisiones'], 'global' => $totales['global']]);
         return $pdf->stream('comisiones-'.$charter->codigo.".pdf");
     }
+
+    public function balance_socios(){
+        $charters = Charter::all();
+        $socios = Socio::all();
+        return view('comisiones.balance_socios', ['charters' => $charters, 'socios' => $socios]);
+    }
 }
