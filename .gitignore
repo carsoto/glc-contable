@@ -2,6 +2,7 @@ vendor/
 !resources/views/vendor
 !public/vendor
 !public/vendor/adminlte/vendor
+!public/images/charters
 node_modules/
 npm-debug.log
 
