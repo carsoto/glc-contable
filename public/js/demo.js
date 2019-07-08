@@ -104,5 +104,6 @@ $(document).ready(function(){
   
 });
 
+
 //var variable_data = [dataFirst, dataSecond];
 //console.log(variable_data);
