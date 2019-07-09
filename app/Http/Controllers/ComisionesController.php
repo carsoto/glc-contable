@@ -63,7 +63,8 @@ class ComisionesController extends Controller
 
     public function update(Request $request){
         $charter = Charter::find(decrypt($request->id_charter));
-
+        $contrato = "Sin contrato";
+        
         if(($charter->contrato != $request->contrato) && ($request->contrato != "") && ($request->contrato != "Sin contrato")){
             $directorio_images = 'images/charters/'.$charter->codigo;
             if(count($request->file()) > 0){
@@ -77,12 +78,15 @@ class ComisionesController extends Controller
             } 
         }
 
+        $f_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
+        $f_init = explode("-", $f_inicio);
+
         $charter->yacht = strtoupper($request->yacht);
         $charter->broker = strtoupper($request->broker);
-        $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d') ;
+        $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
         $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
-        $charter->anyo = date('Y');
-        $charter->mes = date('m');
+        $charter->anyo = $f_init[0];
+        $charter->mes = $f_init[1];
         $charter->precio_venta = $request->precio_venta;
         $charter->yacht_rack = $request->yacht_rack;
         $charter->neto = $request->neto;
@@ -153,6 +157,9 @@ class ComisionesController extends Controller
             $contrato = "Sin contrato";
         } 
 
+        $ffi = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
+        $ff_init = explode("-", $ffi);
+
         $charter = new Charter();
         $charter->creado_por = Auth::id();
         $charter->codigo = $codigo_charter;
@@ -161,8 +168,8 @@ class ComisionesController extends Controller
         $charter->broker = strtoupper($request->broker);
         $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
         $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
-        $charter->anyo = date('Y');
-        $charter->mes = date('m');
+        $charter->anyo = $ff_init[0];
+        $charter->mes = $ff_init[1];
         $charter->precio_venta = $request->precio_venta;
         $charter->yacht_rack = $request->yacht_rack;
         $charter->neto = $request->neto;
