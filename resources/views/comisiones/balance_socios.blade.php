@@ -9,7 +9,7 @@
     <div class="box box-danger">
     	<div class="box-body">
     		<div class="table-responsive">
-    			<table class="table table-condensed table-bordered" style="font-size: 11px;">
+    			<table class="table table-striped table-condensed table-bordered" style="font-size: 11px;">
     				<thead>
     					<tr>
                             <th style="vertical-align: middle;text-align:center;" rowspan="2">CHARTER</th>
@@ -40,12 +40,12 @@
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr>
+                        <tr style="background: grey; color: white;">
                             <th class="text-right">BALANCE FINAL</th>
                             @foreach($socios AS $clave => $socio)
-                                <td>$ {{ number_format($socio->comisiones->sum('monto'), 2, '.', ',') }}</td>
-                                <td>$ {{ number_format($socio->comisiones->sum('abonado'), 2, '.', ',') }}</td>
-                                <td>$ {{ number_format($socio->comisiones->sum('saldo'), 2, '.', ',') }}</td>
+                                <th>$ {{ number_format($socio->comisiones->sum('monto'), 2, '.', ',') }}</th>
+                                <th>$ {{ number_format($socio->comisiones->sum('abonado'), 2, '.', ',') }}</th>
+                                <th>$ {{ number_format($socio->comisiones->sum('saldo'), 2, '.', ',') }}</th>
                             @endforeach
                         </tr>
                     </tfoot>

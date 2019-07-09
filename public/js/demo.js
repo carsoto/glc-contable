@@ -23,7 +23,9 @@ $(document).ready(function(){
       processData: false,
       contentType: false,
         success: function(response){
+          console.log(response.ventas);
           $.each(response.ventas, function(key, valores) {
+            
             var color = colorRandom();
             var data = {
                 label: key,
@@ -71,7 +73,7 @@ $(document).ready(function(){
                 fill: false,
                 borderColor: color,
                 backgroundColor: 'transparent',
-                borderDash: [2, 2],
+                borderDash: [],
                 pointBorderColor: color,
                 pointBackgroundColor: color,
                 pointRadius: 3,
@@ -93,6 +95,37 @@ $(document).ready(function(){
           new Chart(ctx2, {
               type: 'line',
               data: speedData2,
+              options: {
+                animation: false,
+                //legend: {display: false},
+                maintainAspectRatio: false,
+                responsive: true,
+                //responsiveAnimationDuration: 0,
+                tooltips: {
+                  mode: 'label',
+                  label: 'mylabel',
+                  callbacks: {
+                    label: function(tooltipItem, data) {
+                      return '$ ' + tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                    }, 
+                  },
+                },
+
+                scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true,
+                      callback: function(value, index, values) {
+                        if(parseInt(value) >= 1000){
+                          return '$ ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        } else {
+                          return '$ ' + value;
+                        }
+                      }
+                    }
+                  }]
+                }
+              }
           });
         },
 

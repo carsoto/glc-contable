@@ -13,7 +13,7 @@
     	</div>
     	<div class="box-body">
     		<div class="table-responsive">
-    			<table class="table table-condensed table-bordered" style="font-size: 11px;" id="tabla_comisiones">
+    			<table class="table table-striped table-condensed table-bordered" style="font-size: 11px;" id="tabla_comisiones">
     				<thead>
     					<tr>
 	    					<th style="vertical-align: middle;text-align:center;" rowspan="2" width="180px">CHARTER</th>

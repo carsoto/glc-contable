@@ -343,7 +343,7 @@ class ComisionesController extends Controller
         return $name;
     }
 
-    private function calcular_totales($charter){ 
+    public static function calcular_totales($charter){ 
         $comision_abonado = $comision_monto = $comision_saldo = $total_recibido = $total_pendiente = $total_gastos = $total_saldo = 0;
 
         foreach ($charter->entradas as $key => $entrada) {
