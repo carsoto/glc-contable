@@ -189,6 +189,7 @@ class ComisionesController extends Controller
                 $new_comision->socios_id = $socio->id;
                 $new_comision->porcentaje_comision_socio = $socio->porcentaje;
                 $new_comision->monto = $comision;
+                $new_comision->saldo = $comision;
                 $new_comision->save();
             }
 
@@ -357,7 +358,7 @@ class ComisionesController extends Controller
             $total_recibido += $entrada->monto;
         }
 
-        $total_pendiente = $charter->precio_venta + $charter->apa - $total_recibido - $charter->comision_broker2;
+        $total_pendiente = $charter->precio_venta + $charter->apa - $total_recibido - $charter->comision_broker;
 
         foreach($charter->comisiones AS $key => $comision){
             $comision_abonado += $comision->abonado;

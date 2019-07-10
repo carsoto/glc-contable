@@ -19,7 +19,7 @@
 						</tr>
 						<tr>
 							@foreach($socios AS $key => $socio)
-		    					<th class="text-center success" width="80px">Total</th>
+		    					<th class="text-center success" width="80px">Comisión</th>
 		    					<th class="text-center warning" width="80px">Abono</th>
                                 <th class="text-center danger" width="80px">Saldo</th>
                                 <!-- MONTO - ABONO = SALDO -->	
