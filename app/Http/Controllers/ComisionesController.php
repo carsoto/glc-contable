@@ -204,10 +204,10 @@ class ComisionesController extends Controller
                 $new_gasto->tipo_gasto_id = $t->id;
                 $new_gasto->total = $contabilidad_adicional[$t->descripcion];
                 $new_gasto->gastos = 0;
-                $new_gasto->saldo = 0;
+                $new_gasto->saldo = $contabilidad_adicional[$t->descripcion];
                 $new_gasto->save(); 
 
-                if($t->descripcion == 'BROKER'){
+                /*if($t->descripcion == 'BROKER'){
                     $new_detalle = new GastosDetalle();
                     $new_detalle->users_id = Auth::id();
                     $new_detalle->gastos_id = $new_gasto->id;
@@ -215,7 +215,7 @@ class ComisionesController extends Controller
                     $new_detalle->fecha = date('Y-m-d');
                     $new_detalle->comentario = 'Registro de pago automático';
                     $new_detalle->save();
-                }
+                }*/
             }
 
             $msg = 'Charter registrado exitosamente';
@@ -358,7 +358,7 @@ class ComisionesController extends Controller
             $total_recibido += $entrada->monto;
         }
 
-        $total_pendiente = $charter->precio_venta + $charter->apa - $total_recibido - $charter->comision_broker;
+        $total_pendiente = $charter->precio_venta + $charter->apa - $total_recibido;
 
         foreach($charter->comisiones AS $key => $comision){
             $comision_abonado += $comision->abonado;
