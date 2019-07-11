@@ -189,6 +189,7 @@ class ComisionesController extends Controller
                 $new_comision->socios_id = $socio->id;
                 $new_comision->porcentaje_comision_socio = $socio->porcentaje;
                 $new_comision->monto = $comision;
+                $new_comision->saldo = $comision;
                 $new_comision->save();
             }
 
@@ -206,7 +207,7 @@ class ComisionesController extends Controller
                 $new_gasto->saldo = 0;
                 $new_gasto->save(); 
 
-                if($t->descripcion == 'BROKER'){
+                /*if($t->descripcion == 'BROKER'){
                     $new_detalle = new GastosDetalle();
                     $new_detalle->users_id = Auth::id();
                     $new_detalle->gastos_id = $new_gasto->id;
@@ -214,7 +215,7 @@ class ComisionesController extends Controller
                     $new_detalle->fecha = date('Y-m-d');
                     $new_detalle->comentario = 'Registro de pago automático';
                     $new_detalle->save();
-                }
+                }*/
             }
 
             $msg = 'Charter registrado exitosamente';
@@ -306,9 +307,13 @@ class ComisionesController extends Controller
                 return "$ 0.00";
             })
             ->addColumn('action', function ($charters) {
-                return '<a href="editar-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a>';
+                return '<a href="editar-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a><a href="eliminar-charter/'.encrypt($charters['id']).'"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
             })
-            
+            ->order(function ($query) {
+                if (request()->has('fecha_inicio')) {
+                    $query->orderBy('fecha_inicio', 'desc');
+                }
+            })
             ->make(true);
     }
 
@@ -694,5 +699,11 @@ class ComisionesController extends Controller
         $charters = Charter::all();
         $socios = Socio::all();
         return view('comisiones.balance_socios', ['charters' => $charters, 'socios' => $socios]);
+    }
+
+    public function delete($id){
+        $id_charter = decrypt($id);
+        $charter = Charter::find($id_charter);
+        $charter->delete();
     }
 }

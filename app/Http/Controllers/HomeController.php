@@ -50,25 +50,14 @@ class HomeController extends Controller
                 $ganancias_monetarias[$key][$i] = 0;
             }
         }
-        
+
         foreach ($charters as $key => $charter) {
-            /*if (!array_key_exists($charter->anyo, $ventas_por_mes)) {
-                $ventas_por_mes[$charter->anyo] = array();
-                $ganancias_monetarias[$charter->anyo] = array();
-                for ($i=0; $i < 12; $i++) {
-                    $ventas_por_mes[$charter->anyo][$i] = 0;
-                    $ganancias_monetarias[$charter->anyo][$i] = 0;
-                }
-            }*/
             if(array_key_exists((int)$charter->anyo, $ventas_por_mes)){
                $ventas_por_mes[$charter->anyo][$charter->mes-1] = $ventas_por_mes[$charter->anyo][$charter->mes-1]+1;
                 $totales = $controller_comisiones->calcular_totales($charter);
                 
                 $saldo = str_replace("$ ", "", $totales["global"]["saldo"]);
                 $saldo = str_replace(",", "", $saldo);
-
-
-
                 $ganancias_monetarias[$charter->anyo][$charter->mes-1] = $ganancias_monetarias[$charter->anyo][$charter->mes-1]+$saldo; 
             }
             

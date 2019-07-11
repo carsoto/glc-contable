@@ -169,7 +169,7 @@
                                                 <th>TIPO</th>
                                                 <th>TOTAL</th>
                                                 <th>GASTOS</th>
-                                                <th>SALDO PENDIENTE</th>
+                                                <th>SALDO</th>
                                                 <th><i class="fa fa-gears"></i></th>
                                             </thead>
                                             <tbody>
@@ -230,7 +230,7 @@
                                             <th></th>
                                             <th>TOTAL</th>
                                             <th>GASTOS</th>
-                                            <th>SALDO PENDIENTE</th>
+                                            <th>SALDO</th>
                                         </thead>
                                         <tbody>
                                             @foreach($charter->gastos AS $key => $gasto)
@@ -259,13 +259,15 @@
                                                     </tr>
                                                 @endif
                                             @endforeach
-                                            <tr>
-                                                <td><strong>{{ strtoupper('GLOBAL') }}</strong></td>
-                                                <td>{{ $global['total'] }}</td>
-                                                <td><span id="resumen_gastos_total">{{ $global['gastos'] }}</span></td>
-                                                <td><span id="resumen_saldo_total">{{ $global['saldo'] }}</span></td>
-                                            </tr>
                                         </tbody>
+                                        <tfoot>
+                                            <tr style="background: grey; color: white;">
+                                                <th><strong>{{ strtoupper('GLOBAL') }}</strong></th>
+                                                <th>{{ $global['total'] }}</th>
+                                                <th><span id="resumen_gastos_total">{{ $global['gastos'] }}</span></th>
+                                                <th><span id="resumen_saldo_total" style="color: yellow;">{{ $global['saldo'] }}</span></th>
+                                            </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>

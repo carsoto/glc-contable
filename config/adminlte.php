@@ -114,14 +114,19 @@ return [
             'icon'        => 'bar-chart-o',
         ],
         [
-            'text'        => 'Ventas Charter',
+            'text'        => 'Ventas',
             'url'         => 'admin/comisiones-charters',
             'icon'        => 'anchor',
         ],
         [
-            'text'        => 'Balance Socios',
+            'text'        => 'Balance Comisiones',
             'url'         => 'admin/balance-socios',
             'icon'        => 'users',
+        ],
+        [
+            'text'        => 'Pedidos',
+            'url'         => '#',
+            'icon'        => 'calendar-o',
         ],
         /*[
             'text' => 'Blog',
