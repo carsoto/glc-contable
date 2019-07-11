@@ -179,7 +179,7 @@
                                                         <td>$ {{ number_format($gasto->total, 2, '.', ',') }}</td>
                                                         <td><span id="salidas_gasto_{{ $gasto->id }}">{{ $salidas[$gasto->tipo_gasto_id]['gastos'] }}</span></td>
                                                         <td><span id="salidas_saldo_{{ $gasto->id }}">{{ $salidas[$gasto->tipo_gasto_id]['saldo'] }}</span></td>
-                                                        @if((strtoupper($gasto->tipo_gasto->descripcion) != "COMISIONES") && (strtoupper($gasto->tipo_gasto->descripcion) != "BROKER"))
+                                                        @if(strtoupper($gasto->tipo_gasto->descripcion) != "COMISIONES")
                                                             <td><button type="button" data-target="modal" class="btn btn-sm btn-success" onclick="agregar_gasto('{{ $gasto->id }}')"><i class="fa fa-plus"></i></button> <button type="button" data-target="modal" class="btn btn-sm btn-warning" onclick="historial_gastos('{{ $gasto->id }}')"><i class="fa fa-eye"></i></button></td>
                                                         @else
                                                             <td>-</td>

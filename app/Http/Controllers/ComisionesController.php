@@ -204,7 +204,7 @@ class ComisionesController extends Controller
                 $new_gasto->tipo_gasto_id = $t->id;
                 $new_gasto->total = $contabilidad_adicional[$t->descripcion];
                 $new_gasto->gastos = 0;
-                $new_gasto->saldo = 0;
+                $new_gasto->saldo = $contabilidad_adicional[$t->descripcion];
                 $new_gasto->save(); 
 
                 /*if($t->descripcion == 'BROKER'){
@@ -362,7 +362,7 @@ class ComisionesController extends Controller
             $total_recibido += $entrada->monto;
         }
 
-        $total_pendiente = $charter->precio_venta + $charter->apa - $total_recibido - $charter->comision_broker2;
+        $total_pendiente = $charter->precio_venta + $charter->apa - $total_recibido;
 
         foreach($charter->comisiones AS $key => $comision){
             $comision_abonado += $comision->abonado;
