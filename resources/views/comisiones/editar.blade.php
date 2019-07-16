@@ -228,23 +228,23 @@
                                     <table class="table table-condensed table-bordered" style="font-size: 12px;">
                                         <thead>
                                             <th></th>
-                                            <th>TOTAL</th>
-                                            <th>GASTOS</th>
+                                            <th>ENTRADA</th>
+                                            <th>SALIDA</th>
                                             <th>SALDO</th>
                                         </thead>
                                         <tbody>
                                             @foreach($charter->gastos AS $key => $gasto)
                                                 @if($gasto->tipo_gasto->descripcion == 'COMISIONES')
-                                                    <tr>
+                                                    <!--<tr>
                                                         <td><strong>{{ strtoupper($gasto->tipo_gasto->descripcion) }}</strong></td>
                                                         <td>$ {{ number_format($gasto->total, 2, '.', ',') }}</td>
                                                         <td><span id="resumen_gastos_{{ $gasto->tipo_gasto_id }}">{{ $salidas[$gasto->tipo_gasto_id]["gastos"] }}</span></td>
                                                         <td><span id="resumen_saldo_{{ $gasto->tipo_gasto_id }}">{{ $salidas[$gasto->tipo_gasto_id]["saldo"] }}</span></td>
-                                                    </tr>
+                                                    </tr>-->
 
                                                     @foreach($charter->comisiones AS $key => $comision)
-                                                        <tr style="background: gainsboro;">
-                                                            <td>{{ $comision->socio->nombre }} ({{ $comision->socio->porcentaje }}%)</td>
+                                                        <tr>
+                                                            <td><strong>{{ strtoupper($comision->socio->nombre) }} ({{ $comision->socio->porcentaje }}%)</strong></td>
                                                             <td>$ {{ number_format($comision->monto, 2, '.', ',') }}</td>
                                                             <td><span id="resumen_gastos_comision_{{ $comision->id }}">$ {{ number_format($comision->abonado, 2, '.', ',') }}</span></td>
                                                             <td><span id="resumen_saldo_comision_{{ $comision->id }}">$ {{ number_format($comision->saldo, 2, '.', ',') }}</span></td>

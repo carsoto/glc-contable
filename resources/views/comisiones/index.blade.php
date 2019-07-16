@@ -10,6 +10,7 @@
     <div class="box box-danger">
     	<div class="box-header">
     		<button class="btn btn-sm btn-success btn-flat" data-toggle="modal" data-target="#registrarCharter"><i class="fa fa-plus"></i> Nuevo charter</button>
+            <button class="btn btn-sm btn-info btn-flat" data-toggle="modal" data-target="#chartersEliminados"><i class="fa fa-history"></i> Charters eliminados</button>
     	</div>
     	<div class="box-body">
     		<div class="table-responsive">
@@ -19,21 +20,25 @@
 	    					<th style="vertical-align: middle;text-align:center;" rowspan="2" width="180px">CHARTER</th>
 	    					<th style="vertical-align: middle;text-align:center;" rowspan="2" width="80px">VENTA</th>
                             <th class="text-center" colspan="3">DELUXE</th>
-	    					@foreach($socios AS $key => $socio)
+                            <th class="text-center" colspan="3">GLOBAL</th>
+	    					<!--@foreach($socios AS $key => $socio)
 	    						<th class="text-center" colspan="3">{{ $socio->nombre }} ({{ $socio->porcentaje }}%)</th>
-	    					@endforeach
+	    					@endforeach-->
 	    					<th style="vertical-align: middle;text-align:center;" rowspan="2"><i class="fa fa-gears"></i></th>
 						</tr>
 						<tr>
                             <th class="text-center success" width="80px">Total</th>
                             <th class="text-center warning" width="80px">Gastos</th>
                             <th class="text-center danger" width="80px">Saldo</th>
-							@foreach($socios AS $key => $socio)
+                            <th class="text-center success" width="80px">Ingreso</th>
+                            <th class="text-center warning" width="80px">Salida</th>
+                            <th class="text-center danger" width="80px">Ganancia</th>
+							<!--@foreach($socios AS $key => $socio)
 		    					<th class="text-center success" width="80px">Total</th>
 		    					<th class="text-center warning" width="80px">Abono</th>
                                 <th class="text-center danger" width="80px">Saldo</th>
-                                <!-- MONTO - ABONO = SALDO -->	
-	    					@endforeach
+                                <!-- MONTO - ABONO = SALDO --	
+	    					@endforeach-->
 						</tr>
     				</thead>
     			</table>
@@ -269,6 +274,34 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div id="chartersEliminados" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">CHARTERS ELIMINADOS</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id="table-charters-eliminados">
+                            <thead>
+                                <th>Usuario</th>
+                                <th>Comentario</th>
+                                <th>Fecha</th>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
 @stop

@@ -85,16 +85,30 @@ $("#tabla_comisiones").DataTable({
     	{data: "deluxe_total", name: "deluxe_total", class: "success"},
     	{data: "deluxe_gastos", name: "deluxe_gastos", class: "warning"},
     	{data: "deluxe_saldo", name: "deluxe_saldo", class: "danger"},
-    	{data: "aryel_total", name: "aryel_total", class: "success"},
+    	/*{data: "aryel_total", name: "aryel_total", class: "success"},
     	{data: "aryel_abono", name: "aryel_abono", class: "warning"},
     	{data: "aryel_saldo", name: "aryel_saldo", class: "danger"},
     	{data: "stephi_total", name: "stephi_total", class: "success"},
 		{data: "stephi_abono", name: "stephi_abono", class: "warning"},
-		{data: "stephi_saldo", name: "stephi_saldo", class: "danger"},
-		{data: "glc_total", name: "glc_total", class: "success"},
-		{data: "glc_abono", name: "glc_abono", class: "warning"},
-		{data: "glc_saldo", name: "glc_saldo", class: "danger"},
+		{data: "stephi_saldo", name: "stephi_saldo", class: "danger"},*/
+		{data: "global_total", name: "global_total", class: "success"},
+		{data: "global_gastos", name: "global_gastos", class: "warning"},
+		{data: "global_saldo", name: "global_saldo", class: "danger"},
         {data: 'action', name: 'action', orderable: false}
+    ]
+});
+
+$("#table-charters-eliminados").DataTable({
+	"processing": true,
+    "serverSide": true,
+    "ajax": "charters/eliminados",
+    "columnDefs": [
+        { width: 400, targets: 1 }
+    ],
+    "columns": [
+    	{data: "usuario", name: "usuario"},
+    	{data: "comentario", name: "comentario"},
+    	{data: "fecha", name: "fecha"},
     ]
 });
 
@@ -551,4 +565,37 @@ $("#nuevo-gasto-form").on('submit', function(e){
 function tipoNumeros(e){
 	var key = window.event ? e.which : e.keyCode
 	return (key == 46 || key >= 48 && key <= 57);
+}
+
+function eliminar_charter(id_charter){
+	swal({		        
+		title: "¿Está seguro?",
+		text: "Una vez eliminado, no podrá recuperar su información!",
+		icon: "error",
+	    showCancelButton: true,
+	    confirmButtonColor: '#DD4B39',
+	    cancelButtonColor: '#00C0EF',
+	    buttons: ["Cancelar", true],
+	    closeOnConfirm: false
+	}).then(function(isConfirm) {
+	    if (isConfirm) {
+			$.ajax({
+	           	url: 'eliminar-charter/'+id_charter,
+	            dataType: "JSON",
+	            type: 'GET',
+	            success: function (response) {
+	            	if(response.status == 'success'){
+	            		swal("Hecho!", response.msg, response.status);
+	        			$("#tabla_comisiones").DataTable().ajax.reload();
+	        			$("#table-charters-eliminados").DataTable().ajax.reload();
+	            	}else{
+	            		swal("Ocurrió un error!", response.msg, "error");
+	            	}
+	            },
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	            }
+	        });
+	    }
+	});
 }

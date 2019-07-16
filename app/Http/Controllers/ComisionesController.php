@@ -11,6 +11,7 @@ use App\GastosDetalle;
 use App\Entrada;
 use App\TipoGasto;
 use App\Gasto;
+use App\Historial;
 use Carbon\Carbon;
 use DB;
 use Redirect;
@@ -63,6 +64,7 @@ class ComisionesController extends Controller
 
     public function update(Request $request){
         $charter = Charter::find(decrypt($request->id_charter));
+
         $contrato = "Sin contrato";
         
         if(($charter->contrato != $request->contrato) && ($request->contrato != "") && ($request->contrato != "Sin contrato")){
@@ -78,15 +80,33 @@ class ComisionesController extends Controller
             } 
         }
 
-        $f_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
-        $f_init = explode("-", $f_inicio);
+        $ff_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
+        $ff_init = explode("-", $ff_inicio);
 
+        $descripcion = "";
+
+        $f_inicio = Carbon::parse($request->fecha_inicio);
+        $f_fin = Carbon::parse($request->fecha_fin);
+
+        $f_init = explode(",", $f_inicio->toFormattedDateString());
+        $f_end = explode(",", $f_fin->toFormattedDateString());
+        
+        $init_f = explode(" ", $f_init[0]);
+        $end_f = explode(" ", $f_end[0]);
+
+        if($init_f[0] == $end_f[0]){
+            $descripcion = $f_init[0]." - ".$end_f[1].",".$f_end[1].". (".$request->yacht.")";
+        }else{
+            $descripcion = $f_init[0]." - ".$f_end[0].",".$f_end[1].". (".$request->yacht.")";   
+        }
+
+        $charter->descripcion = strtoupper($descripcion);
         $charter->yacht = strtoupper($request->yacht);
         $charter->broker = strtoupper($request->broker);
         $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
         $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
-        $charter->anyo = $f_init[0];
-        $charter->mes = $f_init[1];
+        $charter->anyo = $ff_init[0];
+        $charter->mes = $ff_init[1];
         $charter->precio_venta = $request->precio_venta;
         $charter->yacht_rack = $request->yacht_rack;
         $charter->neto = $request->neto;
@@ -132,11 +152,10 @@ class ComisionesController extends Controller
         $end_f = explode(" ", $f_end[0]);
 
         if($init_f[0] == $end_f[0]){
-            $descripcion = $f_init[0]." - ".$end_f[1].", ".$f_init[1].". (".$request->yacht.")";
+            $descripcion = $f_init[0]." - ".$end_f[1].",".$f_end[1].". (".$request->yacht.")";
         }else{
-            $descripcion = $f_init[0]." - ".$f_end[0].", ".$f_init[1].". (".$request->yacht.")";   
+            $descripcion = $f_init[0]." - ".$f_end[0].",".$f_end[1].". (".$request->yacht.")";   
         }
-        
         $directorio_images = 'images/charters/'.$codigo_charter;
         
         if(!File::exists(public_path($directorio_images))) {
@@ -159,7 +178,6 @@ class ComisionesController extends Controller
 
         $ffi = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
         $ff_init = explode("-", $ffi);
-
         $charter = new Charter();
         $charter->creado_por = Auth::id();
         $charter->codigo = $codigo_charter;
@@ -195,7 +213,7 @@ class ComisionesController extends Controller
 
             $tipos_gastos = TipoGasto::all();
 
-            $contabilidad_adicional = array('OPERADOR NETO' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker);
+            $contabilidad_adicional = array('OPERADOR NETO' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker, 'OTHER' => 0);
             
             foreach ($tipos_gastos as $key => $t) {
                 $new_gasto = new Gasto();
@@ -243,7 +261,7 @@ class ComisionesController extends Controller
             ->addColumn('deluxe_saldo', function ($charters) { 
                 return "$ 0.00";
             })
-            ->addColumn('aryel_total', function ($charters) {
+            /*->addColumn('aryel_total', function ($charters) {
                 $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 1)->first();
                 if($comision != null){
                     return "$ ".number_format($comision->monto, 2, '.', ',');
@@ -305,9 +323,30 @@ class ComisionesController extends Controller
                     return "$ ".number_format($comision->saldo, 2, '.', ',');
                 }
                 return "$ 0.00";
+            })*/
+            ->addColumn('global_total', function ($charters) {
+                $totales = $this->calcular_totales($charters);
+                if($totales['global']['total'] != null){
+                    return $totales['global']['total'];
+                }
+                return "$ 0.00";
+            })
+            ->addColumn('global_gastos', function ($charters) {
+                $totales = $this->calcular_totales($charters);
+                if($totales['global']['gastos'] != null){
+                    return $totales['global']['gastos'];
+                }
+                return "$ 0.00";
+            })
+            ->addColumn('global_saldo', function ($charters) { 
+                $totales = $this->calcular_totales($charters);
+                if($totales['global']['saldo'] != null){
+                    return $totales['global']['saldo'];
+                }
+                return "$ 0.00";
             })
             ->addColumn('action', function ($charters) {
-                return '<a href="editar-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a><a href="eliminar-charter/'.encrypt($charters['id']).'"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
+                return '<a href="editar-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a><a href="#" onclick="eliminar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
             })
             ->order(function ($query) {
                 if (request()->has('fecha_inicio')) {
@@ -704,6 +743,44 @@ class ComisionesController extends Controller
     public function delete($id){
         $id_charter = decrypt($id);
         $charter = Charter::find($id_charter);
-        $charter->delete();
+        $descripcion = $charter->descripcion;
+
+        if($charter->delete()){
+            $new_action = new Historial();
+            $new_action->users_id = Auth::id();
+            $new_action->item = 'CHARTER';
+            $new_action->accion = 'DELETE';
+            $new_action->comentario = 'Charter '.$descripcion.' eliminado por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
+            $new_action->save(); 
+            $msg = 'Charter eliminado satisfactoriamente';
+            $status = 'success';
+        }else{
+            $msg = 'No se pudo eliminar el charter intente más tarde';
+            $status = 'error';
+
+        }
+
+        return Response::json(['msg' => $msg, 'status' => $status]);
+    }
+
+    public function historial_charters(){
+        $historial = Historial::where('item', '=', 'CHARTER')->where('accion', '=', 'DELETE')->get();
+
+        return Datatables::of($historial)
+            ->addColumn('usuario', function ($historial) { 
+                return $historial->user->name;
+            })
+            ->addColumn('comentario', function ($historial) { 
+                return $historial->comentario;
+            })
+            ->addColumn('fecha', function ($historial) { 
+                return Carbon::parse($historial->created_at)->format('d-m-Y');
+            })
+            ->order(function ($query) {
+                if (request()->has('created_at')) {
+                    $query->orderBy('created_at', 'desc');
+                }
+            })
+            ->make(true);
     }
 }
