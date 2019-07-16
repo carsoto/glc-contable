@@ -378,6 +378,9 @@ class ComisionesController extends Controller
             ->addColumn('created_at', function ($abonos) { 
                 return Carbon::parse($abonos->created_at)->format('d-m-Y');
             })
+            ->addColumn('action', function ($abonos) { 
+                return '<a href="#" onclick="historial_acciones_abonos('.$abonos->id.')"><i class="fa fa-trash fa-fw" ></i></a>';
+            })
             ->make(true);
     }
 
@@ -695,7 +698,7 @@ class ComisionesController extends Controller
                     }
                     
                 }
-                return '<a class="btn btn-flat btn-sm btn-primary" href="#" onclick="editar_entrada('.$entradas->id.')"><i class="fa fa-pencil fa-fw" title="Detalles"></i></a>'.$recibo;
+                return '<a href="#" onclick="editar_entrada('.$entradas->id.')"><i class="fa fa-pencil fa-fw" title="Detalles"></i></a> <a href="#" onclick="eliminar_entrada('.$entradas->id.')"><i class="fa fa-trash fa-fw"></i></a>'.$recibo;
             })
             ->make(true);
     }
@@ -721,6 +724,9 @@ class ComisionesController extends Controller
             })
             ->addColumn('created_at', function ($gastos) { 
                 return Carbon::parse($gastos->created_at)->format('d-m-Y');
+            })
+            ->addColumn('action', function ($gastos) { 
+                return '<a href="#" onclick="eliminar_gasto('.$gastos->id.')"><i class="fa fa-trash fa-fw"></i></a>';
             })
             ->make(true);
     }

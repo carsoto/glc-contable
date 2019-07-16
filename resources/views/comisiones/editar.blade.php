@@ -127,14 +127,17 @@
                     <div class="panel-body">
                         <div class="tab-content">
                             <div class="tab-pane fade in active" id="entradas">
-                                <div class="col-lg-4 col-md-4 col-sm-12" style="margin-top: 10px;">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_entrada">{{ $entradas["recibido"] }}</span></strong>
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12" style="margin-top: 10px;">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_entrada_pendiente">{{ $entradas["pendiente"] }}</span></strong>
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12" style="margin-top: 10px;">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_entrada('{{ $charter->id }}')"><i class="fa fa-plus"></i> Nueva entrada</button>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-info" onclick="historial_entrada('{{ $charter->id }}')"><i class="fa fa-history"></i> Historial</button>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="table-responsive" style="margin-top: 20px;">
@@ -180,7 +183,7 @@
                                                         <td><span id="salidas_gasto_{{ $gasto->id }}">{{ $salidas[$gasto->tipo_gasto_id]['gastos'] }}</span></td>
                                                         <td><span id="salidas_saldo_{{ $gasto->id }}">{{ $salidas[$gasto->tipo_gasto_id]['saldo'] }}</span></td>
                                                         @if(strtoupper($gasto->tipo_gasto->descripcion) != "COMISIONES")
-                                                            <td><button type="button" data-target="modal" class="btn btn-sm btn-success" onclick="agregar_gasto('{{ $gasto->id }}')"><i class="fa fa-plus"></i></button> <button type="button" data-target="modal" class="btn btn-sm btn-warning" onclick="historial_gastos('{{ $gasto->id }}')"><i class="fa fa-eye"></i></button></td>
+                                                            <td><a href="#" data-target="modal" onclick="agregar_gasto('{{ $gasto->id }}')"><i class="fa fa-plus"></i></a> <a href="#" data-target="modal" onclick="historial_gastos('{{ $gasto->id }}')"><i class="fa fa-eye"></i></a> <a href="#" data-target="modal" onclick="historial_acciones_gastos('{{ $gasto->id }}')"><i class="fa fa-history"></i></a></td>
                                                         @else
                                                             <td>-</td>
                                                         @endif
@@ -215,7 +218,7 @@
                                                     @else
                                                         <td><span id="fecha_ult_abono_{{ $comision->id }}"></span></td>
                                                     @endif
-                                                    <td><button type="button" data-target="modal" class="btn btn-sm btn-success" onclick="agregar_abono_comision('{{ $comision->id }}')"><i class="fa fa-plus"></i></button> <button type="button" data-target="modal" class="btn btn-sm btn-warning" onclick="historial_abonos_comision('{{ $comision->id }}')"><i class="fa fa-eye"></i></button></td>
+                                                    <td><a href="#" data-target="modal" onclick="agregar_abono_comision('{{ $comision->id }}')"><i class="fa fa-plus"></i></a> <a href="#" data-target="modal" onclick="historial_abonos_comision('{{ $comision->id }}')"><i class="fa fa-eye"></i></a> <a href="#" data-target="modal" onclick="historial_acciones_abonos('{{ $comision->id }}')"><i class="fa fa-history"></i></a></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -546,6 +549,7 @@
                                 <th>F. de abono</th>
                                 <th>Comentario</th>
                                 <th>F. de registro</th>
+                                <th><i class="fa fa-gears"></i></th>
                             </thead>
                         </table>
                     </div>
@@ -619,6 +623,7 @@
                                 <th>F. de abono</th>
                                 <th>Comentario</th>
                                 <th>F. de registro</th>
+                                <th><i class="fa fa-gears"></i></th>
                             </thead>
                         </table>
                     </div>

@@ -249,7 +249,8 @@ function historial_abonos_comision(id_comision){
 		   	{data: "monto", name: "monto"},
 		   	{data: "fecha", name: "fecha"},
 		   	{data: "comentario", name: "comentario"},
-		   	{data: "created_at", name: "created_at"}
+		   	{data: "created_at", name: "created_at"},
+		   	{data: "action", name: "action"},
 	    ]
 	});
 
@@ -269,7 +270,8 @@ function historial_gastos(id_gasto){
 		   	{data: "monto", name: "monto"},
 		   	{data: "fecha", name: "fecha"},
 		   	{data: "comentario", name: "comentario"},
-		   	{data: "created_at", name: "created_at"}
+		   	{data: "created_at", name: "created_at"},
+		   	{data: 'action', name: 'action', orderable: false}
 	    ]
 	});
 
