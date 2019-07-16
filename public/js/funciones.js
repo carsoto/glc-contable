@@ -102,9 +102,19 @@ $("#table-charters-eliminados").DataTable({
 	"processing": true,
     "serverSide": true,
     "ajax": "charters/eliminados",
-    "columnDefs": [
-        { width: 400, targets: 1 }
-    ],
+    "order": [[ 2, "desc" ]],
+    "columns": [
+    	{data: "usuario", name: "usuario"},
+    	{data: "comentario", name: "comentario"},
+    	{data: "fecha", name: "fecha"},
+    ]
+});
+
+$("#table-historial-entradas").DataTable({
+	"processing": true,
+    "serverSide": true,
+    "ajax": "historial/entradas/"+$('#table-historial-entradas').attr('data-charter-id'),
+    "order": [[ 2, "desc" ]],
     "columns": [
     	{data: "usuario", name: "usuario"},
     	{data: "comentario", name: "comentario"},

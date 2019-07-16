@@ -137,7 +137,7 @@
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_entrada('{{ $charter->id }}')"><i class="fa fa-plus"></i> Nueva entrada</button>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-info" onclick="historial_entrada('{{ $charter->id }}')"><i class="fa fa-history"></i> Historial</button>
+                                    <button data-toggle="modal" data-target="#historial-entradas" type="button" class="btn btn-sm btn-flat btn-block btn-info"><i class="fa fa-history"></i> Historial</button>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="table-responsive" style="margin-top: 20px;">
@@ -485,6 +485,33 @@
                     </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div id="historial-entradas" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">HISTORIAL ENTRADAS</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="table-historial-entradas" class="table table-condensed table-bordered" data-charter-id="{{ $charter->id }}">
+                            <thead>
+                                <th>Usuario</th>
+                                <th>Comentario</th>
+                                <th>Fecha</th>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
         </div>
     </div>
 

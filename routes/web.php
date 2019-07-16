@@ -30,12 +30,13 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::get('/exportar-pdf/{charter_id}', 'ComisionesController@exportarPDF')->name('admin.comisiones.charters.exportarPDF');
 	Route::get('/eliminar-charter/{charter_id}', 'ComisionesController@delete')->name('admin.comisiones-eliminar-charter');
 	Route::get('/charters/eliminados', 'ComisionesController@historial_charters')->name('admin.historial-charters-eliminados');
-
+	
 	//Sección Entradas
 	Route::post('/editar-charter/crear-entrada-charter', 'ComisionesController@crear_entrada_charter')->name('admin.crear-entrada-charter');
 	Route::get('/editar-charter/historial-entradas/{id_charter}', 'ComisionesController@historial_entradas')->name('admin.historial.entradas');
 	Route::get('/editar-charter/editar-entrada/{id_entrada}', 'ComisionesController@edit_entrada')->name('admin.editar.entrada');
 	Route::post('/editar-charter/actualizar-entrada-charter', 'ComisionesController@actualizar_entrada_charter')->name('admin.actualizar-entrada-charter');
+	Route::get('/editar-charter/historial/entradas/{charter_id}', 'ComisionesController@historial_acciones_entradas')->name('admin.historial-entradas');
 
 	//Sección Comisiones
 	Route::post('/editar-charter/crear-abono-comision', 'ComisionesController@crear_abono_comision')->name('admin.crear-abono-comision');

@@ -118,6 +118,13 @@ class ComisionesController extends Controller
         $charter->contrato = $contrato;
         
         if($charter->save()){
+            $new_action = new Historial();
+            $new_action->users_id = Auth::id();
+            $new_action->item = 'CHARTER';
+            $new_action->accion = 'UPDATE';
+            $new_action->comentario = 'Charter '.$descripcion.' actualizado por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
+            $new_action->save(); 
+
             $msg = 'Charter actualizado exitosamente';
             $status = 'success';
         }else{
@@ -224,17 +231,14 @@ class ComisionesController extends Controller
                 $new_gasto->gastos = 0;
                 $new_gasto->saldo = $contabilidad_adicional[$t->descripcion];
                 $new_gasto->save(); 
-
-                /*if($t->descripcion == 'BROKER'){
-                    $new_detalle = new GastosDetalle();
-                    $new_detalle->users_id = Auth::id();
-                    $new_detalle->gastos_id = $new_gasto->id;
-                    $new_detalle->monto = $contabilidad_adicional[$t->descripcion];
-                    $new_detalle->fecha = date('Y-m-d');
-                    $new_detalle->comentario = 'Registro de pago automático';
-                    $new_detalle->save();
-                }*/
             }
+
+            $new_action = new Historial();
+            $new_action->users_id = Auth::id();
+            $new_action->item = 'CHARTER';
+            $new_action->accion = 'ADD';
+            $new_action->comentario = 'Charter '.$descripcion.' registrado por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
+            $new_action->save(); 
 
             $msg = 'Charter registrado exitosamente';
             $status = 'success';
@@ -586,6 +590,14 @@ class ComisionesController extends Controller
         $nueva_entrada->link_papeleta_pago = $recibo;
         
         if($nueva_entrada->save()){
+            $new_action = new Historial();
+            $new_action->users_id = Auth::id();
+            $new_action->item = 'ENTRADA';
+            $new_action->charters_id = $charter->id;
+            $new_action->accion = 'ADD';
+            $new_action->comentario = 'Entrada de $ '.number_format($request->entrada["monto"], 2, '.', ',').' registrada por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
+            $new_action->save(); 
+
             $msg = 'Entrada registrada exitosamente.';
             $status = 'success';
         }else{
@@ -617,6 +629,7 @@ class ComisionesController extends Controller
     public function actualizar_entrada_charter(Request $request){
         $e = Entrada::find($request->entrada["id_entrada"]);
         $charter = Charter::find($request->entrada["id_charter"]);
+        $monto_ant = $e->monto;
 
         if($request->entrada["tipo_recibo"] == "archivo"){
             $directorio_images = 'images/charters/'.$charter->codigo;
@@ -654,6 +667,14 @@ class ComisionesController extends Controller
         $e->link_papeleta_pago = $recibo;
 
         if($e->save()){
+            $new_action = new Historial();
+            $new_action->users_id = Auth::id();
+            $new_action->item = 'ENTRADA';
+            $new_action->charters_id = $charter->id;
+            $new_action->accion = 'UPDATE';
+            $new_action->comentario = 'Entrada actualizada de $ '.number_format($monto_ant, 2, '.', ',').' a $ '.number_format($request->entrada["monto"], 2, '.', ',').' registrada por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
+            $new_action->save(); 
+
             $msg = 'Entrada actualizada exitosamente.';
             $status = 'success';
         }else{
@@ -758,6 +779,7 @@ class ComisionesController extends Controller
             $new_action->accion = 'DELETE';
             $new_action->comentario = 'Charter '.$descripcion.' eliminado por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
             $new_action->save(); 
+
             $msg = 'Charter eliminado satisfactoriamente';
             $status = 'success';
         }else{
@@ -770,7 +792,7 @@ class ComisionesController extends Controller
     }
 
     public function historial_charters(){
-        $historial = Historial::where('item', '=', 'CHARTER')->where('accion', '=', 'DELETE')->get();
+        $historial = Historial::where('item', '=', 'CHARTER')->get();
 
         return Datatables::of($historial)
             ->addColumn('usuario', function ($historial) { 
@@ -783,8 +805,29 @@ class ComisionesController extends Controller
                 return Carbon::parse($historial->created_at)->format('d-m-Y');
             })
             ->order(function ($query) {
-                if (request()->has('created_at')) {
-                    $query->orderBy('created_at', 'desc');
+                if (request()->has('fecha')) {
+                    $query->orderBy('created_at', 'DESC');
+                }
+            })
+            ->make(true);
+    }
+
+    public function historial_acciones_entradas($charter_id){
+        $historial = Historial::where('charters_id', '=', $charter_id)->where('item', '=', 'ENTRADA')->get();
+        
+        return Datatables::of($historial)
+            ->addColumn('usuario', function ($historial) { 
+                return $historial->user->name;
+            })
+            ->addColumn('comentario', function ($historial) { 
+                return $historial->comentario;
+            })
+            ->addColumn('fecha', function ($historial) { 
+                return Carbon::parse($historial->created_at)->format('d-m-Y');
+            })
+            ->order(function ($query) {
+                if (request()->has('fecha')) {
+                    $query->orderBy('created_at', 'DESC');
                 }
             })
             ->make(true);

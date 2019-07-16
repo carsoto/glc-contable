@@ -10,7 +10,7 @@
     <div class="box box-danger">
     	<div class="box-header">
     		<button class="btn btn-sm btn-success btn-flat" data-toggle="modal" data-target="#registrarCharter"><i class="fa fa-plus"></i> Nuevo charter</button>
-            <button class="btn btn-sm btn-info btn-flat" data-toggle="modal" data-target="#chartersEliminados"><i class="fa fa-history"></i> Charters eliminados</button>
+            <button class="btn btn-sm btn-info btn-flat" data-toggle="modal" data-target="#historial-charter"><i class="fa fa-history"></i> Historial</button>
     	</div>
     	<div class="box-body">
     		<div class="table-responsive">
@@ -277,7 +277,7 @@
         </div>
     </div>
 
-    <div id="chartersEliminados" class="modal fade" role="dialog">
+    <div id="historial-charter" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
             <!-- Modal content-->
             <div class="modal-content">
