@@ -141,7 +141,7 @@
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="table-responsive" style="margin-top: 20px;">
-                                        <table class="table table-condensed" style="font-size: 12px;" id="table-entradas" data-charter-id="{{ $charter->id }}">
+                                        <table class="table table-condensed" style="font-size: 11px;" id="table-entradas" data-charter-id="{{ $charter->id }}" width="100%">
                                             <thead>
                                                 <th>REGISTRADO POR</th>
                                                 <th>MONTO</th>
@@ -167,7 +167,7 @@
 
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="table-responsive" style="margin-top: 20px;">
-                                        <table class="table table-bordered table-condensed" style="font-size: 12px;" id="table-salidas">
+                                        <table class="table table-bordered table-condensed" style="font-size: 11px;" id="table-salidas" width="100%">
                                             <thead>
                                                 <th>TIPO</th>
                                                 <th>TOTAL</th>
@@ -197,7 +197,7 @@
 
                             <div class="tab-pane fade" id="comisiones">
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-condensed" style="font-size: 12px;">
+                                    <table class="table table-bordered table-condensed" style="font-size: 11px;" width="100%">
                                         <thead>
                                             <th>SOCIO</th>
                                             <th>MONTO</th>
@@ -228,7 +228,7 @@
 
                             <div class="tab-pane fade" id="resumen">
                                 <div class="table-responsive">
-                                    <table class="table table-condensed table-bordered" style="font-size: 12px;">
+                                    <table class="table table-condensed table-bordered" style="font-size: 12px;" width="100%">
                                         <thead>
                                             <th></th>
                                             <th>ENTRADA</th>
@@ -312,8 +312,20 @@
                                 <input class="form-control input-sm" type="text" name="entrada[monto]" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="monto_entrada">
                             </div>
                         </div>
-
-                        <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label style="font-size: 11px;">TIPO</label>
+                                <select class="form-control input-sm" name="entrada[tipo_gasto]">
+                                    <option value="">SELECCIONAR GASTO</option>
+                                    @foreach($charter->gastos AS $key => $gasto)
+                                        @if(($gasto->tipo_gasto->descripcion == 'APA') || ($gasto->tipo_gasto->descripcion == 'OTHER'))
+                                            <option value="{{ $gasto->id }}">{{ $gasto->tipo_gasto->descripcion }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
                                 <label style="font-size: 11px;">COMENTARIO</label>
                                 <textarea class="form-control input-sm" type="text" name="entrada[comentario]" style="resize: none;"></textarea>
@@ -498,7 +510,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table id="table-historial-entradas" class="table table-condensed table-bordered" data-charter-id="{{ $charter->id }}">
+                        <table id="table-historial-entradas" class="table table-condensed table-bordered" data-charter-id="{{ $charter->id }}" style="font-size: 11px;" width="100%">
                             <thead>
                                 <th>Usuario</th>
                                 <th>Comentario</th>
@@ -569,7 +581,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table id="tabla_hist_abonos_comisiones" class="table table-condensed table-bordered" style="font-size: 11px;">
+                        <table id="tabla_hist_abonos_comisiones" class="table table-condensed table-bordered" style="font-size: 11px;" width="100%">
                             <thead>
                                 <th>Registrado por</th>
                                 <th>Monto</th>
@@ -643,7 +655,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table id="tabla_hist_gastos" class="table table-condensed table-bordered" style="font-size: 11px;">
+                        <table id="tabla_hist_gastos" class="table table-condensed table-bordered" style="font-size: 11px;" width="100%">
                             <thead>
                                 <th>Registrado por</th>
                                 <th>Monto</th>

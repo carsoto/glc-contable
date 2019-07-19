@@ -20,6 +20,7 @@ use Response;
 use Auth;
 use Datatables;
 use PDF;
+use Storage;
 
 class ComisionesController extends Controller
 {
@@ -118,6 +119,16 @@ class ComisionesController extends Controller
         $charter->contrato = $contrato;
         
         if($charter->save()){
+            $contabilidad_adicional = array('OPERADOR NETO' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker, 'OTHER' => 0);
+
+            foreach ($charter->gastos as $key => $gasto) {
+                $gasto->users_id = Auth::id();
+                $gasto->total = $contabilidad_adicional[$gasto->tipo_gasto->descripcion];
+                $gasto->gastos = 0;
+                $gasto->saldo = $contabilidad_adicional[$gasto->tipo_gasto->descripcion] - $gasto->saldo;
+                $gasto->save();
+            }
+
             $new_action = new Historial();
             $new_action->users_id = Auth::id();
             $new_action->item = 'CHARTER';
@@ -253,6 +264,12 @@ class ComisionesController extends Controller
     public function comisiones_charters(){
         $charters = Charter::all();
         return Datatables::of($charters)
+            ->addColumn('fecha_inicio', function ($charters) {
+                return Carbon::parse($charters->fecha_inicio)->format('d-m-Y');
+            })
+            ->addColumn('fecha_fin', function ($charters) {
+                return Carbon::parse($charters->fecha_fin)->format('d-m-Y');
+            })
             ->addColumn('precio_venta', function ($charters) { 
                 return "$ ".number_format($charters->precio_venta, 2, '.', ',');
             })
@@ -265,69 +282,6 @@ class ComisionesController extends Controller
             ->addColumn('deluxe_saldo', function ($charters) { 
                 return "$ 0.00";
             })
-            /*->addColumn('aryel_total', function ($charters) {
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 1)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->monto, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })
-            ->addColumn('aryel_abono', function ($charters) { 
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 1)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->abonado, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })
-            ->addColumn('aryel_saldo', function ($charters) { 
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 1)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->saldo, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })
-            ->addColumn('stephi_total', function ($charters) { 
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 2)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->monto, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })
-            ->addColumn('stephi_abono', function ($charters) { 
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 2)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->abonado, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })
-            ->addColumn('stephi_saldo', function ($charters) { 
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 2)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->saldo, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })
-            ->addColumn('glc_total', function ($charters) { 
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 3)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->monto, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })
-            ->addColumn('glc_abono', function ($charters) { 
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 3)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->abonado, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })
-            ->addColumn('glc_saldo', function ($charters) { 
-                $comision = Comisione::where('charters_id', '=', $charters->id)->where('socios_id', '=', 3)->first();
-                if($comision != null){
-                    return "$ ".number_format($comision->saldo, 2, '.', ',');
-                }
-                return "$ 0.00";
-            })*/
             ->addColumn('global_total', function ($charters) {
                 $totales = $this->calcular_totales($charters);
                 if($totales['global']['total'] != null){
@@ -590,13 +544,23 @@ class ComisionesController extends Controller
         $nueva_entrada->link_papeleta_pago = $recibo;
         
         if($nueva_entrada->save()){
+            if($request->entrada["tipo_gasto"] != null){
+                $actualizar_gasto = Gasto::find($request->entrada["tipo_gasto"]);
+
+                $nuevo_total = $actualizar_gasto->total + $request->entrada["monto"];
+
+                $actualizar_gasto->total = $nuevo_total;
+                $actualizar_gasto->saldo = $nuevo_total - $actualizar_gasto->gastos;
+                $actualizar_gasto->save();
+            }
+            
             $new_action = new Historial();
             $new_action->users_id = Auth::id();
             $new_action->item = 'ENTRADA';
             $new_action->charters_id = $charter->id;
             $new_action->accion = 'ADD';
             $new_action->comentario = 'Entrada de $ '.number_format($request->entrada["monto"], 2, '.', ',').' registrada por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
-            $new_action->save(); 
+            $new_action->save();
 
             $msg = 'Entrada registrada exitosamente.';
             $status = 'success';
@@ -769,10 +733,12 @@ class ComisionesController extends Controller
 
     public function delete($id){
         $id_charter = decrypt($id);
+
         $charter = Charter::find($id_charter);
         $descripcion = $charter->descripcion;
-
+        $codigo_charter = $charter->codigo;
         if($charter->delete()){
+            /*Storage::delete('public/images/charters/'.$codigo_charter);**/
             $new_action = new Historial();
             $new_action->users_id = Auth::id();
             $new_action->item = 'CHARTER';
@@ -814,7 +780,7 @@ class ComisionesController extends Controller
 
     public function historial_acciones_entradas($charter_id){
         $historial = Historial::where('charters_id', '=', $charter_id)->where('item', '=', 'ENTRADA')->get();
-        
+
         return Datatables::of($historial)
             ->addColumn('usuario', function ($historial) { 
                 return $historial->user->name;
@@ -831,5 +797,31 @@ class ComisionesController extends Controller
                 }
             })
             ->make(true);
+    }
+
+    public function eliminar_entrada($id_entrada){
+        $entrada = Entrada::find($id_entrada);
+        $monto_eliminado = $entrada->monto;
+        $charter = $entrada->charters_id;
+        
+        if($entrada->delete()){
+             
+            $action_new = new Historial();
+            $action_new->users_id = Auth::id();
+            $action_new->item = 'ENTRADA';
+            $action_new->charters_id = $charter;
+            $action_new->accion = 'DELETEE';
+            $action_new->comentario = 'Entrada de $ '.number_format($monto_eliminado, 2, '.', ',').' eliminada. Fecha: '.date('d-m-Y');;
+            $action_new->save();
+
+            $msg = 'Entrada eliminada satisfactoriamente';
+            $status = 'success';
+        }else{
+            $msg = 'No se pudo eliminar la entrada intente más tarde';
+            $status = 'error';
+
+        }
+
+        return Response::json(['msg' => $msg, 'status' => $status]);
     }
 }

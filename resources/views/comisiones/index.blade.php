@@ -16,8 +16,9 @@
     		<div class="table-responsive">
     			<table class="table table-striped table-condensed table-bordered" style="font-size: 11px;" id="tabla_comisiones">
     				<thead>
-    					<tr>
-	    					<th style="vertical-align: middle;text-align:center;" rowspan="2" width="180px">CHARTER</th>
+    					<tr><th style="vertical-align: middle;text-align:center;" rowspan="2" width="90px">F. Inicio</th>
+                            <th style="vertical-align: middle;text-align:center;" rowspan="2" width="90px">F. Fin</th>
+	    					<th style="vertical-align: middle;text-align:center;" rowspan="2" width="100px">YACHT</th>
 	    					<th style="vertical-align: middle;text-align:center;" rowspan="2" width="80px">VENTA</th>
                             <th class="text-center" colspan="3">DELUXE</th>
                             <th class="text-center" colspan="3">GLOBAL</th>
@@ -283,11 +284,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">CHARTERS ELIMINADOS</h4>
+                    <h4 class="modal-title">HISTORIAL</h4>
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped" id="table-charters-eliminados">
+                        <table class="table table-bordered table-striped" id="table-charters-eliminados" style="font-size: 12px;" width="100%">
                             <thead>
                                 <th>Usuario</th>
                                 <th>Comentario</th>

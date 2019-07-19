@@ -63,7 +63,7 @@ $('.datepicker').datepicker({
 
 $("#table-entradas").DataTable({
 	"processing": true,
-    "serverSide": true,
+    //"serverSide": true,
     "ajax": "historial-entradas/"+$('#table-entradas').attr('data-charter-id'),
     "columns": [
 		{data: 'user', name: 'user'},
@@ -77,10 +77,12 @@ $("#table-entradas").DataTable({
 
 $("#tabla_comisiones").DataTable({
 	"processing": true,
-    "serverSide": true,
+    ////"serverSide": true,
     "ajax": "comisiones/charters",
     "columns": [
-    	{data: "descripcion", name: "descripcion"},
+    	{data: "fecha_inicio", name: "fecha_inicio"},
+    	{data: "fecha_fin", name: "fecha_fin"},
+    	{data: "yacht", name: "yacht"},
     	{data: "precio_venta", name: "precio_venta"},
     	{data: "deluxe_total", name: "deluxe_total", class: "success"},
     	{data: "deluxe_gastos", name: "deluxe_gastos", class: "warning"},
@@ -100,7 +102,7 @@ $("#tabla_comisiones").DataTable({
 
 $("#table-charters-eliminados").DataTable({
 	"processing": true,
-    "serverSide": true,
+    //"serverSide": true,
     "ajax": "charters/eliminados",
     "order": [[ 2, "desc" ]],
     "columns": [
@@ -112,7 +114,7 @@ $("#table-charters-eliminados").DataTable({
 
 $("#table-historial-entradas").DataTable({
 	"processing": true,
-    "serverSide": true,
+    //"serverSide": true,
     "ajax": "historial/entradas/"+$('#table-historial-entradas').attr('data-charter-id'),
     "order": [[ 2, "desc" ]],
     "columns": [
@@ -252,7 +254,7 @@ function historial_abonos_comision(id_comision){
 
 	$("#tabla_hist_abonos_comisiones").DataTable({
 		"processing": true,
-	    "serverSide": true,
+	    //"serverSide": true,
 	    "ajax": "historial-abonos-comisiones/"+id_comision,
 	    "columns": [
 		   	{data: "user", name: "user"},
@@ -273,7 +275,7 @@ function historial_gastos(id_gasto){
 
 	$("#tabla_hist_gastos").DataTable({
 		"processing": true,
-	    "serverSide": true,
+	    //"serverSide": true,
 	    "ajax": "historial-gastos/"+id_gasto,
 	    "columns": [
 		   	{data: "user", name: "user"},
@@ -600,6 +602,41 @@ function eliminar_charter(id_charter){
 	            		swal("Hecho!", response.msg, response.status);
 	        			$("#tabla_comisiones").DataTable().ajax.reload();
 	        			$("#table-charters-eliminados").DataTable().ajax.reload();
+	            	}else{
+	            		swal("Ocurrió un error!", response.msg, "error");
+	            	}
+	            },
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	            }
+	        });
+	    }
+	});
+}
+
+function eliminar_entrada(id_entrada){
+	swal({		        
+		title: "¿Está seguro?",
+		text: "Una vez eliminada, no podrá recuperar su información!",
+		icon: "error",
+	    showCancelButton: true,
+	    confirmButtonColor: '#DD4B39',
+	    cancelButtonColor: '#00C0EF',
+	    buttons: ["Cancelar", true],
+	    closeOnConfirm: false
+	}).then(function(isConfirm) {
+	    if (isConfirm) {
+			$.ajax({
+	           	url: 'eliminar-entrada/'+id_entrada,
+	            dataType: "JSON",
+	            type: 'GET',
+	            success: function (response) {
+	            	if(response.status == 'success'){
+	            		swal("Hecho!", response.msg, response.status);
+	            		$("#table-entradas").DataTable().ajax.reload();
+	            		location.reload();
+	        			/*$("#tabla_comisiones").DataTable().ajax.reload();
+	        			$("#table-entradas").DataTable().ajax.reload();*/
 	            	}else{
 	            		swal("Ocurrió un error!", response.msg, "error");
 	            	}

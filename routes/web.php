@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::get('/editar-charter/editar-entrada/{id_entrada}', 'ComisionesController@edit_entrada')->name('admin.editar.entrada');
 	Route::post('/editar-charter/actualizar-entrada-charter', 'ComisionesController@actualizar_entrada_charter')->name('admin.actualizar-entrada-charter');
 	Route::get('/editar-charter/historial/entradas/{charter_id}', 'ComisionesController@historial_acciones_entradas')->name('admin.historial-entradas');
+	Route::get('/editar-charter/eliminar-entrada/{entrada_id}', 'ComisionesController@eliminar_entrada')->name('admin.eliminar-entrada');
 
 	//Sección Comisiones
 	Route::post('/editar-charter/crear-abono-comision', 'ComisionesController@crear_abono_comision')->name('admin.crear-abono-comision');
