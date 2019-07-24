@@ -43,9 +43,15 @@
                         <tr style="background: grey; color: white;">
                             <th class="text-right">BALANCE FINAL</th>
                             @foreach($socios AS $clave => $socio)
-                                <th>$ {{ number_format($socio->comisiones->sum('monto'), 2, '.', ',') }}</th>
-                                <th>$ {{ number_format($socio->comisiones->sum('abonado'), 2, '.', ',') }}</th>
-                                <th>$ {{ number_format($socio->comisiones->sum('saldo'), 2, '.', ',') }}</th>
+                                @if($socio->comisiones != null)
+                                    <th>$ {{ number_format($socio->comisiones->sum('monto'), 2, '.', ',') }}</th>
+                                    <th>$ {{ number_format($socio->comisiones->sum('abonado'), 2, '.', ',') }}</th>
+                                    <th>$ {{ number_format($socio->comisiones->sum('saldo'), 2, '.', ',') }}</th>
+                                @else
+                                    <th>$ {{ number_format(0, 2, '.', ',') }}</th>
+                                    <th>$ {{ number_format(0, 2, '.', ',') }}</th>
+                                    <th>$ {{ number_format(0, 2, '.', ',') }}</th>
+                                @endif
                             @endforeach
                         </tr>
                     </tfoot>

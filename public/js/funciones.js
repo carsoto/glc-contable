@@ -116,9 +116,10 @@ $("#table-historial-entradas").DataTable({
 	"processing": true,
     //"serverSide": true,
     "ajax": "historial/entradas/"+$('#table-historial-entradas').attr('data-charter-id'),
-    "order": [[ 2, "desc" ]],
+    "order": [[ 3, "DESC" ]],
     "columns": [
     	{data: "usuario", name: "usuario"},
+    	{data: "accion", name: "accion"},
     	{data: "comentario", name: "comentario"},
     	{data: "fecha", name: "fecha"},
     ]
@@ -171,6 +172,7 @@ function agregar_entrada(id_charter){
 
 function editar_entrada(id_entrada){
 	document.getElementById('id_entrada').value = id_entrada;
+	
 	$.ajax({
 	    url: 'editar-entrada/'+id_entrada,
 	    type: 'GET',
@@ -183,6 +185,7 @@ function editar_entrada(id_entrada){
             document.getElementById('entrada-comentario').value = response.entrada.comentario;
             document.getElementById('entrada-banco').value = response.entrada.banco;
             document.getElementById('entrada-referencia').value = response.entrada.referencia;
+            $('#entrada-tipo-gasto option[value="'+ response.entrada.tipo_gasto_id +'"]').attr("selected", "selected");
             $('#entrada-tipo-r-'+response.entrada.tipo_recibo).iCheck('check');
             document.getElementById('input-entrada-tipo-'+response.entrada.tipo_recibo).value = response.entrada.link_papeleta_pago;
 			//console.log(response.entrada.tipo_recibo);
@@ -269,7 +272,7 @@ function historial_abonos_comision(id_comision){
 	$("#historial-abonos-comision").modal("toggle"); 
 }
 
-function historial_gastos(id_gasto){
+/*function historial_gastos(id_gasto){
 
     $('#tabla_hist_gastos').DataTable().destroy();
 
@@ -288,11 +291,19 @@ function historial_gastos(id_gasto){
 	});
 
 	$("#historial-gastos").modal("toggle"); 
-}
+}*/
 
-function agregar_gasto(id_gasto){
+/*function agregar_gasto(id_gasto){
 	document.getElementById('id_gasto').value = id_gasto;
 	$("#nuevo-gasto").modal("toggle");  
+}*/
+
+function agregar_gasto(id_charter, tipo){
+	$("#nuevo-gasto").modal("toggle");
+}
+
+function historial_gasto(id_charter, tipo){
+	$("#historial-gastos").modal("toggle");
 }
 
 $("#nueva-entrada-form").on('submit', function(e){
@@ -314,22 +325,21 @@ $("#nueva-entrada-form").on('submit', function(e){
 	        },
 
 	        success: function(response){
+	        	$('#nueva-entrada-form').css("opacity","");
+	            $(".submitBtn").removeAttr("disabled");
+
 	            if(response.status == 'success'){
 	            	$('#nueva-entrada-form')[0].reset();
 	            	$('#nueva-entrada').modal('toggle');
 	            	$('#table-entradas').DataTable().ajax.reload();
+	            	$('#table-historial-entradas').DataTable().ajax.reload();
 	            	document.getElementById("total_entrada").innerHTML = response.total_recibido;
 	            	document.getElementById("total_recibido").innerHTML = response.total_recibido;
 	            	document.getElementById("total_entrada_pendiente").innerHTML = response.total_pendiente;
 		            swal("Hecho!", response.msg, "success");
 		        }else{
-		        	$('#nueva-entrada-form').css("opacity","");
-	            	$(".submitBtn").removeAttr("disabled");
 		            swal("Ocurrió un error!", response.msg, "error");
 		        }
-
-	            $('#nueva-entrada-form').css("opacity","");
-	            $(".submitBtn").removeAttr("disabled");
 	        },
 
 	        error: function (xhr, ajaxOptions, thrownError) {

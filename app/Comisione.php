@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sat, 06 Jul 2019 01:22:36 +0000.
+ * Date: Tue, 23 Jul 2019 21:22:50 +0000.
  */
 
 namespace App;
@@ -13,8 +13,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * Class Comisione
  * 
  * @property int $id
- * @property int $users_id
  * @property int $charters_id
+ * @property int $users_id
  * @property int $socios_id
  * @property int $porcentaje_comision_socio
  * @property float $monto
@@ -34,8 +34,8 @@ use Reliese\Database\Eloquent\Model as Eloquent;
 class Comisione extends Eloquent
 {
 	protected $casts = [
-		'users_id' => 'int',
 		'charters_id' => 'int',
+		'users_id' => 'int',
 		'socios_id' => 'int',
 		'porcentaje_comision_socio' => 'int',
 		'monto' => 'float',
@@ -48,8 +48,8 @@ class Comisione extends Eloquent
 	];
 
 	protected $fillable = [
-		'users_id',
 		'charters_id',
+		'users_id',
 		'socios_id',
 		'porcentaje_comision_socio',
 		'monto',

@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sat, 06 Jul 2019 01:22:36 +0000.
+ * Date: Tue, 23 Jul 2019 21:22:50 +0000.
  */
 
 namespace App;
@@ -15,6 +15,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $id
  * @property int $charters_id
  * @property int $registrado_por
+ * @property int $tipo_gasto_id
  * @property \Carbon\Carbon $fecha
  * @property float $monto
  * @property string $comentario
@@ -26,6 +27,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $updated_at
  * 
  * @property \App\Charter $charter
+ * @property \App\TipoGasto $tipo_gasto
  * @property \App\User $user
  *
  * @package App
@@ -35,6 +37,7 @@ class Entrada extends Eloquent
 	protected $casts = [
 		'charters_id' => 'int',
 		'registrado_por' => 'int',
+		'tipo_gasto_id' => 'int',
 		'monto' => 'float'
 	];
 
@@ -45,6 +48,7 @@ class Entrada extends Eloquent
 	protected $fillable = [
 		'charters_id',
 		'registrado_por',
+		'tipo_gasto_id',
 		'fecha',
 		'monto',
 		'comentario',
@@ -57,6 +61,11 @@ class Entrada extends Eloquent
 	public function charter()
 	{
 		return $this->belongsTo(\App\Charter::class, 'charters_id');
+	}
+
+	public function tipo_gasto()
+	{
+		return $this->belongsTo(\App\TipoGasto::class);
 	}
 
 	public function user()

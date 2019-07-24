@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 25 Jun 2019 21:51:04 +0000.
+ * Date: Tue, 23 Jul 2019 21:22:50 +0000.
  */
 
 namespace App;
@@ -10,29 +10,30 @@ namespace App;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Deposito
+ * Class Deluxe
  * 
  * @property int $id
  * @property int $users_id
- * @property string $razon_social
+ * @property int $charters_id
  * @property float $monto
  * @property \Carbon\Carbon $fecha
  * @property string $comentario
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property int $charters_id
  * 
  * @property \App\Charter $charter
  * @property \App\User $user
  *
  * @package App
  */
-class Deposito extends Eloquent
+class Deluxe extends Eloquent
 {
+	protected $table = 'deluxe';
+
 	protected $casts = [
 		'users_id' => 'int',
-		'monto' => 'float',
-		'charters_id' => 'int'
+		'charters_id' => 'int',
+		'monto' => 'float'
 	];
 
 	protected $dates = [
@@ -41,11 +42,10 @@ class Deposito extends Eloquent
 
 	protected $fillable = [
 		'users_id',
-		'razon_social',
+		'charters_id',
 		'monto',
 		'fecha',
-		'comentario',
-		'charters_id'
+		'comentario'
 	];
 
 	public function charter()

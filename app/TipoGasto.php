@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sat, 06 Jul 2019 01:22:36 +0000.
+ * Date: Tue, 23 Jul 2019 21:22:50 +0000.
  */
 
 namespace App;
@@ -17,7 +17,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Illuminate\Database\Eloquent\Collection $gastos
+ * @property \Illuminate\Database\Eloquent\Collection $entradas
  *
  * @package App
  */
@@ -29,8 +29,8 @@ class TipoGasto extends Eloquent
 		'descripcion'
 	];
 
-	public function gastos()
+	public function entradas()
 	{
-		return $this->hasMany(\App\Gasto::class);
+		return $this->hasMany(\App\Entrada::class);
 	}
 }

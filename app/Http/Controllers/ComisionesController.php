@@ -147,118 +147,129 @@ class ComisionesController extends Controller
     }
 
     public function store(Request $request){
-        $descripcion = "";
-        $n_fecha_inicio = str_replace("-", "", $request->fecha_inicio);
-        $codigo = "CHT-".$n_fecha_inicio;
-        $charter_reg = Charter::where('codigo', '=', $codigo)->get();
-        $socios = Socio::all();
 
-        if(count($charter_reg) > 0){
-            $cod_reg = count($charter_reg);
-            $codigo_charter = $codigo."-".($cod_reg+1);  
-        }else{
-            $codigo_charter = $codigo;
-        }
+        DB::beginTransaction();
+        try{
+            $descripcion = "";
+            $n_fecha_inicio = str_replace("-", "", $request->fecha_inicio);
+            $codigo = "CHT-".$n_fecha_inicio;
+            $charter_reg = Charter::where('codigo', '=', $codigo)->get();
+            $socios = Socio::all();
 
-        $f_inicio = Carbon::parse($request->fecha_inicio);
-        $f_fin = Carbon::parse($request->fecha_fin);
-
-        $f_init = explode(",", $f_inicio->toFormattedDateString());
-        $f_end = explode(",", $f_fin->toFormattedDateString());
-        
-        $init_f = explode(" ", $f_init[0]);
-        $end_f = explode(" ", $f_end[0]);
-
-        if($init_f[0] == $end_f[0]){
-            $descripcion = $f_init[0]." - ".$end_f[1].",".$f_end[1].". (".$request->yacht.")";
-        }else{
-            $descripcion = $f_init[0]." - ".$f_end[0].",".$f_end[1].". (".$request->yacht.")";   
-        }
-        $directorio_images = 'images/charters/'.$codigo_charter;
-        
-        if(!File::exists(public_path($directorio_images))) {
-            File::makeDirectory(public_path($directorio_images));
-
-            if(!File::exists(public_path($directorio_images.'/contrato'))){
-                File::makeDirectory(public_path($directorio_images.'/contrato'));
+            if(count($charter_reg) > 0){
+                $cod_reg = count($charter_reg);
+                $codigo_charter = $codigo."-".($cod_reg+1);  
+            }else{
+                $codigo_charter = $codigo;
             }
-        }
 
-        if(count($request->file()) > 0){
-            if($request->file()['contrato'] != null){
-                $contrato = $this->guardarImagen($request->file()['contrato'], public_path($directorio_images.'/contrato'));    
+            $f_inicio = Carbon::parse($request->fecha_inicio);
+            $f_fin = Carbon::parse($request->fecha_fin);
+
+            $f_init = explode(",", $f_inicio->toFormattedDateString());
+            $f_end = explode(",", $f_fin->toFormattedDateString());
+            
+            $init_f = explode(" ", $f_init[0]);
+            $end_f = explode(" ", $f_end[0]);
+
+            if($init_f[0] == $end_f[0]){
+                $descripcion = $f_init[0]." - ".$end_f[1].",".$f_end[1].". (".$request->yacht.")";
+            }else{
+                $descripcion = $f_init[0]." - ".$f_end[0].",".$f_end[1].". (".$request->yacht.")";   
+            }
+            $directorio_images = 'images/charters/'.$codigo_charter;
+            
+            if(!File::exists(public_path($directorio_images))) {
+                File::makeDirectory(public_path($directorio_images));
+
+                if(!File::exists(public_path($directorio_images.'/contrato'))){
+                    File::makeDirectory(public_path($directorio_images.'/contrato'));
+                }
+            }
+
+            if(count($request->file()) > 0){
+                if($request->file()['contrato'] != null){
+                    $contrato = $this->guardarImagen($request->file()['contrato'], public_path($directorio_images.'/contrato'));    
+                }else{
+                    $contrato = "Sin contrato";
+                }
             }else{
                 $contrato = "Sin contrato";
-            }
-        }else{
-            $contrato = "Sin contrato";
-        } 
+            } 
 
-        $ffi = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
-        $ff_init = explode("-", $ffi);
-        $charter = new Charter();
-        $charter->creado_por = Auth::id();
-        $charter->codigo = $codigo_charter;
-        $charter->descripcion = strtoupper($descripcion);
-        $charter->yacht = strtoupper($request->yacht);
-        $charter->broker = strtoupper($request->broker);
-        $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
-        $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
-        $charter->anyo = $ff_init[0];
-        $charter->mes = $ff_init[1];
-        $charter->precio_venta = $request->precio_venta;
-        $charter->yacht_rack = $request->yacht_rack;
-        $charter->neto = $request->neto;
-        $charter->porcentaje_comision_broker = $request->porcentaje_comision_broker;
-        $charter->comision_broker = $request->comision_broker;
-        $charter->costo_deluxe = $request->costo_deluxe;
-        $charter->comision_glc = $request->comision_glc;
-        $charter->apa = $request->apa;
-        $charter->contrato = $contrato;
-        
-        if($charter->save()){
-            foreach ($socios as $key => $socio) {
-                $comision = ($request->comision_glc * $socio->porcentaje)/100;
-                $new_comision = new Comisione();
-                $new_comision->users_id = Auth::id();
-                $new_comision->charters_id = $charter->id;
-                $new_comision->socios_id = $socio->id;
-                $new_comision->porcentaje_comision_socio = $socio->porcentaje;
-                $new_comision->monto = $comision;
-                $new_comision->saldo = $comision;
-                $new_comision->save();
-            }
-
-            $tipos_gastos = TipoGasto::all();
-
-            $contabilidad_adicional = array('OPERADOR NETO' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker, 'OTHER' => 0);
+            $ffi = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
+            $ff_init = explode("-", $ffi);
+            $charter = new Charter();
+            $charter->creado_por = Auth::id();
+            $charter->codigo = $codigo_charter;
+            $charter->descripcion = strtoupper($descripcion);
+            $charter->yacht = strtoupper($request->yacht);
+            $charter->broker = strtoupper($request->broker);
+            $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
+            $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
+            $charter->anyo = $ff_init[0];
+            $charter->mes = $ff_init[1];
+            $charter->precio_venta = $request->precio_venta;
+            $charter->yacht_rack = $request->yacht_rack;
+            $charter->neto = $request->neto;
+            $charter->porcentaje_comision_broker = $request->porcentaje_comision_broker;
+            $charter->comision_broker = $request->comision_broker;
+            $charter->costo_deluxe = $request->costo_deluxe;
+            $charter->comision_glc = $request->comision_glc;
+            $charter->apa = $request->apa;
+            $charter->contrato = $contrato;
             
-            foreach ($tipos_gastos as $key => $t) {
-                $new_gasto = new Gasto();
-                $new_gasto->users_id = Auth::id();
-                $new_gasto->charters_id = $charter->id;
-                $new_gasto->tipo_gasto_id = $t->id;
-                $new_gasto->total = $contabilidad_adicional[$t->descripcion];
-                $new_gasto->gastos = 0;
-                $new_gasto->saldo = $contabilidad_adicional[$t->descripcion];
-                $new_gasto->save(); 
-            }
+            if($charter->save()){
+                foreach ($socios as $key => $socio) {
+                    $comision = ($request->comision_glc * $socio->porcentaje)/100;
+                    $new_comision = new Comisione();
+                    $new_comision->users_id = Auth::id();
+                    $new_comision->charters_id = $charter->id;
+                    $new_comision->socios_id = $socio->id;
+                    $new_comision->porcentaje_comision_socio = $socio->porcentaje;
+                    $new_comision->monto = $comision;
+                    $new_comision->saldo = $comision;
+                    $new_comision->save();
+                }
 
-            $new_action = new Historial();
-            $new_action->users_id = Auth::id();
-            $new_action->item = 'CHARTER';
-            $new_action->accion = 'ADD';
-            $new_action->comentario = 'Charter '.$descripcion.' registrado por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
-            $new_action->save(); 
+                /*$tipos_gastos = TipoGasto::all();
 
-            $msg = 'Charter registrado exitosamente';
-            $status = 'success';
-        }else{
-            $msg = "Ocurrió un error durante el registro del charter";
-            $status = 'error';
+                $contabilidad_adicional = array('OPERADOR NETO' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker, 'OTHER' => 0);
+                
+                foreach ($tipos_gastos as $key => $t) {
+                    $new_gasto = new Gasto();
+                    $new_gasto->users_id = Auth::id();
+                    $new_gasto->charters_id = $charter->id;
+                    $new_gasto->tipo_gasto_id = $t->id;
+                    $new_gasto->total = $contabilidad_adicional[$t->descripcion];
+                    $new_gasto->gastos = 0;
+                    $new_gasto->saldo = $contabilidad_adicional[$t->descripcion];
+                    $new_gasto->save(); 
+                }*/
+
+                $new_action = new Historial();
+                $new_action->users_id = Auth::id();
+                $new_action->item = 'CHARTER';
+                $new_action->accion = 'ADD';
+                $new_action->comentario = 'Charter '.$descripcion.' registrado por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
+                $new_action->save(); 
+
+                $msg = 'Charter registrado exitosamente';
+                $status = 'success';
+            }else{
+                $msg = "Ocurrió un error durante el registro del charter";
+                $status = 'error';
+            }  
+
+            DB::commit();
+
+            return Response::json(array('msg' => $msg, 'status' => $status));
+
         }
-
-        return Response::json(array('msg' => $msg, 'status' => $status));
+        catch(Exception $e){
+            return Response::json(array('msg' => 'Error en la transacción', 'status' => 'error'));
+            DB::rollBack();
+        }
     }
 
     public function comisiones_charters(){
@@ -274,13 +285,16 @@ class ComisionesController extends Controller
                 return "$ ".number_format($charters->precio_venta, 2, '.', ',');
             })
             ->addColumn('deluxe_total', function ($charters) { 
-                return "$ ".number_format($charters->costo_deluxe, 2, '.', ',');
+                $totales = $this->calcular_totales($charters);
+                return $totales['deluxe']['recibido'];
             })
             ->addColumn('deluxe_gastos', function ($charters) { 
-                return "$ 0.00";
+                $totales = $this->calcular_totales($charters);
+                return $totales['deluxe']['gastos'];
             })
             ->addColumn('deluxe_saldo', function ($charters) { 
-                return "$ 0.00";
+                $totales = $this->calcular_totales($charters);
+                return $totales['deluxe']['saldo'];
             })
             ->addColumn('global_total', function ($charters) {
                 $totales = $this->calcular_totales($charters);
@@ -357,8 +371,10 @@ class ComisionesController extends Controller
 
     public static function calcular_totales($charter){ 
         $comision_abonado = $comision_monto = $comision_saldo = $total_recibido = $total_pendiente = $total_gastos = $total_saldo = 0;
+        $salidas = $comisiones = $global = 0;
+        $deluxe = $entrada = array();
 
-        foreach ($charter->entradas as $key => $entrada) {
+        /*foreach ($charter->entradas as $key => $entrada) {
             $total_recibido += $entrada->monto;
         }
 
@@ -414,9 +430,22 @@ class ComisionesController extends Controller
         $global_pendiente = "$ ".number_format($global_pendiente, 2, '.', ',');
         $global_total = "$ ".number_format($global_total, 2, '.', ',');
 
-        $global = array('total' => $global_total, 'gastos' => $total_gastos, 'saldo' => $global_pendiente);
+        $global = array('total' => $global_total, 'gastos' => $total_gastos, 'saldo' => $global_pendiente);*/
+        if($charter->deluxes != null){
+            $deluxe['recibido'] = "$ ".number_format($charter->costo_deluxe, 2, '.', ',');
+            $deluxe['gastos'] = "$ ".number_format($charter->deluxes->sum('monto'), 2, '.', ',');
+            $deluxe['saldo'] = "$ ".number_format(($charter->costo_deluxe - $charter->deluxes->sum('monto')), 2, '.', ',');
+        }else{
+            $deluxe['recibido'] = "$ ".number_format($charter->costo_deluxe, 2, '.', ',');
+            $deluxe['gastos'] = "$ ".number_format(0, 2, '.', ',');
+            $deluxe['saldo'] = "$ ".number_format($charter->costo_deluxe, 2, '.', ',');
+        }
 
-        return array('entradas' => $entradas, 'salidas' => $salidas, 'comisiones' => $comisiones , 'global' => $global);
+        $saldo_entrada = $charter->precio_venta + $charter->apa;
+        $entrada['recibido'] = "$ ".number_format($charter->entradas->sum('monto'), 2, '.', ',');
+        $entrada['pendiente'] = "$ ".number_format($saldo_entrada - $charter->entradas->sum('monto'), 2, '.', ',');
+
+        return array('entradas' => $entrada, 'deluxe' => $deluxe, 'salidas' => $salidas, 'comisiones' => $comisiones , 'global' => $global);
     }
 
     public function crear_abono_comision(Request $request){
@@ -537,6 +566,7 @@ class ComisionesController extends Controller
         $nueva_entrada->registrado_por = Auth::id();
         $nueva_entrada->fecha = Carbon::parse($request->entrada["fecha"])->format('Y-m-d');
         $nueva_entrada->monto = $request->entrada["monto"];
+        $nueva_entrada->tipo_gasto_id = $request->entrada["tipo_gasto"];
         $nueva_entrada->comentario = $request->entrada["comentario"];
         $nueva_entrada->banco = strtoupper($request->entrada["banco"]);
         $nueva_entrada->referencia = strtoupper($request->entrada["referencia"]);
@@ -544,7 +574,7 @@ class ComisionesController extends Controller
         $nueva_entrada->link_papeleta_pago = $recibo;
         
         if($nueva_entrada->save()){
-            if($request->entrada["tipo_gasto"] != null){
+            /*if($request->entrada["tipo_gasto"] != null){
                 $actualizar_gasto = Gasto::find($request->entrada["tipo_gasto"]);
 
                 $nuevo_total = $actualizar_gasto->total + $request->entrada["monto"];
@@ -552,7 +582,7 @@ class ComisionesController extends Controller
                 $actualizar_gasto->total = $nuevo_total;
                 $actualizar_gasto->saldo = $nuevo_total - $actualizar_gasto->gastos;
                 $actualizar_gasto->save();
-            }
+            }*/
             
             $new_action = new Historial();
             $new_action->users_id = Auth::id();
@@ -581,6 +611,7 @@ class ComisionesController extends Controller
         $registro["charters_id"] = $entrada->charters_id;
         $registro["fecha"] = Carbon::parse($entrada->fecha)->format('d-m-Y');
         $registro["monto"] = $entrada->monto;
+        $registro["tipo_gasto_id"] = $entrada->tipo_gasto_id;
         $registro["comentario"] = $entrada->comentario;
         $registro["banco"] = $entrada->banco;
         $registro["referencia"] = $entrada->referencia;
@@ -624,6 +655,7 @@ class ComisionesController extends Controller
         $e->registrado_por = Auth::id();
         $e->fecha = Carbon::parse($request->entrada["fecha"])->format('Y-m-d');
         $e->monto = $request->entrada["monto"];
+        $e->tipo_gasto_id = $request->entrada["tipo_gasto"];
         $e->comentario = $request->entrada["comentario"];
         $e->banco = $request->entrada["banco"];
         $e->referencia = $request->entrada["referencia"];
@@ -762,7 +794,9 @@ class ComisionesController extends Controller
 
         return Datatables::of($historial)
             ->addColumn('usuario', function ($historial) { 
-                return $historial->user->name;
+                if($historial->user != null){
+                    return $historial->user->name;
+                }
             })
             ->addColumn('comentario', function ($historial) { 
                 return $historial->comentario;
@@ -789,7 +823,7 @@ class ComisionesController extends Controller
                 return $historial->comentario;
             })
             ->addColumn('fecha', function ($historial) { 
-                return Carbon::parse($historial->created_at)->format('d-m-Y');
+                return Carbon::parse($historial->created_at)->format('d-m-Y h:i:s');
             })
             ->order(function ($query) {
                 if (request()->has('fecha')) {
@@ -810,7 +844,7 @@ class ComisionesController extends Controller
             $action_new->users_id = Auth::id();
             $action_new->item = 'ENTRADA';
             $action_new->charters_id = $charter;
-            $action_new->accion = 'DELETEE';
+            $action_new->accion = 'DELETE';
             $action_new->comentario = 'Entrada de $ '.number_format($monto_eliminado, 2, '.', ',').' eliminada. Fecha: '.date('d-m-Y');;
             $action_new->save();
 

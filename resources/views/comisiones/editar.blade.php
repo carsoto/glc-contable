@@ -118,15 +118,19 @@
                 <div class="box with-nav-tabs box-danger">
                     <div class="panel-heading">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a style="color: #E42223;" href="#entradas" data-toggle="tab">ENTRADAS</a></li>
-                            <li><a style="color: #E42223;" href="#salidas" data-toggle="tab">SALIDAS</a></li>
-                            <li><a style="color: #E42223;" href="#comisiones" data-toggle="tab">COMISIONES</a></li>
-                            <li><a style="color: #E42223;" href="#resumen" data-toggle="tab">RESUMEN</a></li>
+                            <li><a style="color: #E42223; font-size: 11px;" href="#entradas" data-toggle="tab"><strong>{{ strtoupper('entradas') }}</strong></a></li>
+                            <li class="active"><a style="color: #E42223; font-size: 11px;" href="#broker" data-toggle="tab"><strong>{{ strtoupper('broker') }}</strong></a></li>
+                            <li><a style="color: #E42223; font-size: 11px;" href="#operador" data-toggle="tab"><strong>{{ strtoupper('operador') }}</strong></a></li>
+                            <li><a style="color: #E42223; font-size: 11px;" href="#deluxe" data-toggle="tab"><strong>{{ strtoupper('deluxe') }}</strong></a></li>
+                            <li><a style="color: #E42223; font-size: 11px;" href="#comisiones" data-toggle="tab"><strong>{{ strtoupper('comisiones') }}</strong></a></li>
+                            <li><a style="color: #E42223; font-size: 11px;" href="#apa" data-toggle="tab"><strong>{{ strtoupper('apa') }}</strong></a></li>
+                            <li><a style="color: #E42223; font-size: 11px;" href="#other" data-toggle="tab"><strong>{{ strtoupper('other') }}</strong></a></li>
+                            <li><a style="color: #E42223; font-size: 11px;" href="#resumen" data-toggle="tab"><strong>{{ strtoupper('resumen') }}</strong></a></li>
                         </ul>
                     </div>
                     <div class="panel-body">
                         <div class="tab-content">
-                            <div class="tab-pane fade in active" id="entradas">
+                            <div class="tab-pane fade" id="entradas">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_entrada">{{ $entradas["recibido"] }}</span></strong>
                                 </div>
@@ -142,7 +146,7 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="table-responsive" style="margin-top: 20px;">
                                         <table class="table table-condensed" style="font-size: 11px;" id="table-entradas" data-charter-id="{{ $charter->id }}" width="100%">
-                                            <thead>
+                                            <thead style="background: gainsboro;">
                                                 <th>REGISTRADO POR</th>
                                                 <th>MONTO</th>
                                                 <th>COMENTARIO</th>
@@ -155,41 +159,85 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade" id="salidas">
-                                <!--<strong><span class="label label-danger" style="font-size: 12px;">GLOBAL:</span>  <span id="global_salida">$ 0.00</span></strong>-->
-                                
-                                <div class="col-lg-4 col-md-4 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_recibido">{{ $entradas["recibido"] }}</span></strong>
+                            <div class="tab-pane fade in active" id="broker">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL A PAGAR:</span>  <span id="total_broker"></span></strong>
                                 </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL GASTADO:</span>  <span id="total_gastos">{{ $global["gastos"] }}</span></strong>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_broker_pendiente"></span></strong>
                                 </div>
-
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'broker')"><i class="fa fa-plus"></i> Nuevo gasto</button>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-info" onclick="historial_gasto('{{ $charter->id }}', 'broker')" ><i class="fa fa-history"></i> Historial</button>
+                                </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12">
                                     <div class="table-responsive" style="margin-top: 20px;">
-                                        <table class="table table-bordered table-condensed" style="font-size: 11px;" id="table-salidas" width="100%">
-                                            <thead>
-                                                <th>TIPO</th>
-                                                <th>TOTAL</th>
-                                                <th>GASTOS</th>
-                                                <th>SALDO</th>
+                                        <table class="table table-condensed" style="font-size: 11px;" id="table-broker" data-charter-id="{{ $charter->id }}" width="100%">
+                                            <thead style="background: gainsboro;">
+                                                <th>REGISTRADO POR</th>
+                                                <th>MONTO</th>
+                                                <th>COMENTARIO</th>
+                                                <th>F. DE REGISTRO</th>
                                                 <th><i class="fa fa-gears"></i></th>
                                             </thead>
-                                            <tbody>
-                                                @foreach($charter->gastos AS $key => $gasto)
-                                                    <tr>
-                                                        <td><strong>{{ strtoupper($gasto->tipo_gasto->descripcion) }}</strong></td>
-                                                        <td>$ {{ number_format($gasto->total, 2, '.', ',') }}</td>
-                                                        <td><span id="salidas_gasto_{{ $gasto->id }}">{{ $salidas[$gasto->tipo_gasto_id]['gastos'] }}</span></td>
-                                                        <td><span id="salidas_saldo_{{ $gasto->id }}">{{ $salidas[$gasto->tipo_gasto_id]['saldo'] }}</span></td>
-                                                        @if(strtoupper($gasto->tipo_gasto->descripcion) != "COMISIONES")
-                                                            <td><a href="#" data-target="modal" onclick="agregar_gasto('{{ $gasto->id }}')"><i class="fa fa-plus"></i></a> <a href="#" data-target="modal" onclick="historial_gastos('{{ $gasto->id }}')"><i class="fa fa-eye"></i></a> <a href="#" data-target="modal" onclick="historial_acciones_gastos('{{ $gasto->id }}')"><i class="fa fa-history"></i></a></td>
-                                                        @else
-                                                            <td>-</td>
-                                                        @endif
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="operador">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL A PAGAR:</span>  <span id="total_operador"></span></strong>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_operador_pendiente"></span></strong>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'operador')"><i class="fa fa-plus"></i> Nuevo gasto</button>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-info" onclick="historial_gasto('{{ $charter->id }}', 'operador')" ><i class="fa fa-history"></i> Historial</button>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="table-responsive" style="margin-top: 20px;">
+                                        <table class="table table-condensed" style="font-size: 11px;" id="table-operador" data-charter-id="{{ $charter->id }}" width="100%">
+                                            <thead style="background: gainsboro;">
+                                                <th>REGISTRADO POR</th>
+                                                <th>MONTO</th>
+                                                <th>COMENTARIO</th>
+                                                <th>F. DE REGISTRO</th>
+                                                <th><i class="fa fa-gears"></i></th>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="deluxe">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-success" style="font-size: 12px;">DISPONIBLE:</span>  <span id="total_deluxe"></span></strong>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-danger" style="font-size: 12px;">SALDO:</span>  <span id="total_deluxe_pendiente"></span></strong>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'deluxe')"><i class="fa fa-plus"></i> Nuevo gasto</button>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-info" onclick="historial_gasto('{{ $charter->id }}', 'deluxe')" ><i class="fa fa-history"></i> Historial</button>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="table-responsive" style="margin-top: 20px;">
+                                        <table class="table table-condensed" style="font-size: 11px;" id="table-deluxe" data-charter-id="{{ $charter->id }}" width="100%">
+                                            <thead style="background: gainsboro;">
+                                                <th>REGISTRADO POR</th>
+                                                <th>MONTO</th>
+                                                <th>COMENTARIO</th>
+                                                <th>F. DE REGISTRO</th>
+                                                <th><i class="fa fa-gears"></i></th>
+                                            </thead>
                                         </table>
                                     </div>
                                 </div>
@@ -198,7 +246,7 @@
                             <div class="tab-pane fade" id="comisiones">
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-condensed" style="font-size: 11px;" width="100%">
-                                        <thead>
+                                        <thead style="background: gainsboro;">
                                             <th>SOCIO</th>
                                             <th>MONTO</th>
                                             <th>ABONADO</th>
@@ -226,41 +274,88 @@
                                 </div>
                             </div>
 
+                            <div class="tab-pane fade" id="apa">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_apa"></span></strong>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL GASTADO:</span>  <span id="total_gastado_apa"></span></strong>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto_apa('{{ $charter->id }}')"><i class="fa fa-plus"></i> Nuevo gasto</button>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button data-toggle="modal" data-target="#historial-apa" type="button" class="btn btn-sm btn-flat btn-block btn-info"><i class="fa fa-history"></i> Historial</button>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="table-responsive" style="margin-top: 20px;">
+                                        <table class="table table-condensed" style="font-size: 11px;" id="table-apa" data-charter-id="{{ $charter->id }}" width="100%">
+                                            <thead style="background: gainsboro;">
+                                                <th>REGISTRADO POR</th>
+                                                <th>DETALLE</th>
+                                                <th>PRECIO CLIENTE</th>
+                                                <th>NETO</th>
+                                                <th>GANANCIA</th>
+                                                <th>F. DE REGISTRO</th>
+                                                <th><i class="fa fa-gears"></i></th>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="other">
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-success" style="font-size: 12px;">DISPONIBLE:</span>  <span id="total_other"></span></strong>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <strong><span class="label label-danger" style="font-size: 12px;">SALDO:</span>  <span id="total_other_pendiente"></span></strong>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'other')"><i class="fa fa-plus"></i> Nuevo gasto</button>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-info" onclick="historial_gasto('{{ $charter->id }}', 'other')" ><i class="fa fa-history"></i> Historial</button>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="table-responsive" style="margin-top: 20px;">
+                                        <table class="table table-condensed" style="font-size: 11px;" id="table-other" data-charter-id="{{ $charter->id }}" width="100%">
+                                            <thead style="background: gainsboro;">
+                                                <th>REGISTRADO POR</th>
+                                                <th>MONTO</th>
+                                                <th>COMENTARIO</th>
+                                                <th>F. DE REGISTRO</th>
+                                                <th><i class="fa fa-gears"></i></th>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="tab-pane fade" id="resumen">
                                 <div class="table-responsive">
                                     <table class="table table-condensed table-bordered" style="font-size: 12px;" width="100%">
-                                        <thead>
+                                        <thead style="background: gainsboro;">
                                             <th></th>
                                             <th>ENTRADA</th>
                                             <th>SALIDA</th>
                                             <th>SALDO</th>
                                         </thead>
                                         <tbody>
-                                            @foreach($charter->gastos AS $key => $gasto)
-                                                @if($gasto->tipo_gasto->descripcion == 'COMISIONES')
-                                                    <!--<tr>
-                                                        <td><strong>{{ strtoupper($gasto->tipo_gasto->descripcion) }}</strong></td>
-                                                        <td>$ {{ number_format($gasto->total, 2, '.', ',') }}</td>
-                                                        <td><span id="resumen_gastos_{{ $gasto->tipo_gasto_id }}">{{ $salidas[$gasto->tipo_gasto_id]["gastos"] }}</span></td>
-                                                        <td><span id="resumen_saldo_{{ $gasto->tipo_gasto_id }}">{{ $salidas[$gasto->tipo_gasto_id]["saldo"] }}</span></td>
-                                                    </tr>-->
-
-                                                    @foreach($charter->comisiones AS $key => $comision)
-                                                        <tr>
-                                                            <td><strong>{{ strtoupper($comision->socio->nombre) }} ({{ $comision->socio->porcentaje }}%)</strong></td>
-                                                            <td>$ {{ number_format($comision->monto, 2, '.', ',') }}</td>
-                                                            <td><span id="resumen_gastos_comision_{{ $comision->id }}">$ {{ number_format($comision->abonado, 2, '.', ',') }}</span></td>
-                                                            <td><span id="resumen_saldo_comision_{{ $comision->id }}">$ {{ number_format($comision->saldo, 2, '.', ',') }}</span></td>
-                                                        </tr>
-                                                    @endforeach
-                                                @else
-                                                    <tr>
-                                                        <td><strong>{{ strtoupper($gasto->tipo_gasto->descripcion) }}</strong></td>
-                                                        <td>$ {{ number_format($gasto->total, 2, '.', ',') }}</td>
-                                                        <td><span id="resumen_gastos_{{ $gasto->tipo_gasto_id }}">{{ $salidas[$gasto->tipo_gasto_id]["gastos"] }}</span></td>
-                                                        <td><span id="resumen_saldo_{{ $gasto->tipo_gasto_id }}">{{ $salidas[$gasto->tipo_gasto_id]["saldo"] }}</span></td>
-                                                    </tr>
-                                                @endif
+                                            
+                                            <!--<tr>
+                                                <td><strong></strong></td>
+                                                <td>$ 0.00</td>
+                                                <td><span id="resumen_gastos"></span></td>
+                                                <td><span id="resumen_saldo"></span></td>
+                                            </tr>-->
+                                            @foreach($charter->comisiones AS $key => $comision)
+                                                <tr>
+                                                    <td><strong>{{ strtoupper($comision->socio->nombre) }} ({{ $comision->socio->porcentaje }}%)</strong></td>
+                                                    <td>$ {{ number_format($comision->monto, 2, '.', ',') }}</td>
+                                                    <td><span id="resumen_gastos_comision_{{ $comision->id }}">$ {{ number_format($comision->abonado, 2, '.', ',') }}</span></td>
+                                                    <td><span id="resumen_saldo_comision_{{ $comision->id }}">$ {{ number_format($comision->saldo, 2, '.', ',') }}</span></td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                         <tfoot>
@@ -286,114 +381,112 @@
             </form>
         </div>
     </div>
-
+    
     <div id="nueva-entrada" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
             <!-- Modal content-->
             <form role="form" enctype="multipart/form-data" id="nueva-entrada-form">
             {{ csrf_field() }}
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">NUEVA ENTRADA</h4>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">NUEVA ENTRADA</h4>
+                </div>
+                <div class="modal-body">
+                    <input class="form-control input-sm" type="hidden" name="entrada[charter_id]" id="id_charter">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label style="font-size: 11px;">FECHA</label>
+                            <input class="form-control input-sm datepicker" type="text" name="entrada[fecha]" autocomplete="off">
+                        </div>
                     </div>
-                    <div class="modal-body">
-                        <input class="form-control input-sm" type="hidden" name="entrada[charter_id]" id="id_charter">
-                        <div class="col-lg-3 col-md-3 col-sm-12">
-                            <div class="form-group">
-                                <label style="font-size: 11px;">FECHA</label>
-                                <input class="form-control input-sm datepicker" type="text" name="entrada[fecha]" autocomplete="off">
-                            </div>
-                        </div>
 
-                        <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label style="font-size: 11px;">MONTO</label>
+                            <input class="form-control input-sm" type="text" name="entrada[monto]" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="monto_entrada">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label style="font-size: 11px;">TIPO</label>
+                            <select class="form-control input-sm" name="entrada[tipo_gasto]">
+                                <option value="">SELECCIONAR GASTO</option>
+                                @foreach($tipos_gastos AS $key => $gasto)
+                                    <option value="{{ $gasto->id }}">{{ $gasto->descripcion }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label style="font-size: 11px;">COMENTARIO</label>
+                            <textarea class="form-control input-sm" type="text" name="entrada[comentario]" style="resize: none;"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
                             <div class="form-group">
-                                <label style="font-size: 11px;">MONTO</label>
-                                <input class="form-control input-sm" type="text" name="entrada[monto]" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="monto_entrada">
+                                <label style="font-size: 11px;">BANCO</label>
+                                <input class="form-control input-sm" type="text" name="entrada[banco]" autocomplete="off">
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
                             <div class="form-group">
-                                <label style="font-size: 11px;">TIPO</label>
-                                <select class="form-control input-sm" name="entrada[tipo_gasto]">
-                                    <option value="">SELECCIONAR GASTO</option>
-                                    @foreach($charter->gastos AS $key => $gasto)
-                                        @if(($gasto->tipo_gasto->descripcion == 'APA') || ($gasto->tipo_gasto->descripcion == 'OTHER'))
-                                            <option value="{{ $gasto->id }}">{{ $gasto->tipo_gasto->descripcion }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
+                                <label style="font-size: 11px;">REFERENCIA</label>
+                                <input class="form-control input-sm" type="text" name="entrada[referencia]" autocomplete="off">
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12">
-                            <div class="form-group">
-                                <label style="font-size: 11px;">COMENTARIO</label>
-                                <textarea class="form-control input-sm" type="text" name="entrada[comentario]" style="resize: none;"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12">
-                            <div class="form-group">
-                                <div class="form-group">
-                                    <label style="font-size: 11px;">BANCO</label>
-                                    <input class="form-control input-sm" type="text" name="entrada[banco]" autocomplete="off">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label style="font-size: 11px;">PAPELETA DE PAGO</label>
+                            <br>
+                            <label>
+                                <div class="icheckbox">
+                                    <input type="radio" name="entrada[tipo_recibo]" value="archivo" checked> Archivo
+                                </div> 
+                            </label>
+                            <label style="margin-left: 20px;">
+                                <div class="icheckbox">
+                                    <input type="radio" name="entrada[tipo_recibo]" value="link"> Link
                                 </div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12" id="recibo_tipo_archivo" style="display: block;">
+                        <div class="form-group">
+                            <label style="font-size: 11px;"></label>
+                            <div class="input-group input-file" name="entrada[archivo]">
+                                <input type="type" class="form-control input-sm" placeholder='.pdf' accept=".pdf" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary btn-choose btn-sm" type="button"><i class="fa fa-paperclip"></i></button>
+                                </span>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-danger btn-reset btn-sm" type="button"><i class="fa fa-refresh"></i></button>
+                                </span>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12">
-                            <div class="form-group">
-                                <div class="form-group">
-                                    <label style="font-size: 11px;">REFERENCIA</label>
-                                    <input class="form-control input-sm" type="text" name="entrada[referencia]" autocomplete="off">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12">
-                            <div class="form-group">
-                                <label style="font-size: 11px;">PAPELETA DE PAGO</label>
-                                <br>
-                                <label>
-                                    <div class="icheckbox">
-                                        <input type="radio" name="entrada[tipo_recibo]" value="archivo" checked> Archivo
-                                    </div> 
-                                </label>
-                                <label style="margin-left: 20px;">
-                                    <div class="icheckbox">
-                                        <input type="radio" name="entrada[tipo_recibo]" value="link"> Link
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12" id="recibo_tipo_archivo" style="display: block;">
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12" id="recibo_tipo_link" style="display: none;">
+                        <div class="form-group">
                             <div class="form-group">
                                 <label style="font-size: 11px;"></label>
-                                <div class="input-group input-file" name="entrada[archivo]">
-                                    <input type="type" class="form-control input-sm" placeholder='.pdf' accept=".pdf" />
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-primary btn-choose btn-sm" type="button"><i class="fa fa-paperclip"></i></button>
-                                    </span>
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-danger btn-reset btn-sm" type="button"><i class="fa fa-refresh"></i></button>
-                                    </span>
-                                </div>
+                                <input class="form-control input-sm" type="text" name="entrada[link]" autocomplete="off">
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12" id="recibo_tipo_link" style="display: none;">
-                            <div class="form-group">
-                                <div class="form-group">
-                                    <label style="font-size: 11px;"></label>
-                                    <input class="form-control input-sm" type="text" name="entrada[link]" autocomplete="off">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="clearfix"></div>
                     </div>
                     
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-sm btn-flat btn-success submitBtn">Registrar</button>
-                    </div>
+                    <div class="clearfix"></div>
                 </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-sm btn-flat btn-success submitBtn">Registrar</button>
+                </div>
+            </div>
             </form>
         </div>
     </div>
@@ -425,7 +518,19 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label style="font-size: 11px;">TIPO</label>
+                                <select class="form-control input-sm" name="entrada[tipo_gasto]" id="entrada-tipo-gasto">
+                                    <option value="">SELECCIONAR GASTO</option>
+                                    @foreach($tipos_gastos AS $key => $gasto)
+                                        <option value="{{ $gasto->id }}">{{ $gasto->descripcion }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
                                 <label style="font-size: 11px;">COMENTARIO</label>
                                 <textarea class="form-control input-sm" type="text" name="entrada[comentario]" style="resize: none;" id="entrada-comentario"></textarea>
@@ -513,6 +618,7 @@
                         <table id="table-historial-entradas" class="table table-condensed table-bordered" data-charter-id="{{ $charter->id }}" style="font-size: 11px;" width="100%">
                             <thead>
                                 <th>Usuario</th>
+                                <th>Acción</th>
                                 <th>Comentario</th>
                                 <th>Fecha</th>
                             </thead>
@@ -520,80 +626,6 @@
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="abonos-comision" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-md">
-            <!-- Modal content-->
-            <form role="form" enctype="multipart/form-data" id="nuevo-abono-comision-form">
-            {{ csrf_field() }}
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">NUEVO ABONO</h4>
-                    </div>
-                    <div class="modal-body">
-                        <input class="form-control input-sm" type="hidden" name="id_comision" id="id_comision">
-                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label style="font-size: 11px;">FECHA</label>
-                                <input class="form-control input-sm datepicker" type="text" name="abono_fecha" autocomplete="off">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label style="font-size: 11px;">MONTO</label>
-                                <input class="form-control input-sm" type="text" name="abono_monto" onKeyPress="return tipoNumeros(event)" autocomplete="off">
-                            </div>
-                        </div>
-
-                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
-                            <div class="form-group">
-                                <label style="font-size: 11px;">COMENTARIO</label>
-                                <textarea class="form-control input-sm" type="text" name="abono_comentario" style="resize: none;"></textarea>
-                            </div>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-sm btn-flat btn-success submitBtn">Registrar</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="historial-abonos-comision" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">ABONOS</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table id="tabla_hist_abonos_comisiones" class="table table-condensed table-bordered" style="font-size: 11px;" width="100%">
-                            <thead>
-                                <th>Registrado por</th>
-                                <th>Monto</th>
-                                <th>F. de abono</th>
-                                <th>Comentario</th>
-                                <th>F. de registro</th>
-                                <th><i class="fa fa-gears"></i></th>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
                 </div>
@@ -675,4 +707,77 @@
         </div>
     </div>
 
+    <div id="abonos-comision" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md">
+            <!-- Modal content-->
+            <form role="form" enctype="multipart/form-data" id="nuevo-abono-comision-form">
+            {{ csrf_field() }}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">NUEVO ABONO</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input class="form-control input-sm" type="hidden" name="id_comision" id="id_comision">
+                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label style="font-size: 11px;">FECHA</label>
+                                <input class="form-control input-sm datepicker" type="text" name="abono_fecha" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label style="font-size: 11px;">MONTO</label>
+                                <input class="form-control input-sm" type="text" name="abono_monto" onKeyPress="return tipoNumeros(event)" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label style="font-size: 11px;">COMENTARIO</label>
+                                <textarea class="form-control input-sm" type="text" name="abono_comentario" style="resize: none;"></textarea>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-sm btn-flat btn-success submitBtn">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="historial-abonos-comision" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">ABONOS</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="tabla_hist_abonos_comisiones" class="table table-condensed table-bordered" style="font-size: 11px;" width="100%">
+                            <thead>
+                                <th>Registrado por</th>
+                                <th>Monto</th>
+                                <th>F. de abono</th>
+                                <th>Comentario</th>
+                                <th>F. de registro</th>
+                                <th><i class="fa fa-gears"></i></th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop

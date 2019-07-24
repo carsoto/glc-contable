@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Sat, 06 Jul 2019 01:22:36 +0000.
+ * Date: Tue, 23 Jul 2019 21:22:50 +0000.
  */
 
 namespace App;
@@ -16,12 +16,13 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property int $creado_por
  * @property string $codigo
  * @property string $descripcion
+ * @property string $tipo
  * @property string $yacht
  * @property string $broker
  * @property \Carbon\Carbon $fecha_inicio
  * @property \Carbon\Carbon $fecha_fin
- * @property string $anyo
- * @property string $mes
+ * @property int $anyo
+ * @property int $mes
  * @property float $precio_venta
  * @property float $yacht_rack
  * @property float $neto
@@ -34,10 +35,10 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \App\User $user
  * @property \Illuminate\Database\Eloquent\Collection $comisiones
+ * @property \Illuminate\Database\Eloquent\Collection $deluxes
  * @property \Illuminate\Database\Eloquent\Collection $entradas
- * @property \Illuminate\Database\Eloquent\Collection $gastos
+ * @property \Illuminate\Database\Eloquent\Collection $historials
  *
  * @package App
  */
@@ -45,6 +46,8 @@ class Charter extends Eloquent
 {
 	protected $casts = [
 		'creado_por' => 'int',
+		'anyo' => 'int',
+		'mes' => 'int',
 		'precio_venta' => 'float',
 		'yacht_rack' => 'float',
 		'neto' => 'float',
@@ -64,6 +67,7 @@ class Charter extends Eloquent
 		'creado_por',
 		'codigo',
 		'descripcion',
+		'tipo',
 		'yacht',
 		'broker',
 		'fecha_inicio',
@@ -81,14 +85,14 @@ class Charter extends Eloquent
 		'contrato'
 	];
 
-	public function user()
-	{
-		return $this->belongsTo(\App\User::class, 'creado_por');
-	}
-
 	public function comisiones()
 	{
 		return $this->hasMany(\App\Comisione::class, 'charters_id');
+	}
+
+	public function deluxes()
+	{
+		return $this->hasMany(\App\Deluxe::class, 'charters_id');
 	}
 
 	public function entradas()
@@ -96,8 +100,8 @@ class Charter extends Eloquent
 		return $this->hasMany(\App\Entrada::class, 'charters_id');
 	}
 
-	public function gastos()
+	public function historial()
 	{
-		return $this->hasMany(\App\Gasto::class, 'charters_id');
+		return $this->hasMany(\App\Historial::class, 'charters_id');
 	}
 }
