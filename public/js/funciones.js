@@ -1,5 +1,6 @@
 //ChartJs.init();
 
+
 $('input').iCheck({
     checkboxClass: 'icheckbox_square-blue',
     radioClass: 'iradio_square-blue',
@@ -19,6 +20,22 @@ $('input[name="entrada[tipo_recibo]"]').on('ifChecked', function() {
 		document.getElementById('recibo_tipo_archivo').style.display = 'block';
 		document.getElementById('entrada-tipo-link').style.display = 'none';
 		document.getElementById('entrada-tipo-archivo').style.display = 'block';
+	}
+});
+
+$('input[name="gasto[tipo_recibo]"]').on('ifChecked', function() {
+	var tipo_seleccionado = $(this).val();
+	if(tipo_seleccionado == "link"){
+		document.getElementById('recibo_tipo_link').style.display = 'block';
+		document.getElementById('recibo_tipo_archivo').style.display = 'none';
+		document.getElementById('gasto-tipo-link').style.display = 'block';
+		document.getElementById('gasto-tipo-archivo').style.display = 'none';
+
+	}else{
+		document.getElementById('recibo_tipo_link').style.display = 'none';
+		document.getElementById('recibo_tipo_archivo').style.display = 'block';
+		document.getElementById('gasto-tipo-link').style.display = 'none';
+		document.getElementById('gasto-tipo-archivo').style.display = 'block';
 	}
 });
 
@@ -124,6 +141,8 @@ $("#table-historial-entradas").DataTable({
     	{data: "fecha", name: "fecha"},
     ]
 });
+
+//cargar_gastos(1, 'broker');
 
 /**$("#porcentaje_comision_broker").notify("Debe colocar el charter rate", { className: "danger", clickToHide: true, autoHide: true, autoHideDelay: 1000, });**/
 
@@ -299,12 +318,70 @@ function historial_abonos_comision(id_comision){
 }*/
 
 function agregar_gasto(id_charter, tipo){
+	document.getElementById('categoria_gasto').value = tipo;
+	console.log(tipo);
+	if((tipo != 'apa') && (tipo != 'other')){
+		console.log(tipo != 'apa');
+		document.getElementById('gasto_precio_cliente').style.display = 'none';
+	}else{
+		console.log('block');
+		document.getElementById('gasto_precio_cliente').style.display = 'block';
+	}
+	
 	$("#nuevo-gasto").modal("toggle");
 }
 
 function historial_gasto(id_charter, tipo){
+	//console.log($("#table-historial-gastos"));
+	$('#tabla_hist_gastos').DataTable().destroy();
+	$("#tabla_hist_gastos").DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "ajax": "historial/gastos/"+tipo+"/"+id_charter,
+	    "order": [[ 3, "DESC" ]],
+	    "columns": [
+	    	{data: "usuario", name: "usuario"},
+	    	{data: "accion", name: "accion"},
+	    	{data: "comentario", name: "comentario"},
+	    	{data: "fecha", name: "fecha"},
+	    ]
+	});
+
 	$("#historial-gastos").modal("toggle");
 }
+
+/*$('#tabla-broker').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "ajax": "gastos/broker/1",
+	    "order": [[ 3, "DESC" ]],
+	    "columns": [
+			{data: "registrado_por", name: "registrado_por"},
+			{data: "monto", name: "monto"},
+			{data: "comentario", name: "comentario"},
+			{data: "fecha", name: "fecha"},
+			{data: 'action', name: 'action', orderable: false}
+	    ]
+	});*/
+
+/*function cargar_gastos(id_charter, tipo){
+	console.log(id_charter+' - '+tipo);
+	console.log('#tabla-'+tipo);
+	//$('#tabla-'+tipo).DataTable().destroy();
+	$('#tabla-broker').DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "ajax": "gastos/broker/1",
+	    "order": [[ 3, "DESC" ]],
+	    "columns": [
+			{data: "registrado_por", name: "registrado_por"},
+			{data: "monto", name: "monto"},
+			{data: "comentario", name: "comentario"},
+			{data: "fecha", name: "fecha"},
+			{data: 'action', name: 'action', orderable: false}
+	    ]
+	});
+}*/
 
 $("#nueva-entrada-form").on('submit', function(e){
 	e.preventDefault();
@@ -535,7 +612,8 @@ $("#nuevo-abono-comision-form").on('submit', function(e){
 
 $("#nuevo-gasto-form").on('submit', function(e){
 	e.preventDefault();
-    
+    var id_charter = 1;
+    var tipo = 'broker';
     $.ajax({
 	    url: 'crear-gasto',
 	    type: 'POST',
@@ -552,6 +630,7 @@ $("#nuevo-gasto-form").on('submit', function(e){
 
             if(response.status == 'success'){
             	$('#nuevo-gasto-form')[0].reset();
+            	//cargar_gastos(id_charter, tipo);
 	            swal("Hecho!", response.msg, "success");
 	        }else{
 	        	$('#nuevo-gasto-form').css("opacity","");
@@ -562,7 +641,7 @@ $("#nuevo-gasto-form").on('submit', function(e){
             $('#nuevo-gasto-form').css("opacity","");
             $(".submitBtn").removeAttr("disabled");
 
-            document.getElementById("salidas_gasto_"+response.id_gasto).innerHTML = response.r_gastos;
+            /*document.getElementById("salidas_gasto_"+response.id_gasto).innerHTML = response.r_gastos;
 			document.getElementById("salidas_saldo_"+response.id_gasto).innerHTML = response.r_saldo;
 			document.getElementById("total_gastos").innerHTML = response.totales.global.gastos;
 
@@ -572,7 +651,7 @@ $("#nuevo-gasto-form").on('submit', function(e){
 			});
 
 			document.getElementById("resumen_gastos_total").innerHTML = response.totales.global.gastos;
-			document.getElementById("resumen_saldo_total").innerHTML = response.totales.global.saldo;
+			document.getElementById("resumen_saldo_total").innerHTML = response.totales.global.saldo;*/
 
 			$("#nuevo-gasto").modal("toggle");
 

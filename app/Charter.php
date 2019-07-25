@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 23 Jul 2019 21:22:50 +0000.
+ * Date: Thu, 25 Jul 2019 16:20:07 +0000.
  */
 
 namespace App;
@@ -38,6 +38,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Illuminate\Database\Eloquent\Collection $comisiones
  * @property \Illuminate\Database\Eloquent\Collection $deluxes
  * @property \Illuminate\Database\Eloquent\Collection $entradas
+ * @property \Illuminate\Database\Eloquent\Collection $gastos
  * @property \Illuminate\Database\Eloquent\Collection $historials
  *
  * @package App
@@ -100,7 +101,12 @@ class Charter extends Eloquent
 		return $this->hasMany(\App\Entrada::class, 'charters_id');
 	}
 
-	public function historial()
+	public function gastos()
+	{
+		return $this->hasMany(\App\Gasto::class, 'charters_id');
+	}
+
+	public function historials()
 	{
 		return $this->hasMany(\App\Historial::class, 'charters_id');
 	}

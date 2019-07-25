@@ -10,14 +10,18 @@ namespace App;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Entrada
+ * Class Gasto
  * 
  * @property int $id
  * @property int $charters_id
  * @property int $registrado_por
+ * @property string $razon_social
+ * @property string $categoria
+ * @property float $precio_cliente
+ * @property float $neto
+ * @property float $ganancia
  * @property int $tipo_gasto_id
  * @property \Carbon\Carbon $fecha
- * @property float $monto
  * @property string $comentario
  * @property string $banco
  * @property string $referencia
@@ -32,13 +36,15 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  *
  * @package App
  */
-class Entrada extends Eloquent
+class Gasto extends Eloquent
 {
 	protected $casts = [
 		'charters_id' => 'int',
 		'registrado_por' => 'int',
-		'tipo_gasto_id' => 'int',
-		'monto' => 'float'
+		'precio_cliente' => 'float',
+		'neto' => 'float',
+		'ganancia' => 'float',
+		'tipo_gasto_id' => 'int'
 	];
 
 	protected $dates = [
@@ -48,9 +54,13 @@ class Entrada extends Eloquent
 	protected $fillable = [
 		'charters_id',
 		'registrado_por',
+		'razon_social',
+		'categoria',
+		'precio_cliente',
+		'neto',
+		'ganancia',
 		'tipo_gasto_id',
 		'fecha',
-		'monto',
 		'comentario',
 		'banco',
 		'referencia',

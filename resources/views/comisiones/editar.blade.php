@@ -282,7 +282,7 @@
                                     <strong><span class="label label-danger" style="font-size: 12px;">TOTAL GASTADO:</span>  <span id="total_gastado_apa"></span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto_apa('{{ $charter->id }}')"><i class="fa fa-plus"></i> Nuevo gasto</button>
+                                    <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'apa')"><i class="fa fa-plus"></i> Nuevo gasto</button>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button data-toggle="modal" data-target="#historial-apa" type="button" class="btn btn-sm btn-flat btn-block btn-info"><i class="fa fa-history"></i> Historial</button>
@@ -634,7 +634,7 @@
     </div>
 
     <div id="nuevo-gasto" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <!-- Modal content-->
             <form role="form" enctype="multipart/form-data" id="nuevo-gasto-form">
             {{ csrf_field() }}
@@ -644,30 +644,105 @@
                         <h4 class="modal-title">NUEVO GASTO</h4>
                     </div>
                     <div class="modal-body">
-                        <input class="form-control input-sm" type="hidden" name="id_gasto" id="id_gasto">
-                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
+                        <input class="form-control input-sm" type="hidden" name="gasto[charter_id]" id="id_charter" value="{{ $charter->id }}">
+                        <input class="form-control input-sm" type="hidden" name="gasto[categoria]" id="categoria_gasto">
+                        <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
                                 <label style="font-size: 11px;">FECHA</label>
-                                <input class="form-control input-sm datepicker" type="text" name="gasto_fecha" autocomplete="off">
+                                <input class="form-control input-sm datepicker" type="text" name="gasto[fecha]" autocomplete="off">
                             </div>
                         </div>
 
-                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
+                        <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">MONTO</label>
-                                <input class="form-control input-sm" type="text" name="gasto_monto" onKeyPress="return tipoNumeros(event)" autocomplete="off">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">RAZÓN SOCIAL</label>
+                                    <input class="form-control input-sm" type="text" name="gasto[razon_social]" autocomplete="off">
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-offset-3 col-md-offset-3 col-lg-6 col-md-6 col-sm-12">
+                        <div class="col-lg-3 col-md-3 col-sm-12" style="display: none;" id="gasto_precio_cliente">
+                            <div class="form-group">
+                                <label style="font-size: 11px;">PRECIO CLIENTE</label>
+                                <input class="form-control input-sm" type="text" name="gasto[precio_cliente]" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="monto_gasto">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label style="font-size: 11px;">NETO</label>
+                                <input class="form-control input-sm" type="text" name="gasto[neto]" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="monto_gasto">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">BANCO</label>
+                                    <input class="form-control input-sm" type="text" name="gasto[banco]" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">REFERENCIA</label>
+                                    <input class="form-control input-sm" type="text" name="gasto[referencia]" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label style="font-size: 11px;">PAPELETA DE PAGO</label>
+                                <br>
+                                <label>
+                                    <div class="icheckbox">
+                                        <input type="radio" name="gasto[tipo_recibo]" value="archivo" id="gasto-tipo-r-archivo"> Archivo
+                                    </div> 
+                                </label>
+                                <label style="margin-left: 20px;">
+                                    <div class="icheckbox">
+                                        <input type="radio" name="gasto[tipo_recibo]" value="link" id="gasto-tipo-r-link"> Link
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-12" id="gasto-tipo-archivo" style="display: block;">
+                            <div class="form-group">
+                                <label style="font-size: 11px;"></label>
+                                <div class="input-group input-file" name="gasto[archivo]">
+                                    <input type="type" class="form-control input-sm" placeholder='.pdf' accept=".pdf" id="input-gasto-tipo-archivo"/>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary btn-choose btn-sm" type="button"><i class="fa fa-paperclip"></i></button>
+                                    </span>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-danger btn-reset btn-sm" type="button"><i class="fa fa-refresh"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-12" id="gasto-tipo-link" style="display: none;">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;"></label>
+                                    <input class="form-control input-sm" type="text" name="gasto[link]" autocomplete="off" id="input-gasto-tipo-link">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="clearfix"></div>
+
+                        <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label style="font-size: 11px;">COMENTARIO</label>
-                                <textarea class="form-control input-sm" type="text" name="gasto_comentario" style="resize: none;"></textarea>
+                                <textarea class="form-control input-sm" type="text" name="gasto[comentario]" style="resize: none;"></textarea>
                             </div>
                         </div>
                         <div class="clearfix"></div>
                     </div>
-                    
+                        
                     <div class="modal-footer">
                         <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-sm btn-flat btn-success submitBtn">Registrar</button>
@@ -689,12 +764,10 @@
                     <div class="table-responsive">
                         <table id="tabla_hist_gastos" class="table table-condensed table-bordered" style="font-size: 11px;" width="100%">
                             <thead>
-                                <th>Registrado por</th>
-                                <th>Monto</th>
-                                <th>F. de abono</th>
+                                <th>Usuario</th>
+                                <th>Acción</th>
                                 <th>Comentario</th>
-                                <th>F. de registro</th>
-                                <th><i class="fa fa-gears"></i></th>
+                                <th>Fecha</th>
                             </thead>
                         </table>
                     </div>
