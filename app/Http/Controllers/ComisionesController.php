@@ -776,14 +776,17 @@ class ComisionesController extends Controller
     }
 
     public function gastos($tipo, $id_charter){
-        $gastos = Gasto::where('charters_id', '=', $id_charter)->where('item', '=', strtoupper($tipo))->get();
+        $categoria = strtoupper($tipo);
+        $gastos = Gasto::where('charters_id', '=', $id_charter)->where('categoria', '=', $categoria)->get();
         
-        return Datatables::of($gastos)
+        if(($categoria != 'APA') || ($categoria == 'OTHER')){
+
+            return Datatables::of($gastos)
             ->addColumn('registrado_por', function ($gastos) { 
                 return $gastos->user->name;
             })
             ->addColumn('monto', function ($gastos) { 
-                return "$ ".number_format($gastos->monto,2,".",",");
+                return "$ ".number_format($gastos->neto,2,".",",");
             })
             ->addColumn('comentario', function ($gastos) { 
                 if($gastos->comentario == null){
@@ -797,7 +800,7 @@ class ComisionesController extends Controller
             ->addColumn('created_at', function ($gastos) { 
                 return Carbon::parse($gastos->created_at)->format('d-m-Y');
             })
-            ->addColumn('action', function ($gastos) use (&$charter) {
+            ->addColumn('action', function ($gastos) use (&$charter, &$tipo) {
                 $recibo = "";
                 /*if($gastos->link_papeleta_pago != ""){
                     if($gastos->tipo_recibo == 'link'){
@@ -807,9 +810,50 @@ class ComisionesController extends Controller
                     }
                     
                 }*/
-                return '<a href="#" onclick="editar_entrada('.$gastos->id.')"><i class="fa fa-pencil fa-fw" title="Detalles"></i></a> <a href="#" onclick="eliminar_entrada('.$gastos->id.')"><i class="fa fa-trash fa-fw"></i></a>'.$recibo;
+                return '<a href="#" onclick="editar_gasto('.$gastos->id.', \''.$tipo.'\')"><i class="fa fa-pencil fa-fw" title="Detalles"></i></a> <a href="#" onclick="eliminar_gasto('.$gastos->id.', \''.$tipo.'\')"><i class="fa fa-trash fa-fw"></i></a>'.$recibo;
             })
             ->make(true);
+        }else{
+            return Datatables::of($gastos)
+            ->addColumn('registrado_por', function ($gastos) { 
+                return $gastos->user->name;
+            })
+            ->addColumn('comentario', function ($gastos) { 
+                if($gastos->comentario == null){
+                    return "-";
+                }
+                return $gastos->comentario;
+            })
+            ->addColumn('precio_cliente', function ($gastos) { 
+                return "$ ".number_format($gastos->precio_cliente,2,".",",");
+            })
+            ->addColumn('neto', function ($gastos) { 
+                return "$ ".number_format($gastos->neto,2,".",",");
+            })
+            ->addColumn('ganancia', function ($gastos) { 
+                return "$ ".number_format($gastos->ganancia,2,".",",");
+            })
+            ->addColumn('fecha', function ($gastos) { 
+                return Carbon::parse($gastos->fecha)->format('d-m-Y');
+            })
+            ->addColumn('created_at', function ($gastos) { 
+                return Carbon::parse($gastos->created_at)->format('d-m-Y');
+            })
+            ->addColumn('action', function ($gastos) use (&$charter, &$tipo) {
+                $recibo = "";
+                /*if($gastos->link_papeleta_pago != ""){
+                    if($gastos->tipo_recibo == 'link'){
+                        $recibo = '<a target="_blank" href='.$gastos->link_papeleta_pago.'><i class="fa fa-paperclip"></i> Recibo</a>';
+                    }else{
+                        $recibo = '<a target="_blank" href='.asset('images/charters/'.$charter->codigo.'/recibos/'.$gastos->link_papeleta_pago).'><i class="fa fa-paperclip"></i> Recibo</a>';
+                    }
+                    
+                }*/
+                return '<a href="#" onclick="editar_gasto('.$gastos->id.', \''.$tipo.'\')"><i class="fa fa-pencil fa-fw" title="Detalles"></i></a> <a href="#" onclick="eliminar_gasto('.$gastos->id.', \''.$tipo.'\')"><i class="fa fa-trash fa-fw"></i></a>'.$recibo;
+            })
+            ->make(true);
+        }
+        
     }
 
     public function exportarPDF($id){
@@ -921,5 +965,127 @@ class ComisionesController extends Controller
         }
 
         return Response::json(['msg' => $msg, 'status' => $status]);
+    }
+
+    public function eliminar_gasto($id_gasto){
+        $gasto = Gasto::find($id_gasto);
+        $monto_eliminado = $gasto->neto;
+        $charter = $gasto->charters_id;
+        $categoria = $gasto->categoria;
+
+        if($gasto->delete()){
+             
+            $action_new = new Historial();
+            $action_new->users_id = Auth::id();
+            $action_new->item = $categoria;
+            $action_new->charters_id = $charter;
+            $action_new->accion = 'DELETE';
+            $action_new->comentario = 'Gasto de $ '.number_format($monto_eliminado, 2, '.', ',').' eliminado. Fecha: '.date('d-m-Y');;
+            $action_new->save();
+
+            $msg = 'Gasto eliminado satisfactoriamente';
+            $status = 'success';
+        }else{
+            $msg = 'No se pudo eliminar el gasto intente más tarde';
+            $status = 'error';
+
+        }
+
+        return Response::json(['msg' => $msg, 'status' => $status]);
+    }
+
+    public function edit_gasto($id){
+        $gasto = Gasto::find($id);
+
+        $registro = array();
+        $registro["id"] = $gasto->id;
+        $registro["charters_id"] = $gasto->charters_id;
+        $registro["registrado_por"] = $gasto->registrado_por;
+        $registro["razon_social"] = $gasto->razon_social;
+        $registro["categoria"] = $gasto->categoria;
+        $registro["precio_cliente"] = $gasto->precio_cliente;
+        $registro["neto"] = $gasto->neto;
+        $registro["ganancia"] = $gasto->ganancia;
+        $registro["tipo_gasto_id"] = $gasto->tipo_gasto_id;
+        $registro["fecha"] = Carbon::parse($gasto->fecha)->format('d-m-Y');
+        $registro["comentario"] = $gasto->comentario;
+        $registro["banco"] = $gasto->banco;
+        $registro["referencia"] = $gasto->referencia;
+        $registro["tipo_recibo"] = $gasto->tipo_recibo;
+        $registro["link_papeleta_pago"] = $gasto->link_papeleta_pago;
+
+        return Response::json(['gasto' => $registro]);
+    }
+
+    public function actualizar_gasto(Request $request){
+
+        $gasto = Gasto::find($request->gasto["gasto_id"]);
+        $charter = Charter::find($gasto->charters_id);
+        $ganancia = 0;
+        $recibo = null;
+
+        if($request->gasto["precio_cliente"] != null){
+            $ganancia = $request->gasto["precio_cliente"] - $request->gasto["neto"];
+        }
+
+        if($request->gasto["tipo_recibo"] == "archivo"){
+            $directorio_images = 'images/charters/'.$charter->codigo;
+
+            if(!File::exists(public_path($directorio_images))) {
+                File::makeDirectory(public_path($directorio_images));
+
+                if(!File::exists(public_path($directorio_images.'/recibos'))){
+                    File::makeDirectory(public_path($directorio_images.'/recibos'));
+                }
+            }
+
+            if(count($request->file()) > 0){
+                if($request->file()['gasto']['archivo'] != null){
+                    $recibo = $this->guardarImagen($request->file()['gasto']['archivo'], public_path($directorio_images.'/recibos'));    
+                }else{
+                    $recibo = "";
+                }
+            }else{
+                $recibo = "";
+            } 
+        }
+
+        else{
+            $recibo = $request->gasto["link"];
+        }
+
+        $gasto->charters_id = $request->gasto["charter_id"];
+        $gasto->registrado_por = Auth::id();
+        $gasto->razon_social = $request->gasto["razon_social"];
+        $gasto->precio_cliente = $request->gasto["precio_cliente"];
+        $gasto->neto = $request->gasto["neto"];
+        $gasto->ganancia = $ganancia;
+        $gasto->fecha = Carbon::parse($request->gasto["fecha"])->format('Y-m-d');;
+        $gasto->comentario = $request->gasto["comentario"];
+        $gasto->banco = $request->gasto["banco"];
+        $gasto->referencia = $request->gasto["referencia"];
+        $gasto->tipo_recibo = $request->gasto["tipo_recibo"];
+        $gasto->link_papeleta_pago = $recibo;
+
+        if($gasto->save()){
+
+            $new_action = new Historial();
+            $new_action->users_id = Auth::id();
+            $new_action->item = strtoupper($gasto->categoria);
+            $new_action->charters_id = $charter->id;
+            $new_action->accion = 'UPDATE';
+            $new_action->comentario = 'Gasto de $ '.number_format($request->gasto["neto"], 2, '.', ',').' actualizado por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
+            $new_action->save();
+
+            $totales = $this->calcular_totales($charter);
+
+            $msg = 'Gasto actualizado exitosamente';
+            $status = 'success';
+        }else{
+            $msg = "Ocurrió un error durante el registro del charter";
+            $status = 'error';
+        }
+
+        return Response::json(array('msg' => $msg, 'status' => $status, 'totales' => $totales));
     }
 }

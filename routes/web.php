@@ -48,6 +48,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	//Route::get('/editar-charter/historial-gastos/{id_gasto}', 'ComisionesController@historial_gastos')->name('admin.historial.gastos');
 	Route::get('/editar-charter/historial/gastos/{tipo}/{id_charter}', 'ComisionesController@historial_gastos')->name('admin.historial.gastos');
 	Route::get('/editar-charter/gastos/{tipo}/{id_charter}', 'ComisionesController@gastos')->name('admin.gastos');
+	Route::get('/editar-charter/eliminar-gasto/{gasto_id}', 'ComisionesController@eliminar_gasto')->name('admin.eliminar.gasto');
+	Route::get('/editar-charter/editar-gasto/{gasto_id}', 'ComisionesController@edit_gasto')->name('admin.editar.gasto');
+	Route::post('/editar-charter/actualizar-gasto', 'ComisionesController@actualizar_gasto')->name('admin.actualizar.gasto');
+	
 /*********************************************************************************************************************************************************************/	
 
 /********************************************************* BALANCE SOCIOS ********************************************************************************************/
