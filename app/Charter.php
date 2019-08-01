@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Thu, 25 Jul 2019 16:20:07 +0000.
+ * Date: Tue, 30 Jul 2019 19:30:24 +0000.
  */
 
 namespace App;
@@ -36,7 +36,6 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $updated_at
  * 
  * @property \Illuminate\Database\Eloquent\Collection $comisiones
- * @property \Illuminate\Database\Eloquent\Collection $deluxes
  * @property \Illuminate\Database\Eloquent\Collection $entradas
  * @property \Illuminate\Database\Eloquent\Collection $gastos
  * @property \Illuminate\Database\Eloquent\Collection $historials
@@ -89,11 +88,6 @@ class Charter extends Eloquent
 	public function comisiones()
 	{
 		return $this->hasMany(\App\Comisione::class, 'charters_id');
-	}
-
-	public function deluxes()
-	{
-		return $this->hasMany(\App\Deluxe::class, 'charters_id');
 	}
 
 	public function entradas()

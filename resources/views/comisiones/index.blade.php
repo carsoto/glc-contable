@@ -33,7 +33,7 @@
                             <th class="text-center danger" width="80px">Saldo</th>
                             <th class="text-center success" width="80px">Ingreso</th>
                             <th class="text-center warning" width="80px">Salida</th>
-                            <th class="text-center danger" width="80px">Ganancia</th>
+                            <th class="text-center danger" width="80px">Saldo</th>
 							<!--@foreach($socios AS $key => $socio)
 		    					<th class="text-center success" width="80px">Total</th>
 		    					<th class="text-center warning" width="80px">Abono</th>

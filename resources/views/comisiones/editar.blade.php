@@ -132,10 +132,10 @@
                         <div class="tab-content">
                             <div class="tab-pane fade" id="entradas">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_entrada">{{ $entradas["recibido"] }}</span></strong>
+                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_entradas">{{ $entradas["recibido"] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_entrada_pendiente">{{ $entradas["pendiente"] }}</span></strong>
+                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_entradas_pendiente">{{ $entradas["pendiente"] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_entrada('{{ $charter->id }}')"><i class="fa fa-plus"></i> Nueva entrada</button>
@@ -161,10 +161,10 @@
 
                             <div class="tab-pane fade in active" id="broker">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL A PAGAR:</span>  <span id="total_broker"></span></strong>
+                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL A PAGAR:</span>  <span id="total_broker">{{ $broker['total'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_broker_pendiente"></span></strong>
+                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_broker_pendiente">{{ $broker['saldo'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'broker')"><i class="fa fa-plus"></i> Nuevo gasto</button>
@@ -189,10 +189,10 @@
 
                             <div class="tab-pane fade" id="operador">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL A PAGAR:</span>  <span id="total_operador"></span></strong>
+                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL A PAGAR:</span>  <span id="total_operador">{{ $operador['total'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_operador_pendiente"></span></strong>
+                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_operador_pendiente">{{ $operador['saldo'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'operador')"><i class="fa fa-plus"></i> Nuevo gasto</button>
@@ -217,10 +217,10 @@
 
                             <div class="tab-pane fade" id="deluxe">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-success" style="font-size: 12px;">DISPONIBLE:</span>  <span id="total_deluxe"></span></strong>
+                                    <strong><span class="label label-success" style="font-size: 12px;">DISPONIBLE:</span>  <span id="total_deluxe">{{ $deluxe['total'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-danger" style="font-size: 12px;">SALDO:</span>  <span id="total_deluxe_pendiente"></span></strong>
+                                    <strong><span class="label label-danger" style="font-size: 12px;">SALDO:</span>  <span id="total_deluxe_pendiente">{{ $deluxe['saldo'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'deluxe')"><i class="fa fa-plus"></i> Nuevo gasto</button>
@@ -276,10 +276,10 @@
 
                             <div class="tab-pane fade" id="apa">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_apa"></span></strong>
+                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_apa">{{ $apa['total'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL GASTADO:</span>  <span id="total_gastado_apa"></span></strong>
+                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL GASTADO:</span>  <span id="total_apa_pendiente">{{ $apa['saldo'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'apa')"><i class="fa fa-plus"></i> Nuevo gasto</button>
@@ -306,10 +306,10 @@
 
                             <div class="tab-pane fade" id="other">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-success" style="font-size: 12px;">DISPONIBLE:</span>  <span id="total_other"></span></strong>
+                                    <strong><span class="label label-success" style="font-size: 12px;">DISPONIBLE:</span>  <span id="total_other">{{ $other['total'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-danger" style="font-size: 12px;">SALDO:</span>  <span id="total_other_pendiente"></span></strong>
+                                    <strong><span class="label label-danger" style="font-size: 12px;">SALDO:</span>  <span id="total_other_pendiente">{{ $other['saldo'] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_gasto('{{ $charter->id }}', 'other')"><i class="fa fa-plus"></i> Nuevo gasto</button>
@@ -344,13 +344,24 @@
                                             <th>SALDO</th>
                                         </thead>
                                         <tbody>
-                                            
-                                            <!--<tr>
-                                                <td><strong></strong></td>
-                                                <td>$ 0.00</td>
-                                                <td><span id="resumen_gastos"></span></td>
-                                                <td><span id="resumen_saldo"></span></td>
-                                            </tr>-->
+                                            <tr>
+                                                <td><strong>BROKER</strong></td>
+                                                <td><span id="resumen_broker_entrada">{{ $broker['total'] }}</span></td>
+                                                <td><span id="resumen_broker_salida">{{ $broker['gastos'] }}</span></td>
+                                                <td><span id="resumen_broker_saldo">{{ $broker['saldo'] }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>OPERADOR</strong></td>
+                                                <td><span id="resumen_operador_entrada">{{ $operador['total'] }}</span></td>
+                                                <td><span id="resumen_operador_salida">{{ $operador['gastos'] }}</span></td>
+                                                <td><span id="resumen_operador_saldo">{{ $operador['saldo'] }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>DELUXE</strong></td>
+                                                <td><span id="resumen_deluxe_entrada">{{ $deluxe['total'] }}</span></td>
+                                                <td><span id="resumen_deluxe_salida">{{ $deluxe['gastos'] }}</span></td>
+                                                <td><span id="resumen_deluxe_saldo">{{ $deluxe['saldo'] }}</span></td>
+                                            </tr>
                                             @foreach($charter->comisiones AS $key => $comision)
                                                 <tr>
                                                     <td><strong>{{ strtoupper($comision->socio->nombre) }} ({{ $comision->socio->porcentaje }}%)</strong></td>
@@ -359,6 +370,18 @@
                                                     <td><span id="resumen_saldo_comision_{{ $comision->id }}">$ {{ number_format($comision->saldo, 2, '.', ',') }}</span></td>
                                                 </tr>
                                             @endforeach
+                                            <tr>
+                                                <td><strong>APA</strong></td>
+                                                <td><span id="resumen_apa_entrada">{{ $apa['total'] }}</span></td>
+                                                <td><span id="resumen_apa_salida">{{ $apa['gastos'] }}</span></td>
+                                                <td><span id="resumen_apa_saldo">{{ $apa['saldo'] }}</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>OTHER</strong></td>
+                                                <td><span id="resumen_other_entrada">{{ $other['total'] }}</span></td>
+                                                <td><span id="resumen_other_salida">{{ $other['gastos'] }}</span></td>
+                                                <td><span id="resumen_other_saldo">{{ $other['saldo'] }}</span></td>
+                                            </tr>
                                         </tbody>
                                         <tfoot>
                                             <tr style="background: grey; color: white;">

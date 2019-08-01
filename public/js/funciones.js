@@ -1,5 +1,3 @@
-//ChartJs.init();
-
 
 $('input').iCheck({
     checkboxClass: 'icheckbox_square-blue',
@@ -145,20 +143,6 @@ $("#table-historial-entradas").DataTable({
     ]
 });
 
-/*$("#table-broker").DataTable({
-	"processing": true,
-    //"serverSide": true,
-    "ajax": "gastos/broker/"+$('#table-broker').attr('data-charter-id'),
-    "order": [[ 3, "DESC" ]],
-    "columns": [
-		{data: "registrado_por", name: "registrado_por"},
-		{data: "monto", name: "monto"},
-		{data: "comentario", name: "comentario"},
-		{data: "fecha", name: "fecha"},
-		{data: 'action', name: 'action', orderable: false}
-    ]
-});*/
-
 cargar_gastos('broker');
 cargar_gastos('deluxe');
 cargar_gastos('operador');
@@ -239,7 +223,6 @@ function editar_entrada(id_entrada){
             $("#editar-entrada").modal("toggle");
         },
 
-
         error: function (xhr, ajaxOptions, thrownError) {
 	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
 	    }
@@ -312,32 +295,6 @@ function historial_abonos_comision(id_comision){
 	$("#historial-abonos-comision").modal("toggle"); 
 }
 
-/*function historial_gastos(id_gasto){
-
-    $('#tabla_hist_gastos').DataTable().destroy();
-
-	$("#tabla_hist_gastos").DataTable({
-		"processing": true,
-	    //"serverSide": true,
-	    "ajax": "historial-gastos/"+id_gasto,
-	    "columns": [
-		   	{data: "user", name: "user"},
-		   	{data: "monto", name: "monto"},
-		   	{data: "fecha", name: "fecha"},
-		   	{data: "comentario", name: "comentario"},
-		   	{data: "created_at", name: "created_at"},
-		   	{data: 'action', name: 'action', orderable: false}
-	    ]
-	});
-
-	$("#historial-gastos").modal("toggle"); 
-}*/
-
-/*function agregar_gasto(id_gasto){
-	document.getElementById('id_gasto').value = id_gasto;
-	$("#nuevo-gasto").modal("toggle");  
-}*/
-
 function agregar_gasto(id_charter, tipo){
 	document.getElementById('categoria_gasto').value = tipo;
 	//console.log(tipo);
@@ -370,20 +327,6 @@ function historial_gasto(id_charter, tipo){
 
 	$("#historial-gastos").modal("toggle");
 }
-
-/*$('#tabla-broker').DataTable({
-		"processing": true,
-	    //"serverSide": true,
-	    "ajax": "gastos/broker/1",
-	    "order": [[ 3, "DESC" ]],
-	    "columns": [
-			{data: "registrado_por", name: "registrado_por"},
-			{data: "monto", name: "monto"},
-			{data: "comentario", name: "comentario"},
-			{data: "fecha", name: "fecha"},
-			{data: 'action', name: 'action', orderable: false}
-	    ]
-	});*/
 
 function cargar_gastos(tipo){
 	$('#table-'+tipo).DataTable().destroy();
@@ -422,6 +365,203 @@ function cargar_gastos(tipo){
 	$('#table-'+tipo).DataTable().ajax.reload();
 }
 
+function tipoNumeros(e){
+	var key = window.event ? e.which : e.keyCode
+	return (key == 46 || key >= 48 && key <= 57);
+}
+
+function eliminar_charter(id_charter){
+	swal({		        
+		title: "¿Está seguro?",
+		text: "Una vez eliminado, no podrá recuperar su información!",
+		icon: "error",
+	    showCancelButton: true,
+	    confirmButtonColor: '#DD4B39',
+	    cancelButtonColor: '#00C0EF',
+	    buttons: ["Cancelar", true],
+	    closeOnConfirm: false
+	}).then(function(isConfirm) {
+	    if (isConfirm) {
+			$.ajax({
+	           	url: 'eliminar-charter/'+id_charter,
+	            dataType: "JSON",
+	            type: 'GET',
+	            success: function (response) {
+	            	if(response.status == 'success'){
+	            		swal("Hecho!", response.msg, response.status);
+	        			$("#tabla_comisiones").DataTable().ajax.reload();
+	        			$("#table-charters-eliminados").DataTable().ajax.reload();
+	            	}else{
+	            		swal("Ocurrió un error!", response.msg, "error");
+	            	}
+	            },
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	            }
+	        });
+	    }
+	});
+}
+
+function eliminar_entrada(id_entrada){
+	swal({		        
+		title: "¿Está seguro?",
+		text: "Una vez eliminada, no podrá recuperar su información!",
+		icon: "error",
+	    showCancelButton: true,
+	    confirmButtonColor: '#DD4B39',
+	    cancelButtonColor: '#00C0EF',
+	    buttons: ["Cancelar", true],
+	    closeOnConfirm: false
+	}).then(function(isConfirm) {
+	    if (isConfirm) {
+			$.ajax({
+	           	url: 'eliminar-entrada/'+id_entrada,
+	            dataType: "JSON",
+	            type: 'GET',
+	            success: function (response) {
+	            	if(response.status == 'success'){
+	            		swal("Hecho!", response.msg, response.status);
+	            		$("#table-entradas").DataTable().ajax.reload();
+	            		location.reload();
+	        			/*$("#tabla_comisiones").DataTable().ajax.reload();
+	        			$("#table-entradas").DataTable().ajax.reload();*/
+	            	}else{
+	            		swal("Ocurrió un error!", response.msg, "error");
+	            	}
+	            },
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	            }
+	        });
+	    }
+	});
+}
+
+function editar_gasto(gasto_id, tipo){
+	document.getElementById('id_gasto').value = gasto_id;
+	document.getElementById('categoria_gasto').value = tipo;
+	
+	if((tipo != 'apa') && (tipo != 'other')){
+		document.getElementById('edit_gasto_precio_cliente').style.display = 'none';
+	}else{
+		document.getElementById('edit_gasto_precio_cliente').style.display = 'block';
+	}
+
+	$.ajax({
+	    url: 'editar-gasto/'+gasto_id,
+	    type: 'GET',
+        processData: false,
+    	contentType: false,
+        success: function(response){
+
+			document.getElementById("gasto_fecha").value = response.gasto.fecha;
+			document.getElementById("gasto_razon_social").value = response.gasto.razon_social;
+			document.getElementById("gasto_monto_precio_cliente").value = response.gasto.precio_cliente;
+			document.getElementById("gasto_monto_neto").value = response.gasto.neto;
+			document.getElementById("gasto_banco").value = response.gasto.banco;
+			document.getElementById("gasto_referencia").value = response.gasto.referencia;
+			document.getElementById("gasto_comentario").value = response.gasto.comentario;
+			document.getElementById("tipo_gasto_id").value = response.gasto.tipo_gasto_id;
+			$('#edit-gasto-tipo-r-'+response.gasto.tipo_recibo).iCheck('check');
+			document.getElementById('edit-input-gasto-tipo-'+response.gasto.tipo_recibo).value = response.gasto.link_papeleta_pago;
+
+			if(response.gasto.tipo_recibo == "link"){
+				document.getElementById('edit-gasto-tipo-link').style.display = 'block';
+				document.getElementById('edit-gasto-tipo-archivo').style.display = 'none';
+			}else{
+				document.getElementById('edit-gasto-tipo-link').style.display = 'none';
+				document.getElementById('edit-gasto-tipo-archivo').style.display = 'block';
+			}
+
+            $("#editar-gasto").modal("toggle");
+        },
+
+
+        error: function (xhr, ajaxOptions, thrownError) {
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+    });
+}
+
+function eliminar_gasto(gasto_id, tipo){
+	swal({		        
+		title: "¿Está seguro?",
+		text: "Una vez eliminada, no podrá recuperar su información!",
+		icon: "error",
+	    showCancelButton: true,
+	    confirmButtonColor: '#DD4B39',
+	    cancelButtonColor: '#00C0EF',
+	    buttons: ["Cancelar", true],
+	    closeOnConfirm: false
+	}).then(function(isConfirm) {
+	    if (isConfirm) {
+			$.ajax({
+	           	url: 'eliminar-gasto/'+gasto_id,
+	            dataType: "JSON",
+	            type: 'GET',
+	            success: function (response) {
+	            	if(response.status == 'success'){
+	            		swal("Hecho!", response.msg, response.status);
+	            		$("#table-"+tipo).DataTable().ajax.reload();
+	            		//location.reload();
+	        			/*$("#tabla_comisiones").DataTable().ajax.reload();
+	        			$("#table-entradas").DataTable().ajax.reload();*/
+	            	}else{
+	            		swal("Ocurrió un error!", response.msg, "error");
+	            	}
+	            },
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	            }
+	        });
+	    }
+	});
+}
+
+function recalcular_totales(totales){
+	/*apa: {total: "$ 20,675.00", gastos: "$ 0.00", cliente: "$ 0.00", ganancia: "$ 0.00", saldo: "$ 20,675.00"}
+	broker: {total: "$ 25,500.00", gastos: "$ 37,225.00", cliente: "$ 0.00", ganancia: "$ -938.00", saldo: "$ -11,725.00"}
+	deluxe: {total: "$ 12,000.00", gastos: "$ 10,850.00", cliente: "$ 0.00", ganancia: "$ 0.00", saldo: "$ 1,150.00"}
+	entradas: {recibido: "$ 13,200.00", pendiente: "$ 155,475.00"}
+	global: {total: "$ 13,200.00", gastos: "$ 51,070.00", saldo: "$ -37,870.00"}
+	operador: {total: "$ 117,000.00", gastos: "$ 2,293.00", cliente: "$ 0.00", ganancia: "$ 0.00", saldo: "$ 114,707.00"}
+	other: {total: "$ 11,200.00", gastos: "$ 702.00", cliente: "$ 1,501.00", ganancia: "$ 799.00", saldo: "$ 10,498.00"}*/
+
+	$.each(totales, function(key, valores) {
+		$.each(valores, function(key1, valores1) {
+			if(key1 == 'total'){
+				document.getElementById('total_'+key).innerHTML = 'test ' + valores1;
+				document.getElementById('resumen_'+key+'_entradas').innerHTML = 'test ' + valores1;
+			}
+			if(key1 == 'gastos'){
+				document.getElementById('resumen_'+key+'_salida').innerHTML = 'test ' + valores1;
+			}
+			if(key1 == 'saldo'){
+				document.getElementById('total_'+key+'_pendiente').innerHTML = 'test ' + valores1;
+				document.getElementById('resumen_'+key+'_saldo').innerHTML = 'test ' + valores1;
+			}
+			console.log(key + ' --- ' + key1 +'---' + valores1);
+		});
+	});
+
+	/*resumen_broker_entrada
+	resumen_broker_salida
+	resumen_broker_saldo
+
+	total_entradas
+	total_operador
+	total_deluxe
+	total_apa
+	total_other
+
+	total_entrada_pendiente
+	total_operador_pendiente
+	total_deluxe_pendiente
+	total_apa_pendiente
+	total_other_pendiente*/
+}
+
 $("#nueva-entrada-form").on('submit', function(e){
 	e.preventDefault();
     var monto = document.getElementById('monto_entrada').value;
@@ -449,10 +589,12 @@ $("#nueva-entrada-form").on('submit', function(e){
 	            	$('#nueva-entrada').modal('toggle');
 	            	$('#table-entradas').DataTable().ajax.reload();
 	            	$('#table-historial-entradas').DataTable().ajax.reload();
-	            	document.getElementById("total_entrada").innerHTML = response.total_recibido;
+	            	/*document.getElementById("total_entrada").innerHTML = response.total_recibido;
 	            	document.getElementById("total_recibido").innerHTML = response.total_recibido;
-	            	document.getElementById("total_entrada_pendiente").innerHTML = response.total_pendiente;
+	            	document.getElementById("total_entrada_pendiente").innerHTML = response.total_pendiente;*/
 		            swal("Hecho!", response.msg, "success");
+
+		            recalcular_totales(response.totales);
 		        }else{
 		            swal("Ocurrió un error!", response.msg, "error");
 		        }
@@ -757,158 +899,3 @@ $("#editar-gasto-form").on('submit', function(e){
 	    }
     });
 });
-
-function tipoNumeros(e){
-	var key = window.event ? e.which : e.keyCode
-	return (key == 46 || key >= 48 && key <= 57);
-}
-
-function eliminar_charter(id_charter){
-	swal({		        
-		title: "¿Está seguro?",
-		text: "Una vez eliminado, no podrá recuperar su información!",
-		icon: "error",
-	    showCancelButton: true,
-	    confirmButtonColor: '#DD4B39',
-	    cancelButtonColor: '#00C0EF',
-	    buttons: ["Cancelar", true],
-	    closeOnConfirm: false
-	}).then(function(isConfirm) {
-	    if (isConfirm) {
-			$.ajax({
-	           	url: 'eliminar-charter/'+id_charter,
-	            dataType: "JSON",
-	            type: 'GET',
-	            success: function (response) {
-	            	if(response.status == 'success'){
-	            		swal("Hecho!", response.msg, response.status);
-	        			$("#tabla_comisiones").DataTable().ajax.reload();
-	        			$("#table-charters-eliminados").DataTable().ajax.reload();
-	            	}else{
-	            		swal("Ocurrió un error!", response.msg, "error");
-	            	}
-	            },
-	            error: function (xhr, ajaxOptions, thrownError) {
-	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
-	            }
-	        });
-	    }
-	});
-}
-
-function eliminar_entrada(id_entrada){
-	swal({		        
-		title: "¿Está seguro?",
-		text: "Una vez eliminada, no podrá recuperar su información!",
-		icon: "error",
-	    showCancelButton: true,
-	    confirmButtonColor: '#DD4B39',
-	    cancelButtonColor: '#00C0EF',
-	    buttons: ["Cancelar", true],
-	    closeOnConfirm: false
-	}).then(function(isConfirm) {
-	    if (isConfirm) {
-			$.ajax({
-	           	url: 'eliminar-entrada/'+id_entrada,
-	            dataType: "JSON",
-	            type: 'GET',
-	            success: function (response) {
-	            	if(response.status == 'success'){
-	            		swal("Hecho!", response.msg, response.status);
-	            		$("#table-entradas").DataTable().ajax.reload();
-	            		location.reload();
-	        			/*$("#tabla_comisiones").DataTable().ajax.reload();
-	        			$("#table-entradas").DataTable().ajax.reload();*/
-	            	}else{
-	            		swal("Ocurrió un error!", response.msg, "error");
-	            	}
-	            },
-	            error: function (xhr, ajaxOptions, thrownError) {
-	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
-	            }
-	        });
-	    }
-	});
-}
-
-
-function editar_gasto(gasto_id, tipo){
-	document.getElementById('id_gasto').value = gasto_id;
-	document.getElementById('categoria_gasto').value = tipo;
-	
-	if((tipo != 'apa') && (tipo != 'other')){
-		document.getElementById('edit_gasto_precio_cliente').style.display = 'none';
-	}else{
-		document.getElementById('edit_gasto_precio_cliente').style.display = 'block';
-	}
-
-	$.ajax({
-	    url: 'editar-gasto/'+gasto_id,
-	    type: 'GET',
-        processData: false,
-    	contentType: false,
-        success: function(response){
-
-			document.getElementById("gasto_fecha").value = response.gasto.fecha;
-			document.getElementById("gasto_razon_social").value = response.gasto.razon_social;
-			document.getElementById("gasto_monto_precio_cliente").value = response.gasto.precio_cliente;
-			document.getElementById("gasto_monto_neto").value = response.gasto.neto;
-			document.getElementById("gasto_banco").value = response.gasto.banco;
-			document.getElementById("gasto_referencia").value = response.gasto.referencia;
-			document.getElementById("gasto_comentario").value = response.gasto.comentario;
-			document.getElementById("tipo_gasto_id").value = response.gasto.tipo_gasto_id;
-			$('#edit-gasto-tipo-r-'+response.gasto.tipo_recibo).iCheck('check');
-			document.getElementById('edit-input-gasto-tipo-'+response.gasto.tipo_recibo).value = response.gasto.link_papeleta_pago;
-
-			if(response.gasto.tipo_recibo == "link"){
-				document.getElementById('edit-gasto-tipo-link').style.display = 'block';
-				document.getElementById('edit-gasto-tipo-archivo').style.display = 'none';
-			}else{
-				document.getElementById('edit-gasto-tipo-link').style.display = 'none';
-				document.getElementById('edit-gasto-tipo-archivo').style.display = 'block';
-			}
-
-            $("#editar-gasto").modal("toggle");
-        },
-
-
-        error: function (xhr, ajaxOptions, thrownError) {
-	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
-	    }
-    });
-}
-
-function eliminar_gasto(gasto_id, tipo){
-	swal({		        
-		title: "¿Está seguro?",
-		text: "Una vez eliminada, no podrá recuperar su información!",
-		icon: "error",
-	    showCancelButton: true,
-	    confirmButtonColor: '#DD4B39',
-	    cancelButtonColor: '#00C0EF',
-	    buttons: ["Cancelar", true],
-	    closeOnConfirm: false
-	}).then(function(isConfirm) {
-	    if (isConfirm) {
-			$.ajax({
-	           	url: 'eliminar-gasto/'+gasto_id,
-	            dataType: "JSON",
-	            type: 'GET',
-	            success: function (response) {
-	            	if(response.status == 'success'){
-	            		swal("Hecho!", response.msg, response.status);
-	            		$("#table-"+tipo).DataTable().ajax.reload();
-	            		//location.reload();
-	        			/*$("#tabla_comisiones").DataTable().ajax.reload();
-	        			$("#table-entradas").DataTable().ajax.reload();*/
-	            	}else{
-	            		swal("Ocurrió un error!", response.msg, "error");
-	            	}
-	            },
-	            error: function (xhr, ajaxOptions, thrownError) {
-	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
-	            }
-	        });
-	    }
-	});
-}

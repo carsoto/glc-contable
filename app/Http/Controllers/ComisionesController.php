@@ -36,7 +36,7 @@ class ComisionesController extends Controller
         $totales = $this->calcular_totales($charter);
         //dd($totales);
         //"total_comision_abonado" => $totales["comisiones"]["abonado"], "total_comision_saldo" => $totales["comisiones"]["saldo"]
-        return view('comisiones.editar', ['charter' => $charter, 'tipos_gastos' => $tipos_gastos, 'entradas' => $totales['entradas'], 'salidas' => $totales['salidas'], 'comisiones' => $totales['comisiones'], 'global' => $totales['global']]);
+        return view('comisiones.editar', ['charter' => $charter, 'tipos_gastos' => $tipos_gastos, 'entradas' => $totales['entradas'], 'broker' => $totales['broker'], 'operador' => $totales['operador'], 'deluxe' => $totales['deluxe'], 'apa' => $totales['apa'], 'other' => $totales['other'], 'global' => $totales['global']]);
     }
 
     public function actualizar($id){
@@ -286,7 +286,7 @@ class ComisionesController extends Controller
             })
             ->addColumn('deluxe_total', function ($charters) { 
                 $totales = $this->calcular_totales($charters);
-                return $totales['deluxe']['recibido'];
+                return $totales['deluxe']['total'];
             })
             ->addColumn('deluxe_gastos', function ($charters) { 
                 $totales = $this->calcular_totales($charters);
@@ -370,71 +370,81 @@ class ComisionesController extends Controller
     }
 
     public static function calcular_totales($charter){ 
-        $comision_abonado = $comision_monto = $comision_saldo = $total_recibido = $total_pendiente = $total_gastos = $total_saldo = 0;
-        $salidas = $comisiones = $global = 0;
-        $deluxe = $entrada = array();
-        /*foreach ($charter->entradas as $key => $entrada) {
-            $total_recibido += $entrada->monto;
-        }
-        $total_pendiente = $charter->precio_venta + $charter->apa - $total_recibido;
-        foreach($charter->comisiones AS $key => $comision){
-            $comision_abonado += $comision->abonado;
-            $comision_monto += $comision->monto; 
-        }
-        $gastos = Gasto::where('charters_id', '=', $charter->id)->get();
-        $tipo_comisiones = TipoGasto::where('descripcion', '=', 'COMISIONES')->first();
-        foreach ($gastos as $key => $gasto) {
-            if($gasto->tipo_gasto_id == $tipo_comisiones->id){
-                $gasto->gastos = $comision_abonado;
-                $gasto->saldo = $gasto->total - $comision_abonado;
-                $gasto->save();
-            }else{
-                $acumulado = 0;
-                
-                foreach ($gasto->gastos_detalles as $d => $detalle) {
-                    $acumulado += $detalle->monto;
-                }
-                $gasto->gastos = $acumulado;
-                $gasto->saldo = $gasto->total - $acumulado;
-                $gasto->save();
-            }
-        }
-        foreach ($charter->gastos as $key => $salida) {
-            $salidas[$salida->tipo_gasto_id] = array('gastos' => "$ ".number_format($salida->gastos, 2, '.', ','), 'saldo' => "$ ".number_format($salida->saldo, 2, '.', ','));
-            $total_gastos += $salida->gastos;
-            $total_saldo += $salida->saldo;
-        }
-        //dd($total_recibido, $total_gastos, $total_saldo);
-        $global_pendiente = $total_saldo;
-        $global_total = $charter->precio_venta + $charter->apa;
-        $total_recibido = "$ ".number_format($total_recibido, 2, '.', ',');
-        $total_pendiente = "$ ".number_format($total_pendiente, 2, '.', ',');
-        $entradas = array('recibido' => $total_recibido, 'pendiente' => $total_pendiente);
-        $comision_saldo = $comision_monto - $comision_abonado;
-        $comision_monto = "$ ".number_format($charter->comision_glc, 2, '.', ',');
-        $comision_abonado = "$ ".number_format($comision_abonado, 2, '.', ',');
-        $comision_saldo = "$ ".number_format($comision_saldo, 2, '.', ',');
-        $comisiones = array('monto' => $comision_monto, 'abonado' => $comision_abonado, 'saldo' => $comision_saldo);
-        $total_gastos = "$ ".number_format($total_gastos, 2, '.', ',');
-        $global_pendiente = "$ ".number_format($global_pendiente, 2, '.', ',');
-        $global_total = "$ ".number_format($global_total, 2, '.', ',');
-        $global = array('total' => $global_total, 'gastos' => $total_gastos, 'saldo' => $global_pendiente);*/
-
-        if($charter->deluxes != null){
-            $deluxe['recibido'] = "$ ".number_format($charter->costo_deluxe, 2, '.', ',');
-            $deluxe['gastos'] = "$ ".number_format($charter->deluxes->sum('monto'), 2, '.', ',');
-            $deluxe['saldo'] = "$ ".number_format(($charter->costo_deluxe - $charter->deluxes->sum('monto')), 2, '.', ',');
-        }else{
-            $deluxe['recibido'] = "$ ".number_format($charter->costo_deluxe, 2, '.', ',');
-            $deluxe['gastos'] = "$ ".number_format(0, 2, '.', ',');
-            $deluxe['saldo'] = "$ ".number_format($charter->costo_deluxe, 2, '.', ',');
-        }
-
+        $entrada = $broker = $operador = $deluxe = $apa = $other = $global = array();
+        
         $saldo_entrada = $charter->precio_venta + $charter->apa;
         $entrada['recibido'] = "$ ".number_format($charter->entradas->sum('monto'), 2, '.', ',');
         $entrada['pendiente'] = "$ ".number_format($saldo_entrada - $charter->entradas->sum('monto'), 2, '.', ',');
 
-        return array('entradas' => $entrada, 'deluxe' => $deluxe, 'salidas' => $salidas, 'comisiones' => $comisiones , 'global' => $global);
+        $broker['total'] = $charter->comision_broker;
+        $broker['gastos'] = $charter->gastos->where('categoria', '=', 'BROKER')->sum('neto');
+        $broker['cliente'] = $charter->gastos->where('categoria', '=', 'BROKER')->sum('precio_cliente');
+        $broker['ganancia'] = $charter->gastos->where('categoria', '=', 'BROKER')->sum('ganancia');
+        $broker['saldo'] = $broker['total'] - $broker['gastos'];
+
+        $broker['total'] = "$ ".number_format($broker['total'], 2, '.', ',');
+        $broker['gastos'] = "$ ".number_format($broker['gastos'], 2, '.', ',');
+        $broker['cliente'] = "$ ".number_format($broker['cliente'], 2, '.', ',');
+        $broker['ganancia'] = "$ ".number_format($broker['ganancia'], 2, '.', ',');
+        $broker['saldo'] = "$ ".number_format($broker['saldo'], 2, '.', ',');
+
+        $operador['total'] = $charter->neto;
+        $operador['gastos'] = $charter->gastos->where('categoria', '=', 'OPERADOR')->sum('neto');
+        $operador['cliente'] = $charter->gastos->where('categoria', '=', 'OPERADOR')->sum('precio_cliente');
+        $operador['ganancia'] = $charter->gastos->where('categoria', '=', 'OPERADOR')->sum('ganancia');
+        $operador['saldo'] = $operador['total'] - $operador['gastos'];
+
+        $operador['total'] = "$ ".number_format($operador['total'], 2, '.', ',');
+        $operador['gastos'] = "$ ".number_format($operador['gastos'], 2, '.', ',');
+        $operador['cliente'] = "$ ".number_format($operador['cliente'], 2, '.', ',');
+        $operador['ganancia'] = "$ ".number_format($operador['ganancia'], 2, '.', ',');
+        $operador['saldo'] = "$ ".number_format($operador['saldo'], 2, '.', ',');
+
+        $deluxe['total'] = $charter->costo_deluxe;
+        $deluxe['gastos'] = $charter->gastos->where('categoria', '=', 'DELUXE')->sum('neto');
+        $deluxe['cliente'] = $charter->gastos->where('categoria', '=', 'DELUXE')->sum('precio_cliente');
+        $deluxe['ganancia'] = $charter->gastos->where('categoria', '=', 'DELUXE')->sum('ganancia');
+        $deluxe['saldo'] = $deluxe['total'] - $deluxe['gastos'];
+
+        $deluxe['total'] = "$ ".number_format($deluxe['total'], 2, '.', ',');
+        $deluxe['gastos'] = "$ ".number_format($deluxe['gastos'], 2, '.', ',');
+        $deluxe['cliente'] = "$ ".number_format($deluxe['cliente'], 2, '.', ',');
+        $deluxe['ganancia'] = "$ ".number_format($deluxe['ganancia'], 2, '.', ',');
+        $deluxe['saldo'] = "$ ".number_format($deluxe['saldo'], 2, '.', ',');
+
+        $apa['total'] = $charter->apa + $charter->entradas->where('tipo_gasto_id', '=', 1)->sum('monto');
+        $apa['gastos'] = $charter->gastos->where('categoria', '=', 'APA')->sum('neto');
+        $apa['cliente'] = $charter->gastos->where('categoria', '=', 'APA')->sum('precio_cliente');
+        $apa['ganancia'] = $charter->gastos->where('categoria', '=', 'APA')->sum('ganancia');
+        $apa['saldo'] = $apa['total'] - $apa['gastos'];
+
+        $apa['total'] = "$ ".number_format($apa['total'], 2, '.', ',');
+        $apa['gastos'] = "$ ".number_format($apa['gastos'], 2, '.', ',');
+        $apa['cliente'] = "$ ".number_format($apa['cliente'], 2, '.', ',');
+        $apa['ganancia'] = "$ ".number_format($apa['ganancia'], 2, '.', ',');
+        $apa['saldo'] = "$ ".number_format($apa['saldo'], 2, '.', ',');
+
+        $other['total'] = $charter->entradas->where('tipo_gasto_id', '=', 2)->sum('monto');
+        $other['gastos'] = $charter->gastos->where('categoria', '=', 'OTHER')->sum('neto');
+        $other['cliente'] = $charter->gastos->where('categoria', '=', 'OTHER')->sum('precio_cliente');
+        $other['ganancia'] = $charter->gastos->where('categoria', '=', 'OTHER')->sum('ganancia');
+        $other['saldo'] = $other['total'] - $other['gastos'];
+
+        $other['total'] = "$ ".number_format($other['total'], 2, '.', ',');
+        $other['gastos'] = "$ ".number_format($other['gastos'], 2, '.', ',');
+        $other['cliente'] = "$ ".number_format($other['cliente'], 2, '.', ',');
+        $other['ganancia'] = "$ ".number_format($other['ganancia'], 2, '.', ',');
+        $other['saldo'] = "$ ".number_format($other['saldo'], 2, '.', ',');
+
+        $global['total'] = $charter->entradas->sum('monto');
+        $global['gastos'] = $charter->gastos->sum('neto');
+        $global['saldo'] = $global['total'] - $global['gastos'];
+
+        $global['total'] = "$ ".number_format($global['total'], 2, '.', ',');
+        $global['gastos'] = "$ ".number_format($global['gastos'], 2, '.', ',');
+        $global['saldo'] = "$ ".number_format($global['saldo'], 2, '.', ',');
+
+        return array('entradas' => $entrada, 'broker' => $broker, 'operador' => $operador, 'deluxe' => $deluxe, 'apa' => $apa, 'other' => $other,'global' => $global);
     }
 
     public function crear_abono_comision(Request $request){
@@ -600,15 +610,6 @@ class ComisionesController extends Controller
         $nueva_entrada->link_papeleta_pago = $recibo;
         
         if($nueva_entrada->save()){
-            /*if($request->entrada["tipo_gasto"] != null){
-                $actualizar_gasto = Gasto::find($request->entrada["tipo_gasto"]);
-
-                $nuevo_total = $actualizar_gasto->total + $request->entrada["monto"];
-
-                $actualizar_gasto->total = $nuevo_total;
-                $actualizar_gasto->saldo = $nuevo_total - $actualizar_gasto->gastos;
-                $actualizar_gasto->save();
-            }*/
             
             $new_action = new Historial();
             $new_action->users_id = Auth::id();
@@ -627,7 +628,7 @@ class ComisionesController extends Controller
 
         $totales = $this->calcular_totales($charter);
 
-        return Response::json(array('msg' => $msg, 'status' => $status,'total_recibido' => $totales['entradas']['recibido'], 'total_pendiente' => $totales['entradas']['pendiente']));
+        return Response::json(array('msg' => $msg, 'status' => $status, 'totales' => $totales));
     }
 
     public function edit_entrada($id){
@@ -852,8 +853,7 @@ class ComisionesController extends Controller
                 return '<a href="#" onclick="editar_gasto('.$gastos->id.', \''.$tipo.'\')"><i class="fa fa-pencil fa-fw" title="Detalles"></i></a> <a href="#" onclick="eliminar_gasto('.$gastos->id.', \''.$tipo.'\')"><i class="fa fa-trash fa-fw"></i></a>'.$recibo;
             })
             ->make(true);
-        }
-        
+        }    
     }
 
     public function exportarPDF($id){
@@ -945,7 +945,8 @@ class ComisionesController extends Controller
         $entrada = Entrada::find($id_entrada);
         $monto_eliminado = $entrada->monto;
         $charter = $entrada->charters_id;
-        
+        $ob_charter = Charter::find($charter);
+
         if($entrada->delete()){
              
             $action_new = new Historial();
@@ -958,13 +959,15 @@ class ComisionesController extends Controller
 
             $msg = 'Entrada eliminada satisfactoriamente';
             $status = 'success';
+
+            $totales = $this->calcular_totales($ob_charter);
         }else{
             $msg = 'No se pudo eliminar la entrada intente más tarde';
             $status = 'error';
 
         }
 
-        return Response::json(['msg' => $msg, 'status' => $status]);
+        return Response::json(['msg' => $msg, 'status' => $status, 'totales' => $totales]);
     }
 
     public function eliminar_gasto($id_gasto){
@@ -972,6 +975,7 @@ class ComisionesController extends Controller
         $monto_eliminado = $gasto->neto;
         $charter = $gasto->charters_id;
         $categoria = $gasto->categoria;
+        $ob_charter = Charter::find($charter);
 
         if($gasto->delete()){
              
@@ -985,6 +989,8 @@ class ComisionesController extends Controller
 
             $msg = 'Gasto eliminado satisfactoriamente';
             $status = 'success';
+
+            $totales = $this->calcular_totales($ob_charter);
         }else{
             $msg = 'No se pudo eliminar el gasto intente más tarde';
             $status = 'error';
