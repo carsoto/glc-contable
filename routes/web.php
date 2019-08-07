@@ -36,12 +36,14 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::get('/editar-charter/historial-entradas/{id_charter}', 'ComisionesController@historial_entradas')->name('admin.historial.entradas');
 	Route::get('/editar-charter/editar-entrada/{id_entrada}', 'ComisionesController@edit_entrada')->name('admin.editar.entrada');
 	Route::post('/editar-charter/actualizar-entrada-charter', 'ComisionesController@actualizar_entrada_charter')->name('admin.actualizar-entrada-charter');
-	Route::get('/editar-charter/historial/entradas/{charter_id}', 'ComisionesController@historial_acciones_entradas')->name('admin.historial-entradas');
+	Route::get('/editar-charter/historial/entradas', 'ComisionesController@historial_acciones')->name('admin.historial-entradas');
 	Route::get('/editar-charter/eliminar-entrada/{entrada_id}', 'ComisionesController@eliminar_entrada')->name('admin.eliminar-entrada');
 
 	//Sección Comisiones
 	Route::post('/editar-charter/crear-abono-comision', 'ComisionesController@crear_abono_comision')->name('admin.crear-abono-comision');
 	Route::get('/editar-charter/historial-abonos-comisiones/{id_comision}', 'ComisionesController@abonos_comisiones')->name('admin.historial.abonos.comisiones');
+	Route::get('/editar-charter/eliminar-abono/{comision_id}/{abono_id}', 'ComisionesController@eliminar_abono_comision')->name('admin.eliminar.abono');
+	Route::get('/editar-charter/historial/comisiones', 'ComisionesController@historial_acciones')->name('admin.historial-comisiones');
 
 	//Sección Salidas
 	Route::post('/editar-charter/crear-gasto', 'ComisionesController@crear_gasto')->name('admin.crear-gasto');
@@ -51,7 +53,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::get('/editar-charter/eliminar-gasto/{gasto_id}', 'ComisionesController@eliminar_gasto')->name('admin.eliminar.gasto');
 	Route::get('/editar-charter/editar-gasto/{gasto_id}', 'ComisionesController@edit_gasto')->name('admin.editar.gasto');
 	Route::post('/editar-charter/actualizar-gasto', 'ComisionesController@actualizar_gasto')->name('admin.actualizar.gasto');
-	
+
 /*********************************************************************************************************************************************************************/	
 
 /********************************************************* BALANCE SOCIOS ********************************************************************************************/

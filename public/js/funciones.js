@@ -131,9 +131,14 @@ $("#table-charters-eliminados").DataTable({
 });
 
 $("#table-historial-entradas").DataTable({
+
 	"processing": true,
     //"serverSide": true,
-    "ajax": "historial/entradas/"+$('#table-historial-entradas').attr('data-charter-id'),
+    "ajax": {
+	    "url": "historial/entradas",
+	    "type": "GET",
+	    "data": {charter_id: $('#table-historial-entradas').attr('data-charter-id'), item: $('#table-historial-entradas').attr('data-item')}
+  	},
     "order": [[ 3, "DESC" ]],
     "columns": [
     	{data: "usuario", name: "usuario"},
@@ -150,6 +155,36 @@ cargar_gastos('apa');
 cargar_gastos('other');
 
 /**$("#porcentaje_comision_broker").notify("Debe colocar el charter rate", { className: "danger", clickToHide: true, autoHide: true, autoHideDelay: 1000, });**/
+function recalcular_totales(totales){
+
+	$.each(totales, function(key, valores) {
+
+		$.each(valores, function(key1, valores1) {
+			
+			if(key1 == 'total'){
+				console.log('total_'+key + ' = ' + valores1);
+				if(key != 'global'){
+					document.getElementById('total_'+key).innerHTML = valores1;	
+				}
+
+				if(key != 'entradas'){
+					document.getElementById('resumen_'+key+'_entrada').innerHTML = valores1;	
+				}
+			}
+			if(key1 == 'gastos'){
+				document.getElementById('resumen_'+key+'_salida').innerHTML = valores1;
+			}
+			if(key1 == 'saldo'){
+				if(key != 'global'){
+					document.getElementById('total_'+key+'_pendiente').innerHTML = valores1;
+				}
+				if(key != 'entradas'){
+					document.getElementById('resumen_'+key+'_saldo').innerHTML = valores1;
+				}
+			}
+		});
+	});
+}
 
 function calcular_comision(tipo){
 	var charter_rate = 0;
@@ -220,6 +255,7 @@ function editar_entrada(id_entrada){
 				document.getElementById('entrada-tipo-link').style.display = 'none';
 				document.getElementById('entrada-tipo-archivo').style.display = 'block';
 			}
+			recalcular_totales(response.totales);
             $("#editar-entrada").modal("toggle");
         },
 
@@ -297,12 +333,10 @@ function historial_abonos_comision(id_comision){
 
 function agregar_gasto(id_charter, tipo){
 	document.getElementById('categoria_gasto').value = tipo;
-	//console.log(tipo);
+
 	if((tipo != 'apa') && (tipo != 'other')){
-		//console.log(tipo != 'apa');
 		document.getElementById('gasto_precio_cliente').style.display = 'none';
 	}else{
-		//console.log('block');
 		document.getElementById('gasto_precio_cliente').style.display = 'block';
 	}
 	
@@ -421,9 +455,9 @@ function eliminar_entrada(id_entrada){
 	            type: 'GET',
 	            success: function (response) {
 	            	if(response.status == 'success'){
+	            		recalcular_totales(response.totales);
 	            		swal("Hecho!", response.msg, response.status);
 	            		$("#table-entradas").DataTable().ajax.reload();
-	            		location.reload();
 	        			/*$("#tabla_comisiones").DataTable().ajax.reload();
 	        			$("#table-entradas").DataTable().ajax.reload();*/
 	            	}else{
@@ -474,6 +508,8 @@ function editar_gasto(gasto_id, tipo){
 				document.getElementById('edit-gasto-tipo-archivo').style.display = 'block';
 			}
 
+			recalcular_totales(response.totales);
+
             $("#editar-gasto").modal("toggle");
         },
 
@@ -504,9 +540,7 @@ function eliminar_gasto(gasto_id, tipo){
 	            	if(response.status == 'success'){
 	            		swal("Hecho!", response.msg, response.status);
 	            		$("#table-"+tipo).DataTable().ajax.reload();
-	            		//location.reload();
-	        			/*$("#tabla_comisiones").DataTable().ajax.reload();
-	        			$("#table-entradas").DataTable().ajax.reload();*/
+	        			recalcular_totales(response.totales);
 	            	}else{
 	            		swal("Ocurrió un error!", response.msg, "error");
 	            	}
@@ -517,49 +551,6 @@ function eliminar_gasto(gasto_id, tipo){
 	        });
 	    }
 	});
-}
-
-function recalcular_totales(totales){
-	/*apa: {total: "$ 20,675.00", gastos: "$ 0.00", cliente: "$ 0.00", ganancia: "$ 0.00", saldo: "$ 20,675.00"}
-	broker: {total: "$ 25,500.00", gastos: "$ 37,225.00", cliente: "$ 0.00", ganancia: "$ -938.00", saldo: "$ -11,725.00"}
-	deluxe: {total: "$ 12,000.00", gastos: "$ 10,850.00", cliente: "$ 0.00", ganancia: "$ 0.00", saldo: "$ 1,150.00"}
-	entradas: {recibido: "$ 13,200.00", pendiente: "$ 155,475.00"}
-	global: {total: "$ 13,200.00", gastos: "$ 51,070.00", saldo: "$ -37,870.00"}
-	operador: {total: "$ 117,000.00", gastos: "$ 2,293.00", cliente: "$ 0.00", ganancia: "$ 0.00", saldo: "$ 114,707.00"}
-	other: {total: "$ 11,200.00", gastos: "$ 702.00", cliente: "$ 1,501.00", ganancia: "$ 799.00", saldo: "$ 10,498.00"}*/
-
-	$.each(totales, function(key, valores) {
-		$.each(valores, function(key1, valores1) {
-			if(key1 == 'total'){
-				document.getElementById('total_'+key).innerHTML = 'test ' + valores1;
-				document.getElementById('resumen_'+key+'_entradas').innerHTML = 'test ' + valores1;
-			}
-			if(key1 == 'gastos'){
-				document.getElementById('resumen_'+key+'_salida').innerHTML = 'test ' + valores1;
-			}
-			if(key1 == 'saldo'){
-				document.getElementById('total_'+key+'_pendiente').innerHTML = 'test ' + valores1;
-				document.getElementById('resumen_'+key+'_saldo').innerHTML = 'test ' + valores1;
-			}
-			console.log(key + ' --- ' + key1 +'---' + valores1);
-		});
-	});
-
-	/*resumen_broker_entrada
-	resumen_broker_salida
-	resumen_broker_saldo
-
-	total_entradas
-	total_operador
-	total_deluxe
-	total_apa
-	total_other
-
-	total_entrada_pendiente
-	total_operador_pendiente
-	total_deluxe_pendiente
-	total_apa_pendiente
-	total_other_pendiente*/
 }
 
 $("#nueva-entrada-form").on('submit', function(e){
@@ -589,9 +580,6 @@ $("#nueva-entrada-form").on('submit', function(e){
 	            	$('#nueva-entrada').modal('toggle');
 	            	$('#table-entradas').DataTable().ajax.reload();
 	            	$('#table-historial-entradas').DataTable().ajax.reload();
-	            	/*document.getElementById("total_entrada").innerHTML = response.total_recibido;
-	            	document.getElementById("total_recibido").innerHTML = response.total_recibido;
-	            	document.getElementById("total_entrada_pendiente").innerHTML = response.total_pendiente;*/
 		            swal("Hecho!", response.msg, "success");
 
 		            recalcular_totales(response.totales);
@@ -640,6 +628,8 @@ $("#actualizar-entrada-form").on('submit', function(e){
 	            	$(".submitBtn").removeAttr("disabled");
 		            swal("Ocurrió un error!", response.msg, "error");
 		        }
+
+		        recalcular_totales(response.totales);
 
 	            $('#actualizar-entrada-form').css("opacity","");
 	            $(".submitBtn").removeAttr("disabled");
@@ -766,21 +756,22 @@ $("#nuevo-abono-comision-form").on('submit', function(e){
 			document.getElementById("abonado_"+response.id_comision).innerHTML = response.abonado;
 			document.getElementById("saldo_"+response.id_comision).innerHTML = response.saldo;
 			document.getElementById("fecha_ult_abono_"+response.id_comision).innerHTML = response.fecha_ult_abono;
-			document.getElementById("total_gastos").innerHTML = response.totales.global.gastos;
+			//document.getElementById("total_gastos").innerHTML = response.totales.global.gastos;
 
 			document.getElementById("resumen_gastos_comision_"+response.id_comision).innerHTML = response.abonado;
 			document.getElementById("resumen_saldo_comision_"+response.id_comision).innerHTML = response.saldo;
 
-			$.each(response.totales.salidas, function(key, salida) {
+			/*$.each(response.totales.salidas, function(key, salida) {
 				document.getElementById("resumen_gastos_"+key).innerHTML = salida.gastos;
 				document.getElementById("resumen_saldo_"+key).innerHTML = salida.saldo;
 			});
 
 			document.getElementById("resumen_gastos_total").innerHTML = response.totales.global.gastos;
-			document.getElementById("resumen_saldo_total").innerHTML = response.totales.global.saldo;
+			document.getElementById("resumen_saldo_total").innerHTML = response.totales.global.saldo;*/
+			
+			recalcular_totales(response.totales);
 
 			$("#abonos-comision").modal("toggle");
-
         },
 
         error: function (xhr, ajaxOptions, thrownError) {
@@ -832,6 +823,7 @@ $("#nuevo-gasto-form").on('submit', function(e){
 
 			document.getElementById("resumen_gastos_total").innerHTML = response.totales.global.gastos;
 			document.getElementById("resumen_saldo_total").innerHTML = response.totales.global.saldo;***/
+			recalcular_totales(response.totales);
 
 			$("#nuevo-gasto").modal("toggle");
 
@@ -887,6 +879,7 @@ $("#editar-gasto-form").on('submit', function(e){
 
 			document.getElementById("resumen_gastos_total").innerHTML = response.totales.global.gastos;
 			document.getElementById("resumen_saldo_total").innerHTML = response.totales.global.saldo;***/
+			recalcular_totales(response.totales);
 
 			$("#editar-gasto").modal("toggle");
 
@@ -899,3 +892,68 @@ $("#editar-gasto-form").on('submit', function(e){
 	    }
     });
 });
+
+function eliminar_abono_comision(id_comision, id_abono){
+
+	swal({		        
+		title: "¿Está seguro?",
+		text: "Una vez eliminado, no podrá recuperar su información!",
+		icon: "error",
+	    showCancelButton: true,
+	    confirmButtonColor: '#DD4B39',
+	    cancelButtonColor: '#00C0EF',
+	    buttons: ["Cancelar", true],
+	    closeOnConfirm: false
+	}).then(function(isConfirm) {
+	    if (isConfirm) {
+			$.ajax({
+	           	url: 'eliminar-abono/'+id_comision+'/'+id_abono,
+	            dataType: "JSON",
+	            type: 'GET',
+	            success: function (response) {
+	            	if(response.status == 'success'){
+	            		swal("Hecho!", response.msg, response.status);
+	        			$('#tabla_hist_abonos_comisiones').DataTable().ajax.reload();
+						document.getElementById("abonado_"+id_comision).innerHTML = response.abonado;
+						document.getElementById("saldo_"+id_comision).innerHTML = response.saldo;
+						document.getElementById("fecha_ult_abono_"+id_comision).innerHTML = '-';
+
+						document.getElementById("resumen_gastos_comision_"+id_comision).innerHTML = response.abonado;
+						document.getElementById("resumen_saldo_comision_"+id_comision).innerHTML = response.saldo;
+
+	            	}else{
+	            		swal("Ocurrió un error!", response.msg, "error");
+	            	}
+	            	recalcular_totales(response.totales);
+	            },
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	            }
+	        });
+	    }
+	});
+}
+
+function historial_acciones_abonos(charter_id, item){
+	$("#table-historial-comisiones").DataTable().destroy();
+
+	$("#table-historial-comisiones").DataTable({
+
+		"processing": true,
+	    //"serverSide": true,
+	    "ajax": {
+		    "url": "historial/comisiones",
+		    "type": "GET",
+		    "data": {charter_id: charter_id, item: item}
+	  	},
+	    "order": [[ 3, "DESC" ]],
+	    "columns": [
+	    	{data: "usuario", name: "usuario"},
+	    	{data: "accion", name: "accion"},
+	    	{data: "comentario", name: "comentario"},
+	    	{data: "fecha", name: "fecha"},
+	    ]
+	});
+
+	$("#historial-comisiones").modal("toggle"); 
+}

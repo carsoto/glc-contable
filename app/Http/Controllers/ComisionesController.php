@@ -65,7 +65,7 @@ class ComisionesController extends Controller
 
     public function update(Request $request){
         $charter = Charter::find(decrypt($request->id_charter));
-
+        $socios = Socio::all();
         $contrato = "Sin contrato";
         
         if(($charter->contrato != $request->contrato) && ($request->contrato != "") && ($request->contrato != "Sin contrato")){
@@ -119,15 +119,6 @@ class ComisionesController extends Controller
         $charter->contrato = $contrato;
         
         if($charter->save()){
-            $contabilidad_adicional = array('OPERADOR NETO' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker, 'OTHER' => 0);
-
-            foreach ($charter->gastos as $key => $gasto) {
-                $gasto->users_id = Auth::id();
-                $gasto->total = $contabilidad_adicional[$gasto->tipo_gasto->descripcion];
-                $gasto->gastos = 0;
-                $gasto->saldo = $contabilidad_adicional[$gasto->tipo_gasto->descripcion] - $gasto->saldo;
-                $gasto->save();
-            }
 
             $new_action = new Historial();
             $new_action->users_id = Auth::id();
@@ -220,32 +211,47 @@ class ComisionesController extends Controller
             $charter->contrato = $contrato;
             
             if($charter->save()){
+                $count_comision = 0;
+            
                 foreach ($socios as $key => $socio) {
-                    $comision = ($request->comision_glc * $socio->porcentaje)/100;
                     $new_comision = new Comisione();
                     $new_comision->users_id = Auth::id();
                     $new_comision->charters_id = $charter->id;
                     $new_comision->socios_id = $socio->id;
                     $new_comision->porcentaje_comision_socio = $socio->porcentaje;
-                    $new_comision->monto = $comision;
-                    $new_comision->saldo = $comision;
+                    
+                    if($socio->porcentaje != 0){
+                        $comision = ($request->comision_glc * $socio->porcentaje)/100;
+
+                        if($socio->nombre == 'GLC'){
+                            $comision = $comision - $count_comision;
+                        }
+
+                        $new_comision->monto = $comision;
+                        $new_comision->saldo = $comision;
+                    }else{
+                        foreach ($socio->socios_regla_negocios as $key => $regla) {
+                            if($request->precio_venta >= $regla->reglas_negocio->r_inicio){
+                                if($regla->reglas_negocio->r_fin != null){
+                                    if($request->precio_venta <= $regla->reglas_negocio->r_fin){
+                                        $comision = $regla->reglas_negocio->monto;
+                                        $new_comision->monto = $comision;
+                                        $new_comision->saldo = $comision;
+                                        $count_comision = $count_comision + $comision;
+                                    }    
+                                }else{
+                                    $comision = $regla->reglas_negocio->monto;
+                                    $new_comision->monto = $comision;
+                                    $new_comision->saldo = $comision;
+                                    $count_comision = $count_comision + $comision;
+                                }
+                            }
+
+                        }
+                    }
+
                     $new_comision->save();
                 }
-
-                /*$tipos_gastos = TipoGasto::all();
-
-                $contabilidad_adicional = array('OPERADOR NETO' => $request->neto, 'DELUXE' => $request->costo_deluxe, 'COMISIONES' => $request->comision_glc, 'APA' => $request->apa, 'BROKER' => $request->comision_broker, 'OTHER' => 0);
-                
-                foreach ($tipos_gastos as $key => $t) {
-                    $new_gasto = new Gasto();
-                    $new_gasto->users_id = Auth::id();
-                    $new_gasto->charters_id = $charter->id;
-                    $new_gasto->tipo_gasto_id = $t->id;
-                    $new_gasto->total = $contabilidad_adicional[$t->descripcion];
-                    $new_gasto->gastos = 0;
-                    $new_gasto->saldo = $contabilidad_adicional[$t->descripcion];
-                    $new_gasto->save(); 
-                }*/
 
                 $new_action = new Historial();
                 $new_action->users_id = Auth::id();
@@ -350,8 +356,8 @@ class ComisionesController extends Controller
             ->addColumn('created_at', function ($abonos) { 
                 return Carbon::parse($abonos->created_at)->format('d-m-Y');
             })
-            ->addColumn('action', function ($abonos) { 
-                return '<a href="#" onclick="historial_acciones_abonos('.$abonos->id.')"><i class="fa fa-trash fa-fw" ></i></a>';
+            ->addColumn('action', function ($abonos) use (&$id_comision) { 
+                return '<a href="#" onclick="eliminar_abono_comision('.$id_comision.','.$abonos->id.')"><i class="fa fa-trash fa-fw" ></i></a>';
             })
             ->make(true);
     }
@@ -373,8 +379,8 @@ class ComisionesController extends Controller
         $entrada = $broker = $operador = $deluxe = $apa = $other = $global = array();
         
         $saldo_entrada = $charter->precio_venta + $charter->apa;
-        $entrada['recibido'] = "$ ".number_format($charter->entradas->sum('monto'), 2, '.', ',');
-        $entrada['pendiente'] = "$ ".number_format($saldo_entrada - $charter->entradas->sum('monto'), 2, '.', ',');
+        $entrada['total'] = "$ ".number_format($charter->entradas->sum('monto'), 2, '.', ',');
+        $entrada['saldo'] = "$ ".number_format($saldo_entrada - $charter->entradas->sum('monto'), 2, '.', ',');
 
         $broker['total'] = $charter->comision_broker;
         $broker['gastos'] = $charter->gastos->where('categoria', '=', 'BROKER')->sum('neto');
@@ -859,10 +865,9 @@ class ComisionesController extends Controller
     public function exportarPDF($id){
         $id_charter = decrypt($id);
         $charter = Charter::find($id_charter);
-        $tipos_gastos = TipoGasto::all();
         $totales = $this->calcular_totales($charter);
-        $pdf = PDF::loadView('comisiones.pdf.comisiones', ['charter' => $charter, 'tipos_gastos' => $tipos_gastos, 'entradas' => $totales['entradas'], 'salidas' => $totales['salidas'], 'comisiones' => $totales['comisiones'], 'global' => $totales['global']]);
-        return $pdf->stream('comisiones-'.$charter->codigo.".pdf");
+        $pdf = PDF::loadView('comisiones.pdf.comisiones', ['charter' => $charter, 'totales' => $totales]);
+        return $pdf->stream("resumen-".$charter->codigo.".pdf");
     }
 
     public function balance_socios(){
@@ -920,8 +925,9 @@ class ComisionesController extends Controller
             ->make(true);
     }
 
-    public function historial_acciones_entradas($charter_id){
-        $historial = Historial::where('charters_id', '=', $charter_id)->where('item', '=', 'ENTRADA')->get();
+    public function historial_acciones(Request $request){
+
+        $historial = Historial::where('charters_id', '=', decrypt($request->charter_id))->where('item', '=', decrypt($request->item))->get();
 
         return Datatables::of($historial)
             ->addColumn('usuario', function ($historial) { 
@@ -966,7 +972,6 @@ class ComisionesController extends Controller
             $status = 'error';
 
         }
-
         return Response::json(['msg' => $msg, 'status' => $status, 'totales' => $totales]);
     }
 
@@ -991,13 +996,14 @@ class ComisionesController extends Controller
             $status = 'success';
 
             $totales = $this->calcular_totales($ob_charter);
+
         }else{
             $msg = 'No se pudo eliminar el gasto intente más tarde';
             $status = 'error';
 
         }
 
-        return Response::json(['msg' => $msg, 'status' => $status]);
+        return Response::json(['msg' => $msg, 'status' => $status, 'totales' => $totales]);
     }
 
     public function edit_gasto($id){
@@ -1094,4 +1100,42 @@ class ComisionesController extends Controller
 
         return Response::json(array('msg' => $msg, 'status' => $status, 'totales' => $totales));
     }
+
+    public function eliminar_abono_comision($id_comision, $id_abono){
+        $abono = AbonosComisione::find($id_abono);
+        $comision = $abono->comisione;
+        $nuevo_abonado = $comision->abonado - $abono->monto;
+        $nuevo_saldo = $comision->monto - $nuevo_abonado;
+        $item = 'COMISION '.$abono->comisione->socio->nombre;
+        $charter = Charter::find($abono->comisione->charters_id);
+        $monto = $abono->monto;
+        $comision->abonado = $nuevo_abonado;
+        $comision->saldo = $nuevo_saldo;
+
+        if($comision->save()){
+            $abono->delete();
+            $new_action = new Historial();
+            $new_action->users_id = Auth::id();
+            $new_action->charters_id = $charter->id;
+            $new_action->item = $item;
+            $new_action->accion = 'DELETE';
+            $new_action->comentario = 'Eliminado abono de '.$monto.' por '.Auth::user()->name.'. Fecha: '.date('d-m-Y');
+            $new_action->save(); 
+
+            $nuevo_abonado = "$ ".number_format($nuevo_abonado, 2, ',', '.');
+            $nuevo_saldo = "$ ".number_format($nuevo_saldo, 2, ',', '.');
+
+            $msg = 'Abono eliminado satisfactoriamente';
+            $status = 'success';
+        }else{
+            $msg = 'No se pudo eliminar el charter intente más tarde';
+            $status = 'error';
+
+        }
+
+        $totales = $this->calcular_totales($charter);
+
+        return Response::json(['msg' => $msg, 'status' => $status, 'totales' => $totales, 'abonado' => $nuevo_abonado, 'saldo' =>  $nuevo_saldo]);
+    }
+
 }

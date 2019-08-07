@@ -10,37 +10,37 @@ namespace App;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Socio
+ * Class ReglasNegocio
  * 
  * @property int $id
- * @property string $nombre
- * @property int $porcentaje
+ * @property float $r_inicio
+ * @property float $r_fin
+ * @property float $monto
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Illuminate\Database\Eloquent\Collection $comisiones
  * @property \Illuminate\Database\Eloquent\Collection $socios_regla_negocios
  *
  * @package App
  */
-class Socio extends Eloquent
+class ReglasNegocio extends Eloquent
 {
+	protected $table = 'reglas_negocio';
+
 	protected $casts = [
-		'porcentaje' => 'int'
+		'r_inicio' => 'float',
+		'r_fin' => 'float',
+		'monto' => 'float'
 	];
 
 	protected $fillable = [
-		'nombre',
-		'porcentaje'
+		'r_inicio',
+		'r_fin',
+		'monto'
 	];
-
-	public function comisiones()
-	{
-		return $this->hasMany(\App\Comisione::class, 'socios_id');
-	}
 
 	public function socios_regla_negocios()
 	{
-		return $this->hasMany(\App\SociosReglaNegocio::class, 'socios_id');
+		return $this->hasMany(\App\SociosReglaNegocio::class);
 	}
 }

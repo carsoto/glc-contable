@@ -118,8 +118,8 @@
                 <div class="box with-nav-tabs box-danger">
                     <div class="panel-heading">
                         <ul class="nav nav-tabs">
-                            <li><a style="color: #E42223; font-size: 11px;" href="#entradas" data-toggle="tab"><strong>{{ strtoupper('entradas') }}</strong></a></li>
-                            <li class="active"><a style="color: #E42223; font-size: 11px;" href="#broker" data-toggle="tab"><strong>{{ strtoupper('broker') }}</strong></a></li>
+                            <li class="active"><a style="color: #E42223; font-size: 11px;" href="#entradas" data-toggle="tab"><strong>{{ strtoupper('entradas') }}</strong></a></li>
+                            <li><a style="color: #E42223; font-size: 11px;" href="#broker" data-toggle="tab"><strong>{{ strtoupper('broker') }}</strong></a></li>
                             <li><a style="color: #E42223; font-size: 11px;" href="#operador" data-toggle="tab"><strong>{{ strtoupper('operador') }}</strong></a></li>
                             <li><a style="color: #E42223; font-size: 11px;" href="#deluxe" data-toggle="tab"><strong>{{ strtoupper('deluxe') }}</strong></a></li>
                             <li><a style="color: #E42223; font-size: 11px;" href="#comisiones" data-toggle="tab"><strong>{{ strtoupper('comisiones') }}</strong></a></li>
@@ -130,12 +130,12 @@
                     </div>
                     <div class="panel-body">
                         <div class="tab-content">
-                            <div class="tab-pane fade" id="entradas">
+                            <div class="tab-pane fade in active" id="entradas">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_entradas">{{ $entradas["recibido"] }}</span></strong>
+                                    <strong><span class="label label-success" style="font-size: 12px;">TOTAL RECIBIDO:</span>  <span id="total_entradas">{{ $entradas["total"] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
-                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_entradas_pendiente">{{ $entradas["pendiente"] }}</span></strong>
+                                    <strong><span class="label label-danger" style="font-size: 12px;">TOTAL PENDIENTE:</span>  <span id="total_entradas_pendiente">{{ $entradas["saldo"] }}</span></strong>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <button type="button" class="btn btn-sm btn-flat btn-block btn-success" onclick="agregar_entrada('{{ $charter->id }}')"><i class="fa fa-plus"></i> Nueva entrada</button>
@@ -159,7 +159,7 @@
                                 </div>
                             </div>
 
-                            <div class="tab-pane fade in active" id="broker">
+                            <div class="tab-pane fade" id="broker">
                                 <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 10px;">
                                     <strong><span class="label label-success" style="font-size: 12px;">TOTAL A PAGAR:</span>  <span id="total_broker">{{ $broker['total'] }}</span></strong>
                                 </div>
@@ -266,7 +266,10 @@
                                                     @else
                                                         <td><span id="fecha_ult_abono_{{ $comision->id }}"></span></td>
                                                     @endif
-                                                    <td><a href="#" data-target="modal" onclick="agregar_abono_comision('{{ $comision->id }}')"><i class="fa fa-plus"></i></a> <a href="#" data-target="modal" onclick="historial_abonos_comision('{{ $comision->id }}')"><i class="fa fa-eye"></i></a> <a href="#" data-target="modal" onclick="historial_acciones_abonos('{{ $comision->id }}')"><i class="fa fa-history"></i></a></td>
+                                                    <td>
+                                                        <a href="#" data-target="modal" onclick="agregar_abono_comision('{{ $comision->id }}')"><i class="fa fa-plus"></i></a> 
+                                                        <a href="#" data-target="modal" onclick="historial_abonos_comision('{{ $comision->id }}')"><i class="fa fa-eye"></i></a> 
+                                                        <a href="#" data-toggle="modal" onclick="historial_acciones_abonos('{{ encrypt($charter->id) }}', '{{ encrypt('COMISION '.$comision->socio->nombre) }}')"><i class="fa fa-history"></i></a></td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -339,8 +342,8 @@
                                     <table class="table table-condensed table-bordered" style="font-size: 12px;" width="100%">
                                         <thead style="background: gainsboro;">
                                             <th></th>
-                                            <th>ENTRADA</th>
-                                            <th>SALIDA</th>
+                                            <th>TOTAL</th>
+                                            <th>ABONADO</th>
                                             <th>SALDO</th>
                                         </thead>
                                         <tbody>
@@ -386,9 +389,9 @@
                                         <tfoot>
                                             <tr style="background: grey; color: white;">
                                                 <th><strong>{{ strtoupper('GLOBAL') }}</strong></th>
-                                                <th>{{ $global['total'] }}</th>
-                                                <th><span id="resumen_gastos_total">{{ $global['gastos'] }}</span></th>
-                                                <th><span id="resumen_saldo_total" style="color: yellow;">{{ $global['saldo'] }}</span></th>
+                                                <th><span id="resumen_global_entrada">{{ $global['total'] }}</span></th>
+                                                <th><span id="resumen_global_salida">{{ $global['gastos'] }}</span></th>
+                                                <th><span id="resumen_global_saldo" style="color: yellow;">{{ $global['saldo'] }}</span></th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -640,7 +643,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table id="table-historial-entradas" class="table table-condensed table-bordered" data-charter-id="{{ $charter->id }}" style="font-size: 11px;" width="100%">
+                        <table id="table-historial-entradas" class="table table-condensed table-bordered" data-item="{{ encrypt('ENTRADA') }}" data-charter-id="{{ encrypt($charter->id) }}" style="font-size: 11px;" width="100%">
                             <thead>
                                 <th>Usuario</th>
                                 <th>Acción</th>
@@ -994,6 +997,34 @@
                     </div>
                 </div>
                 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="historial-comisiones" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">HISTORIAL COMISIONES</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="table-historial-comisiones" class="table table-condensed table-bordered" style="font-size: 11px;" width="100%">
+                            <thead>
+                                <th>Usuario</th>
+                                <th>Acción</th>
+                                <th>Comentario</th>
+                                <th>Fecha</th>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-flat btn-default" data-dismiss="modal">Cancelar</button>
                 </div>
