@@ -323,12 +323,18 @@ class CharterController extends Controller
     public function destroy($id)
     {
         $id_charter = decrypt($id);
-
+        $descripcion = '';
         $charter = Charter::find($id_charter);
-        $descripcion = $charter->descripcion;
+
+        if($charter->descripcion != null){
+            $descripcion = $charter->descripcion;    
+        }
+        
         $codigo_charter = $charter->codigo;
+
         if($charter->delete()){
             /*Storage::delete('public/images/charters/'.$codigo_charter);**/
+            //rmdir(public_path('images/charters/'.$codigo_charter));
             $new_action = new Historial();
             $new_action->users_id = Auth::id();
             $new_action->item = 'CHARTER';
