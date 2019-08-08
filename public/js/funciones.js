@@ -620,8 +620,6 @@ $("#actualizar-entrada-form").on('submit', function(e){
 	            	$('#actualizar-entrada-form')[0].reset();
 	            	$('#editar-entrada').modal('toggle');
 	            	$('#table-entradas').DataTable().ajax.reload();
-	            	document.getElementById("total_entrada").innerHTML = response.total_recibido;
-	            	document.getElementById("total_entrada_pendiente").innerHTML = response.total_pendiente;
 		            swal("Hecho!", response.msg, "success");
 		        }else{
 		        	$('#actualizar-entrada-form').css("opacity","");

@@ -30,7 +30,7 @@ class HomeController extends Controller
 
     public function dashboard(){
         $ventas_por_mes = $ganancias_monetarias = array();
-        $controller_comisiones = new ComisionesController();
+        $controller_comisiones = new ContabilidadController();
         $charters = Charter::all();
 
         $ventas_por_mes[date('Y')-1] = array();

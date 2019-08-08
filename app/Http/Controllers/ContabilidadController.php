@@ -23,7 +23,7 @@ use PDF;
 use Storage;
 use Funciones;
 
-class ComisionesController extends Controller
+class ContabilidadController extends Controller
 {
     public function index(){
         $socios = Socio::all();
@@ -383,7 +383,7 @@ class ComisionesController extends Controller
 
         $totales = Funciones::calcular_totales($charter);
 
-        return Response::json(array('msg' => $msg, 'status' => $status,'total_recibido' => $totales['entradas']['recibido'], 'total_pendiente' => $totales['entradas']['pendiente']));
+        return Response::json(array('msg' => $msg, 'status' => $status,'totales' => $totales));
     }
 
     public function historial_entradas($id_charter){

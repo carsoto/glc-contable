@@ -119,7 +119,7 @@ return [
             'submenu' => [
                 [
                     'text'        => 'Ventas',
-                    'url'         => 'admin/comisiones-charters',
+                    'url'         => 'admin/ventas/comisiones-charters',
                     'icon'        => 'anchor',
                 ],
                 [
