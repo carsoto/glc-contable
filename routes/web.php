@@ -21,15 +21,16 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 
 /********************************************************* VENTAS *****************************************************************************************************/
+	Route::post('/crear-charter', 'CharterController@store')->name('admin.comisiones-crear-charter');
+	Route::get('/actualizar-charter/{charter_id}', 'CharterController@edit')->name('admin.comisiones-actualizar-charter');
+	Route::post('/actualizar-charter', 'CharterController@update')->name('admin.comisiones-actualizar-info-charter');
+	Route::get('/eliminar-charter/{charter_id}', 'CharterController@destroy')->name('admin.comisiones-eliminar-charter');
+	Route::get('/charters/eliminados', 'CharterController@historial_charters')->name('admin.historial-charters-eliminados');
+
 	Route::get('/comisiones-charters', 'ComisionesController@index')->name('admin.comisiones-charters');
-	Route::post('/crear-charter', 'ComisionesController@store')->name('admin.comisiones-crear-charter');
 	Route::get('/editar-charter/{charter_id}', 'ComisionesController@edit')->name('admin.comisiones-editar-charter');
-	Route::get('/actualizar-charter/{charter_id}', 'ComisionesController@actualizar')->name('admin.comisiones-actualizar-charter');
-	Route::post('/actualizar-charter', 'ComisionesController@update')->name('admin.comisiones-actualizar-info-charter');
 	Route::get('/comisiones/charters', 'ComisionesController@comisiones_charters')->name('admin.comisiones.charters');
 	Route::get('/exportar-pdf/{charter_id}', 'ComisionesController@exportarPDF')->name('admin.comisiones.charters.exportarPDF');
-	Route::get('/eliminar-charter/{charter_id}', 'ComisionesController@delete')->name('admin.comisiones-eliminar-charter');
-	Route::get('/charters/eliminados', 'ComisionesController@historial_charters')->name('admin.historial-charters-eliminados');
 	
 	//Sección Entradas
 	Route::post('/editar-charter/crear-entrada-charter', 'ComisionesController@crear_entrada_charter')->name('admin.crear-entrada-charter');

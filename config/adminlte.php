@@ -111,23 +111,29 @@ return [
         [
             'text'        => 'Dashboard',
             'url'         => '/home',
-            'icon'        => 'bar-chart-o',
+            'icon'        => 'dashboard',
         ],
         [
-            'text'        => 'Ventas',
-            'url'         => 'admin/comisiones-charters',
-            'icon'        => 'anchor',
-        ],
-        [
-            'text'        => 'Balance Comisiones',
-            'url'         => 'admin/balance-socios',
-            'icon'        => 'users',
-        ],
-        [
-            'text'        => 'Pedidos',
-            'url'         => '#',
-            'icon'        => 'calendar-o',
-        ],
+            'text'    => 'Contabilidad',
+            'icon'    => 'bar-chart-o',
+            'submenu' => [
+                [
+                    'text'        => 'Ventas',
+                    'url'         => 'admin/comisiones-charters',
+                    'icon'        => 'anchor',
+                ],
+                [
+                    'text'        => 'Balance Comisiones',
+                    'url'         => 'admin/balance-socios',
+                    'icon'        => 'users',
+                ],
+                [
+                    'text'        => 'Pedidos',
+                    'url'         => '#',
+                    'icon'        => 'calendar-o',
+                ],
+            ]
+        ]
         /*[
             'text' => 'Blog',
             'url'  => 'admin/blog',
