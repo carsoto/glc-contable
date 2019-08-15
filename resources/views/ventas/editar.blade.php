@@ -22,7 +22,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label style="font-size: 11px;">BROKER</label>
+                            <input class="form-control input-sm" type="text" name="broker" value="{{ $charter->broker }}" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group">
+                            <label style="font-size: 11px;">CLIENTE</label>
+                            <input class="form-control input-sm" type="text" name="cliente" value="{{ $charter->cliente }}" readonly="readonly">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">YACHT RACK</label>
                             <input class="form-control input-sm" type="text" name="yacht_rack" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="yacht_rack" value="{{ $charter->yacht_rack }}" readonly="readonly">
@@ -30,56 +42,47 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
-                            <label style="font-size: 11px;">BROKER</label>
-                            <input class="form-control input-sm" type="text" name="broker" value="{{ $charter->broker }}" readonly="readonly">
-                        </div>
-                    </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12">
-                        <div class="form-group">
                             <label style="font-size: 11px;">F. INICIO</label>
                             <input class="form-control input-sm datepicker" type="text" name="fecha_inicio" autocomplete="off" value="{{ Carbon\Carbon::parse($charter->fecha_inicio)->format('d-m-Y') }}" readonly="readonly">
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">F. FIN</label>
                             <input class="form-control input-sm datepicker" type="text" name="fecha_fin" autocomplete="off" value="{{ Carbon\Carbon::parse($charter->fecha_fin)->format('d-m-Y')}}" readonly="readonly">
                         </div>
                     </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">CHARTER RATE</label>
                             <input class="form-control input-sm" type="text" name="precio_venta" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision()" autocomplete="off" id="charter_rate" value="{{ $charter->precio_venta }}" readonly="readonly">
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">NETO</label>
                             <input class="form-control input-sm" type="text" name="neto" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision()" autocomplete="off" id="charter_neto" value="{{ $charter->neto }}" readonly="readonly">
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">% BROKER</label>
                             <input class="form-control input-sm" type="text" name="porcentaje_comision_broker" onKeyPress="return tipoNumeros(event);" onKeyUp="calcular_comision()" autocomplete="off" id="porcentaje_comision_broker" value="{{ $charter->porcentaje_comision_broker }}" readonly="readonly">
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">COMISIÓN BROKER</label>
                             <input class="form-control input-sm" type="text" name="comision_broker" readonly="readonly" onKeyPress="return tipoNumeros(event);" onKeyUp="calcular_comision()" autocomplete="off" id="comision_broker" value="{{ $charter->comision_broker }}">
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">DELUXE COSTO</label>
                             <input class="form-control input-sm" type="text" name="costo_deluxe" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision()" autocomplete="off" id="costo_deluxe" value="{{ $charter->costo_deluxe }}" readonly="readonly">
                         </div>
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">COMISIÓN GLC</label>
                             <input class="form-control input-sm" type="text" name="comision_glc" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision()" autocomplete="off" readonly="readonly" id="comision_glc" value="{{ $charter->comision_glc }}">

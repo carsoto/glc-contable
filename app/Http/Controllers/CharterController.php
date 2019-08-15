@@ -110,6 +110,7 @@ class CharterController extends Controller
             $charter->descripcion = strtoupper($descripcion);
             $charter->yacht = strtoupper($request->yacht);
             $charter->broker = strtoupper($request->broker);
+            $charter->cliente = strtoupper($request->cliente);
             $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
             $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
             $charter->anyo = $ff_init[0];
@@ -218,6 +219,7 @@ class CharterController extends Controller
         $info["descripcion"] = $charter->descripcion;
         $info["yacht"] = $charter->yacht;
         $info["broker"] = $charter->broker;
+        $info["cliente"] = $charter->cliente;
         $info["fecha_inicio"] = Carbon::parse($charter->fecha_inicio)->format('d-m-Y');
         $info["fecha_fin"] = Carbon::parse($charter->fecha_fin)->format('d-m-Y');
         $info["precio_venta"] = $charter->precio_venta;
@@ -281,6 +283,7 @@ class CharterController extends Controller
         $charter->descripcion = strtoupper($descripcion);
         $charter->yacht = strtoupper($request->yacht);
         $charter->broker = strtoupper($request->broker);
+        $charter->cliente = strtoupper($request->cliente);
         $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
         $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
         $charter->anyo = $ff_init[0];

@@ -10,42 +10,42 @@ namespace App;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Historial
+ * Class SeguimientoPedido
  * 
  * @property int $id
  * @property int $users_id
- * @property int $charters_id
- * @property string $item
- * @property string $accion
+ * @property int $pedidos_id
+ * @property \Carbon\Carbon $fecha
  * @property string $comentario
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \App\Charter $charter
+ * @property \App\Pedido $pedido
  * @property \App\User $user
  *
  * @package App
  */
-class Historial extends Eloquent
+class SeguimientoPedido extends Eloquent
 {
-	protected $table = 'historial';
-
 	protected $casts = [
 		'users_id' => 'int',
-		'charters_id' => 'int'
+		'pedidos_id' => 'int'
+	];
+
+	protected $dates = [
+		'fecha'
 	];
 
 	protected $fillable = [
 		'users_id',
-		'charters_id',
-		'item',
-		'accion',
+		'pedidos_id',
+		'fecha',
 		'comentario'
 	];
 
-	public function charter()
+	public function pedido()
 	{
-		return $this->belongsTo(\App\Charter::class, 'charters_id');
+		return $this->belongsTo(\App\Pedido::class, 'pedidos_id');
 	}
 
 	public function user()

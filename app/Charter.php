@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Wed, 07 Aug 2019 19:28:18 +0000.
+ * Date: Wed, 14 Aug 2019 21:47:07 +0000.
  */
 
 namespace App;
@@ -18,6 +18,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $descripcion
  * @property string $tipo
  * @property string $yacht
+ * @property string $cliente
  * @property string $broker
  * @property \Carbon\Carbon $fecha_inicio
  * @property \Carbon\Carbon $fecha_fin
@@ -69,6 +70,7 @@ class Charter extends Eloquent
 		'descripcion',
 		'tipo',
 		'yacht',
+		'cliente',
 		'broker',
 		'fecha_inicio',
 		'fecha_fin',

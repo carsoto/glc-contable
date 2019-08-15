@@ -16,8 +16,10 @@
     		<div class="table-responsive">
     			<table class="table table-striped table-condensed table-bordered" style="font-size: 11px;" id="tabla_comisiones">
     				<thead>
-    					<tr><th style="vertical-align: middle;text-align:center;" rowspan="2" width="90px">F. Inicio</th>
-                            <th style="vertical-align: middle;text-align:center;" rowspan="2" width="90px">F. Fin</th>
+    					<tr>
+                            <th style="vertical-align: middle;text-align:center;" rowspan="2" width="90px">CLIENTE</th>
+                            <th style="vertical-align: middle;text-align:center;" rowspan="2" width="90px">F. INICIO</th>
+                            <th style="vertical-align: middle;text-align:center;" rowspan="2" width="90px">F. FIN</th>
 	    					<th style="vertical-align: middle;text-align:center;" rowspan="2" width="100px">YACHT</th>
 	    					<th style="vertical-align: middle;text-align:center;" rowspan="2" width="80px">VENTA</th>
                             <th class="text-center" colspan="3">DELUXE</th>
@@ -68,7 +70,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">BROKER</label>
+                                    <input class="form-control input-sm" type="text" name="broker">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">CLIENTE</label>
+                                    <input class="form-control input-sm" type="text" name="cliente">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">YACHT RACK</label>
                                     <input class="form-control input-sm" type="text" name="yacht_rack" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="yacht_rack">
@@ -76,55 +91,47 @@
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
-                                    <label style="font-size: 11px;">BROKER</label>
-                                    <input class="form-control input-sm" type="text" name="broker">
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
-                                <div class="form-group">
                                     <label style="font-size: 11px;">F. INICIO</label>
                                     <input class="form-control input-sm datepicker" type="text" name="fecha_inicio" autocomplete="off">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">F. FIN</label>
                                     <input class="form-control input-sm datepicker" type="text" name="fecha_fin" autocomplete="off">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">CHARTER RATE</label>
                                     <input class="form-control input-sm" type="text" name="precio_venta" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('crear')" autocomplete="off" id="charter_rate">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">NETO</label>
                                     <input class="form-control input-sm" type="text" name="neto" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('crear')" autocomplete="off" id="charter_neto">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">% BROKER</label>
                                     <input class="form-control input-sm" type="text" name="porcentaje_comision_broker" onKeyPress="return tipoNumeros(event);" onKeyUp="calcular_comision('crear')" autocomplete="off" id="porcentaje_comision_broker">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">COMISIÓN BROKER</label>
                                     <input class="form-control input-sm" type="text" name="comision_broker" readonly="readonly" onKeyPress="return tipoNumeros(event);" onKeyUp="calcular_comision('crear')" autocomplete="off" id="comision_broker">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">DELUXE COSTO</label>
-                                    <input class="form-control input-sm" type="text" name="costo_deluxe" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('crear')" autocomplete="off" id="costo_deluxe">
+                                    <input class="form-control input-sm" type="text" name="costo_deluxe" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('crear')" autocomplete="off" value="0" id="costo_deluxe">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">COMISIÓN GLC</label>
                                     <input class="form-control input-sm" type="text" name="comision_glc" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('crear')" autocomplete="off" readonly="readonly" id="comision_glc">
@@ -183,7 +190,19 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">BROKER</label>
+                                    <input class="form-control input-sm" type="text" name="broker" id="charter_broker">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">CLIENTE</label>
+                                    <input class="form-control input-sm" type="text" name="cliente" id="charter_cliente">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">YACHT RACK</label>
                                     <input class="form-control input-sm" type="text" name="yacht_rack" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="charter_yacht_rack">
@@ -191,55 +210,47 @@
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
-                                    <label style="font-size: 11px;">BROKER</label>
-                                    <input class="form-control input-sm" type="text" name="broker" id="charter_broker">
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
-                                <div class="form-group">
                                     <label style="font-size: 11px;">F. INICIO</label>
                                     <input class="form-control input-sm datepicker" type="text" name="fecha_inicio" autocomplete="off" id="charter_f_inicio">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">F. FIN</label>
                                     <input class="form-control input-sm datepicker" type="text" name="fecha_fin" autocomplete="off" id="charter_f_fin">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">CHARTER RATE</label>
                                     <input class="form-control input-sm" type="text" name="precio_venta" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('editar')" autocomplete="off" id="charter_precio_rate">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">NETO</label>
                                     <input class="form-control input-sm" type="text" name="neto" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('editar')" autocomplete="off" id="charter_precio_neto">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">% BROKER</label>
                                     <input class="form-control input-sm" type="text" name="porcentaje_comision_broker" onKeyPress="return tipoNumeros(event);" onKeyUp="calcular_comision('editar')" autocomplete="off" id="charter_porcentaje_comision_broker">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">COMISIÓN BROKER</label>
                                     <input class="form-control input-sm" type="text" name="comision_broker" readonly="readonly" onKeyPress="return tipoNumeros(event);" onKeyUp="calcular_comision('editar')" autocomplete="off" id="charter_comision_broker">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">DELUXE COSTO</label>
                                     <input class="form-control input-sm" type="text" name="costo_deluxe" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('editar')" autocomplete="off" id="charter_costo_deluxe">
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">COMISIÓN GLC</label>
                                     <input class="form-control input-sm" type="text" name="comision_glc" onKeyPress="return tipoNumeros(event)" onKeyUp="calcular_comision('editar')" autocomplete="off" readonly="readonly" id="charter_comision_glc">

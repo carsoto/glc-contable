@@ -120,7 +120,7 @@ return [
                 [
                     'text'        => 'Ventas',
                     'url'         => 'admin/ventas/comisiones-charters',
-                    'icon'        => 'anchor',
+                    'icon'        => 'dollar',
                 ],
                 [
                     'text'        => 'Balance Comisiones',
@@ -129,7 +129,7 @@ return [
                 ],
                 [
                     'text'        => 'Pedidos',
-                    'url'         => '#',
+                    'url'         => 'admin/pedidos',
                     'icon'        => 'calendar-o',
                 ],
             ]

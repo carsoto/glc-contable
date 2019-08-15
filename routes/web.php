@@ -63,4 +63,18 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		Route::get('/', 'ContabilidadController@balance_socios')->name('admin.balance-socios');
 	});
 
+	/********************************************************* PEDIDOS ********************************************************************************************/
+	Route::group(['middleware' => 'auth', 'prefix' => 'pedidos'], function () {
+		Route::get('/', 'PedidosController@index')->name('admin.pedidos');
+		Route::get('/dashboard/{status}', 'PedidosController@dashboard')->name('admin.dashboard.pedidos');
+		Route::get('/eliminados', 'PedidosController@historial_pedidos')->name('admin.historial-pedidos-eliminados');
+		Route::get('/eliminar-pedido/{pedido_id}', 'PedidosController@destroy')->name('admin.eliminar-pedido');
+		Route::post('/registrar-pedido', 'PedidosController@store')->name('admin.registrar-pedido');
+		Route::get('/editar-pedido/{id_pedido}', 'PedidosController@edit')->name('admin.editar-pedido');
+		Route::post('/actualizar-pedido', 'PedidosController@update')->name('admin.actualizar-pedido');
+		Route::get('/seguimientos/{pedido_id}', 'PedidosController@seguimientos')->name('admin.seguimientos');
+		Route::post('/registrar-seguimiento', 'PedidosController@registrar_seguimiento')->name('admin.registrar-seguimiento');
+		Route::get('/editar-seguimiento/{seguimiento_id}', 'PedidosController@editar_seguimiento')->name('admin.editar-seguimiento');
+		Route::post('/actualizar-seguimiento', 'PedidosController@actualizar_seguimiento')->name('admin.actualizar-seguimiento');
+	});
 });

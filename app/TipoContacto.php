@@ -10,33 +10,27 @@ namespace App;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class TipoGasto
+ * Class TipoContacto
  * 
  * @property int $id
  * @property string $descripcion
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Illuminate\Database\Eloquent\Collection $entradas
- * @property \Illuminate\Database\Eloquent\Collection $gastos
+ * @property \Illuminate\Database\Eloquent\Collection $pedidos
  *
  * @package App
  */
-class TipoGasto extends Eloquent
+class TipoContacto extends Eloquent
 {
-	protected $table = 'tipo_gasto';
+	protected $table = 'tipo_contacto';
 
 	protected $fillable = [
 		'descripcion'
 	];
 
-	public function entradas()
+	public function pedidos()
 	{
-		return $this->hasMany(\App\Entrada::class);
-	}
-
-	public function gastos()
-	{
-		return $this->hasMany(\App\Gasto::class);
+		return $this->hasMany(\App\Pedido::class);
 	}
 }

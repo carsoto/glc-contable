@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Response;
 use App\Charter;
+use Funciones;
 
 class HomeController extends Controller
 {
@@ -54,7 +55,7 @@ class HomeController extends Controller
         foreach ($charters as $key => $charter) {
             if(array_key_exists((int)$charter->anyo, $ventas_por_mes)){
                $ventas_por_mes[$charter->anyo][$charter->mes-1] = $ventas_por_mes[$charter->anyo][$charter->mes-1]+1;
-                $totales = $controller_comisiones->calcular_totales($charter);
+                $totales = Funciones::calcular_totales($charter);
                 
                 $saldo = str_replace("$ ", "", $totales["global"]["saldo"]);
                 $saldo = str_replace(",", "", $saldo);

@@ -11,6 +11,7 @@ use App\GastosDetalle;
 use App\Entrada;
 use App\TipoGasto;
 use App\Gasto;
+use App\Pedido;
 use App\Historial;
 use Carbon\Carbon;
 use DB;
@@ -25,9 +26,10 @@ use Funciones;
 
 class ContabilidadController extends Controller
 {
+    /************************ VENTAS ************************/
     public function index(){
         $socios = Socio::all();
-        return view('comisiones.index', ['socios' => $socios]);
+        return view('ventas.index', ['socios' => $socios]);
     }
 
     public function edit($id){
@@ -36,12 +38,15 @@ class ContabilidadController extends Controller
         $tipos_gastos = TipoGasto::all();
         $totales = Funciones::calcular_totales($charter);
 
-        return view('comisiones.editar', ['charter' => $charter, 'tipos_gastos' => $tipos_gastos, 'entradas' => $totales['entradas'], 'broker' => $totales['broker'], 'operador' => $totales['operador'], 'deluxe' => $totales['deluxe'], 'apa' => $totales['apa'], 'other' => $totales['other'], 'global' => $totales['global']]);
+        return view('ventas.editar', ['charter' => $charter, 'tipos_gastos' => $tipos_gastos, 'entradas' => $totales['entradas'], 'broker' => $totales['broker'], 'operador' => $totales['operador'], 'deluxe' => $totales['deluxe'], 'apa' => $totales['apa'], 'other' => $totales['other'], 'global' => $totales['global']]);
     }
 
     public function comisiones_charters(){
         $charters = Charter::all();
         return Datatables::of($charters)
+            ->addColumn('cliente', function ($charters) {
+                return $charters->cliente;
+            })
             ->addColumn('fecha_inicio', function ($charters) {
                 return Carbon::parse($charters->fecha_inicio)->format('d-m-Y');
             })
@@ -540,12 +545,6 @@ class ContabilidadController extends Controller
         return $pdf->stream("resumen-".$charter->codigo.".pdf");
     }
 
-    public function balance_socios(){
-        $charters = Charter::all();
-        $socios = Socio::all();
-        return view('comisiones.balance_socios', ['charters' => $charters, 'socios' => $socios]);
-    }
-
     public function historial_acciones(Request $request){
 
         $historial = Historial::where('charters_id', '=', decrypt($request->charter_id))->where('item', '=', decrypt($request->item))->get();
@@ -757,5 +756,12 @@ class ContabilidadController extends Controller
         $totales = Funciones::calcular_totales($charter);
 
         return Response::json(['msg' => $msg, 'status' => $status, 'totales' => $totales, 'abonado' => $nuevo_abonado, 'saldo' =>  $nuevo_saldo]);
+    }
+
+    /************************ BALANCE ************************/
+    public function balance_socios(){
+        $charters = Charter::all();
+        $socios = Socio::all();
+        return view('ventas.balance_socios', ['charters' => $charters, 'socios' => $socios]);
     }
 }

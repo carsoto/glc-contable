@@ -1,3 +1,4 @@
 [21-Jun-2019 20:01:41 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/qhvfu978tss0/public_html/glc-contable/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php on line 500
 [04-Jul-2019 22:06:22 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/qhvfu978tss0/public_html/glc-contable/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php on line 500
 [04-Jul-2019 22:07:11 UTC] PHP Parse error:  syntax error, unexpected '?' in /home/qhvfu978tss0/public_html/glc-contable/vendor/laravel/framework/src/Illuminate/Foundation/helpers.php on line 500
+[12-Aug-2019 21:35:19 UTC] PHP Fatal error:  Cannot use App\PedidosStatus as PedidosStatus because the name is already in use in /home/qhvfu978tss0/public_html/glc-contable-integrado/app/Http/Controllers/PedidosController.php on line 11

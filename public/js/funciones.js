@@ -98,6 +98,7 @@ $("#tabla_comisiones").DataTable({
     ////"serverSide": true,
     "ajax": "comisiones/charters",
     "columns": [
+    	{data: "cliente", name: "cliente"},
     	{data: "fecha_inicio", name: "fecha_inicio"},
     	{data: "fecha_fin", name: "fecha_fin"},
     	{data: "yacht", name: "yacht"},
@@ -279,6 +280,7 @@ function editar_charter(id_charter){
 			document.getElementById('charter_yacht').value = response.charter.yacht;
 			document.getElementById('charter_yacht_rack').value = response.charter.yacht_rack;
 			document.getElementById('charter_broker').value = response.charter.broker;
+			document.getElementById('charter_cliente').value = response.charter.cliente;
 			document.getElementById('charter_f_inicio').value = response.charter.fecha_inicio;
 			document.getElementById('charter_f_fin').value = response.charter.fecha_fin;
 			document.getElementById('charter_precio_rate').value = response.charter.precio_venta;
@@ -954,4 +956,395 @@ function historial_acciones_abonos(charter_id, item){
 	});
 
 	$("#historial-comisiones").modal("toggle"); 
+}
+
+$("#tabla_pedidos").DataTable({
+	"processing": true,
+    //"serverSide": true,
+    "ajax": {
+	    "url": "pedidos/dashboard/ACTIVO",
+	    "type": "GET",
+  	},
+    "order": [[ 5, "DESC" ]],
+    "columns": [
+    	{data: "fecha", name: "fecha"},
+		{data: "compania", name: "compania"},
+		{data: "solicitante", name: "solicitante"},
+		{data: "f_inicio", name: "f_inicio"},
+		{data: "f_fin", name: "f_fin"},
+		{data: "prox_seguimiento", name: "prox_seguimiento"},
+		{data: "status", render: function ( data, type, row ) {
+    		return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+		}},
+		{data: "action", name: "action", orderable: false},
+    ]
+});
+
+function historial_status_pedidos(status){
+	
+	document.getElementById("hist-estatus-pedidos-title").innerHTML = "PEDIDOS "+status.toUpperCase();
+	
+	$("#tabla_pedidos_por_estatus").DataTable().destroy();
+	
+	$("#tabla_pedidos_por_estatus").DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "ajax": {
+		    "url": "pedidos/dashboard/"+status.toUpperCase(),
+		    "type": "GET",
+	  	},
+	    "order": [[ 5, "DESC" ]],
+	    "columns": [
+	    	{data: "fecha", name: "fecha"},
+			{data: "compania", name: "compania"},
+			{data: "solicitante", name: "solicitante"},
+			{data: "f_inicio", name: "f_inicio"},
+			{data: "f_fin", name: "f_fin"},
+			{data: "prox_seguimiento", name: "prox_seguimiento"},
+			{data: "status", render: function ( data, type, row ) {
+				if(status.toUpperCase() == 'VENDIDO'){
+					return '<span style="font-size: 11px;" class="label label-primary">'+ data +'</span>';
+				}else{
+					return '<span style="font-size: 11px;" class="label label-danger">'+ data +'</span>';
+				}
+	    		
+			}},
+			{data: "action", name: "action", orderable: false},
+	    ]
+	});
+
+	$("#estatus-pedidos").modal("toggle"); 
+}
+
+function historial_pedidos(){
+
+	$("#table-pedidos-eliminados").DataTable().destroy();
+
+	$("#table-pedidos-eliminados").DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "ajax": "pedidos/eliminados",
+	    "order": [[ 2, "desc" ]],
+	    "columns": [
+	    	{data: "usuario", name: "usuario"},
+	    	{data: "comentario", name: "comentario"},
+	    	{data: "fecha", name: "fecha"},
+	    ]
+	});
+
+	$("#historial-pedidos").modal("toggle");
+}
+
+function eliminar_pedido(id_pedido){
+	swal({		        
+		title: "¿Está seguro?",
+		text: "Una vez eliminado, no podrá recuperar su información!",
+		icon: "error",
+	    showCancelButton: true,
+	    confirmButtonColor: '#DD4B39',
+	    cancelButtonColor: '#00C0EF',
+	    buttons: ["Cancelar", true],
+	    closeOnConfirm: false
+	}).then(function(isConfirm) {
+	    if (isConfirm) {
+			$.ajax({
+	           	url: 'pedidos/eliminar-pedido/'+id_pedido,
+	            dataType: "JSON",
+	            type: 'GET',
+	            success: function (response) {
+	            	if(response.status == 'success'){
+	            		swal("Hecho!", response.msg, response.status);
+	        			$("#tabla_pedidos").DataTable().ajax.reload();
+						$("#tabla_pedidos_por_estatus").DataTable().ajax.reload();
+	            	}else{
+	            		swal("Ocurrió un error!", response.msg, "error");
+	            	}
+	            },
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	            }
+	        });
+	    }
+	});
+}
+
+$("#registrar-pedido-form").on('submit', function(e){
+	e.preventDefault();
+
+    $.ajax({
+	    url: 'pedidos/registrar-pedido',
+	    type: 'POST',
+        data: new FormData(this),
+        processData: false,
+    	contentType: false,
+
+        beforeSend: function(){
+            $('.submitBtn').attr("disabled","disabled");
+            $('#registrar-pedido-form').css("opacity",".5");
+        },
+
+        success: function(response){
+
+            if(response.status == 'success'){
+            	$('#registrar-pedido-form')[0].reset();
+	            swal("Hecho!", response.msg, "success");
+	        }else{
+	        	$('#registrar-pedido-form').css("opacity","");
+            	$(".submitBtn").removeAttr("disabled");
+	            swal("Ocurrió un error!", response.msg, "error");
+	        }
+
+	        $('#tabla_pedidos').DataTable().ajax.reload();
+            $('#registrar-pedido-form').css("opacity","");
+            $(".submitBtn").removeAttr("disabled");
+
+			$("#registrarPedido").modal("toggle");
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+        	$('#registrar-pedido-form').css("opacity","");
+            $(".submitBtn").removeAttr("disabled");
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+    });
+});
+
+/*onSelect: function(dateText) {
+    console.log("Selected date: " + dateText + "; input's current value: " + this.value);
+}*/
+
+function diasEnUnMes(mes, anyo) {
+	return new Date(anyo, mes, 0).getDate();
+}
+
+function next_follow(date, arg) {
+	var d = date.split('-');
+	var dias_mes = diasEnUnMes(parseInt(d[1]), parseInt(d[2]));
+	if(d[0] == 30){
+		if(dias_mes == 30){
+			d[0] = "02";
+			d[1] = parseInt(d[1]) + 1;
+		}else{
+			d[0] = "01";
+			d[1] = parseInt(d[1]) + 1;	
+		}
+	}else if(d[0] == 31){
+		d[0] = "02";
+		d[1] = parseInt(d[1]) + 1;
+	}else{
+		d[0] = parseInt(d[0]) + arg;
+	}
+	var dd = d[0]+'-'+d[1]+'-'+d[2];
+    $('#create_next_follow').datepicker('setDate', dd);
+}
+
+$('#create_pedido_fecha').on("change", function() {
+    next_follow($(this).val(), 2);
+});
+
+function editar_pedido(id_pedido){
+
+	$.ajax({
+	    url: 'pedidos/editar-pedido/'+id_pedido,
+	    type: 'GET',
+        processData: false,
+    	contentType: false,
+        success: function(response){
+			document.getElementById("pedido_id").value = response.id;
+			document.getElementById("pedido_fecha").value = response.pedido.fecha;
+			$('#pedido_contacto option[value="'+ response.pedido.tipo_contacto_id +'"]').attr("selected", "selected");
+			document.getElementById("pedido_company").value = response.pedido.compania;
+			document.getElementById("pedido_name").value = response.pedido.solicitante;
+			document.getElementById("pedido_phone").value = response.pedido.telefono;
+			document.getElementById("pedido_email").value = response.pedido.email;
+			document.getElementById("pedido_date_start").value = response.pedido.f_inicio;
+			document.getElementById("pedido_date_finish").value = response.pedido.f_fin;
+			document.getElementById("pedido_details").innerHTML = response.pedido.detalles;
+			$('#pedido_status option[value="'+ response.pedido.pedidos_status_id +'"]').attr("selected", "selected");
+
+            $("#editarPedido").modal('toggle');
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+    });
+}
+
+$("#actualizar-pedido-form").on('submit', function(e){
+	e.preventDefault();
+
+    $.ajax({
+	    url: 'pedidos/actualizar-pedido',
+	    type: 'POST',
+        data: new FormData(this),
+        processData: false,
+    	contentType: false,
+
+        beforeSend: function(){
+            $('.submitBtn').attr("disabled","disabled");
+            $('#actualizar-pedido-form').css("opacity",".5");
+        },
+
+        success: function(response){
+            
+            if(response.status == 'success'){
+            	$('#actualizar-pedido-form')[0].reset();
+	            swal("Hecho!", response.msg, "success");
+	        }else{
+	        	$('#actualizar-pedido-form').css("opacity","");
+            	$(".submitBtn").removeAttr("disabled");
+	            swal("Ocurrió un error!", response.msg, "error");
+	        }
+
+	        $('#tabla_pedidos').DataTable().ajax.reload();
+            $('#actualizar-pedido-form').css("opacity","");
+            $(".submitBtn").removeAttr("disabled");
+
+			$("#editarPedido").modal("toggle");
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+        	$('#actualizar-pedido-form').css("opacity","");
+            $(".submitBtn").removeAttr("disabled");
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+    });
+});
+
+function seguimientos_pedido(id_pedido){
+
+	document.getElementById('seguimiento_pedido_id').value = id_pedido;
+
+	$("#tabla_seguimientos").DataTable().destroy();
+
+	$("#tabla_seguimientos").DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "ajax": "pedidos/seguimientos/"+id_pedido,
+	    "columns": [
+	    	{data: "fecha", name: "fecha"},
+	    	{data: "usuario", name: "usuario"},
+	    	{data: "comentario", name: "comentario"},
+	    	{data: "action", name: "action"},
+	    ]
+	});
+
+	$("#seguimientosPedido").modal("toggle");
+}
+
+$("#seguimiento-pedido-form").on('submit', function(e){
+	e.preventDefault();
+
+    if($(".seguimientoBtn").hasClass("btn-success")){
+	    $.ajax({
+		    url: 'pedidos/registrar-seguimiento',
+		    type: 'POST',
+	        data: new FormData(this),
+	        processData: false,
+	    	contentType: false,
+
+	        beforeSend: function(){
+	            $('.submitBtn').attr("disabled","disabled");
+	            $('#seguimiento-pedido-form').css("opacity",".5");
+	        },
+
+	        success: function(response){
+	            
+	            if(response.status == 'success'){
+	            	$('#seguimiento-pedido-form')[0].reset();
+		            swal("Hecho!", response.msg, "success");
+		        }else{
+		        	$('#seguimiento-pedido-form').css("opacity","");
+	            	$(".submitBtn").removeAttr("disabled");
+		            swal("Ocurrió un error!", response.msg, "error");
+		        }
+
+		        $("#tabla_seguimientos").DataTable().ajax.reload();
+	            $('#seguimiento-pedido-form').css("opacity","");
+	            $(".submitBtn").removeAttr("disabled");
+
+				//$("#seguimientosPedido").modal("toggle");
+	        },
+
+	        error: function (xhr, ajaxOptions, thrownError) {
+	        	$('#seguimiento-pedido-form').css("opacity","");
+	            $(".submitBtn").removeAttr("disabled");
+		        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+		    }
+	    });	
+    }else{
+		$.ajax({
+		    url: 'pedidos/actualizar-seguimiento',
+		    type: 'POST',
+	        data: new FormData(this),
+	        processData: false,
+	    	contentType: false,
+
+	        beforeSend: function(){
+	            $('.submitBtn').attr("disabled","disabled");
+	            $('#seguimiento-pedido-form').css("opacity",".5");
+	        },
+
+	        success: function(response){
+	            
+	            if(response.status == 'success'){
+	            	$('#seguimiento-pedido-form')[0].reset();
+		            swal("Hecho!", response.msg, "success");
+		        }else{
+		        	$('#seguimiento-pedido-form').css("opacity","");
+	            	$(".submitBtn").removeAttr("disabled");
+		            swal("Ocurrió un error!", response.msg, "error");
+		        }
+
+		        $("#tabla_seguimientos").DataTable().ajax.reload();
+	            $('#seguimiento-pedido-form').css("opacity","");
+	            $(".submitBtn").removeAttr("disabled");
+
+				$(".seguimientoBtn").removeClass("btn-primary");
+				$(".seguimientoBtn").addClass("btn-success");
+				var items = document.getElementsByClassName("seguimientoBtn"), i, len;
+
+				for (i = 0, len = items.length; i < len; i++) {
+					items[i].innerHTML = "<i class='fa fa-plus'></i> ADD";
+				}
+				document.getElementById("details_seguimiento").innerHTML = "";
+				document.getElementById('seguimiento_id').value = "";
+	        },
+
+	        error: function (xhr, ajaxOptions, thrownError) {
+	        	$('#seguimiento-pedido-form').css("opacity","");
+	            $(".submitBtn").removeAttr("disabled");
+		        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+		    }
+	    });
+  
+    }
+    
+});
+
+function editar_seguimiento(id_seguimiento){
+	$.ajax({
+	    url: 'pedidos/editar-seguimiento/'+id_seguimiento,
+	    type: 'GET',
+        processData: false,
+    	contentType: false,
+        success: function(response){
+			document.getElementById("fecha_seguimiento").value = response.seguimiento.fecha;
+			document.getElementById("details_seguimiento").innerHTML = response.seguimiento.comentario;
+			document.getElementById('seguimiento_id').value = id_seguimiento;
+			$(".seguimientoBtn").removeClass("btn-success");
+			$(".seguimientoBtn").addClass("btn-primary");
+
+			var items = document.getElementsByClassName("seguimientoBtn"), i, len;
+
+			for (i = 0, len = items.length; i < len; i++) {
+				items[i].innerHTML = "<i class='fa fa-pencil'></i> UPDATE";
+			}
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+    });
 }
