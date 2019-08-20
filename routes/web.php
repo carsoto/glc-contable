@@ -74,7 +74,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	/********************************************************* PEDIDOS ********************************************************************************************/
 	Route::group(['middleware' => 'auth', 'prefix' => 'pedidos'], function () {
 		Route::get('/', 'PedidosController@index')->name('admin.pedidos');
-		Route::get('/dashboard/{status}', 'PedidosController@dashboard')->name('admin.dashboard.pedidos');
+		Route::get('/dashboard', 'PedidosController@dashboard')->name('admin.dashboard.pedidos');
 		Route::get('/eliminados', 'PedidosController@historial_pedidos')->name('admin.historial-pedidos-eliminados');
 		Route::get('/eliminar-pedido/{pedido_id}', 'PedidosController@destroy')->name('admin.eliminar-pedido');
 		Route::post('/registrar-pedido', 'PedidosController@store')->name('admin.registrar-pedido');

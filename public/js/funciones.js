@@ -962,7 +962,7 @@ $("#tabla_pedidos").DataTable({
 	"processing": true,
     //"serverSide": true,
     "ajax": {
-	    "url": "pedidos/dashboard/ACTIVO",
+	    "url": "pedidos/dashboard",
 	    "type": "GET",
   	},
     "order": [[ 1, "ASC" ]],
@@ -974,7 +974,14 @@ $("#tabla_pedidos").DataTable({
 		{data: "f_fin", name: "f_fin"},
 		{data: "prox_seguimiento", name: "prox_seguimiento"},
 		{data: "status", render: function ( data, type, row ) {
-    		return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+    		if(data.toUpperCase() == 'ACTIVO'){
+    			return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+    		}
+    		else if(data.toUpperCase() == 'VENDIDO'){
+				return '<span style="font-size: 11px;" class="label label-primary">'+ data +'</span>';
+			}else{
+				return '<span style="font-size: 11px;" class="label label-danger">'+ data +'</span>';
+			}
 		}},
 		{data: "action", name: "action", orderable: false},
     ]

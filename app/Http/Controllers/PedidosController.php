@@ -33,14 +33,14 @@ class PedidosController extends Controller
         return view('pedidos.index', ['tipos_contacto' => $tipos_contacto, 'statuses' => $statuses]);
     }
 
-    public function dashboard($estatus){
-        $pedido_estatus = PedidosStatus::where('descripcion', '=', $estatus)->first();
+    public function dashboard(){
+        /*$pedido_estatus = PedidosStatus::where('descripcion', '=', $estatus)->first();
         $pedidos = array();
 
         if($pedido_estatus != null){
             $pedidos = Pedido::where('pedidos_status_id', '=', $pedido_estatus->id)->get();    
-        }
-        
+        }*/
+        $pedidos = Pedido::all();    
         return Datatables::of($pedidos)
             ->addColumn('fecha', function ($pedidos) {
                 return Carbon::parse($pedidos->fecha)->format('d-m-Y');
