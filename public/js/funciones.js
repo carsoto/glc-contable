@@ -122,7 +122,7 @@ $("#tabla_comisiones").DataTable({
 $("#table-charters-eliminados").DataTable({
 	"processing": true,
     //"serverSide": true,
-    "ajax": "charters/eliminados",
+    "ajax": "charters-eliminados",
     "order": [[ 2, "desc" ]],
     "columns": [
     	{data: "usuario", name: "usuario"},
@@ -965,7 +965,7 @@ $("#tabla_pedidos").DataTable({
 	    "url": "pedidos/dashboard/ACTIVO",
 	    "type": "GET",
   	},
-    "order": [[ 5, "DESC" ]],
+    "order": [[ 1, "ASC" ]],
     "columns": [
     	{data: "fecha", name: "fecha"},
 		{data: "compania", name: "compania"},
@@ -1348,3 +1348,45 @@ function editar_seguimiento(id_seguimiento){
 	    }
     });
 }
+
+/*$("#tabla_charters").DataTable({
+	"processing": true,
+    ////"serverSide": true,
+    "ajax": "charters-dashboard",
+    "columns": [
+    	{data: "codigo", name: "codigo"},
+    	{data: "broker", name: "broker"},
+    	{data: "cliente", name: "cliente"},
+    	{data: "yacht", name: "yacht"},
+    	{data: "fecha_inicio", name: "fecha_inicio"},
+    	{data: "fecha_fin", name: "fecha_fin"},
+    	{data: "patente", name: "patente"},
+    	{data: "programa", name: "programa"},
+    	{data: "estatus", name: "estatus"},
+        {data: 'action', name: 'action', orderable: false}
+    ]
+});*/
+
+$("#tabla_charters").DataTable({
+	"processing": true,
+	"ajax": "charters-dashboard",
+	"columns": [
+    	{data: "codigo", name: "codigo"},
+    	{data: "broker", name: "broker"},
+    	{data: "cliente", name: "cliente"},
+    	{data: "yacht", name: "yacht"},
+    	{data: "fecha_inicio", name: "fecha_inicio"},
+    	{data: "fecha_fin", name: "fecha_fin"},
+    	{data: "patente", name: "patente"},
+    	{data: "programa", name: "programa"},
+    	{data: "status", render: function ( data, type, row ) {
+    		if(data){
+				return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+    		}else{
+    			return '<span style="font-size: 11px;" class="label label-danger">'+ data +'</span>';
+    		}
+    		
+		}},
+        {data: 'action', name: 'action', orderable: false}
+    ]
+});

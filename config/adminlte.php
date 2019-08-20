@@ -114,6 +114,16 @@ return [
             'icon'        => 'dashboard',
         ],
         [
+            'text'        => 'Charters',
+            'url'         => 'admin/charters/index',
+            'icon'        => 'anchor',
+        ],
+        [
+            'text'        => 'Pedidos',
+            'url'         => 'admin/pedidos',
+            'icon'        => 'calendar-o',
+        ],
+        [
             'text'    => 'Contabilidad',
             'icon'    => 'bar-chart-o',
             'submenu' => [
@@ -126,11 +136,6 @@ return [
                     'text'        => 'Balance Comisiones',
                     'url'         => 'admin/balance-socios',
                     'icon'        => 'users',
-                ],
-                [
-                    'text'        => 'Pedidos',
-                    'url'         => 'admin/pedidos',
-                    'icon'        => 'calendar-o',
                 ],
             ]
         ]

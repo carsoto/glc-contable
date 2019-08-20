@@ -30,9 +30,49 @@ class CharterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index(){
+        return view('charters.index');
+    }
+
+    public function dashboard(){
+        $charters = Charter::all();
+        return Datatables::of($charters)
+            ->addColumn('codigo', function ($charters) {
+                return $charters->codigo;
+            })
+            ->addColumn('broker', function ($charters) {
+                return $charters->broker;
+            })
+            ->addColumn('cliente', function ($charters) {
+                return $charters->cliente;
+            })
+            ->addColumn('yacht', function ($charters) {
+                return $charters->yacht;
+            })
+            ->addColumn('fecha_inicio', function ($charters) {
+                return Carbon::parse($charters->fecha_inicio)->format('d-m-Y');
+            })
+            ->addColumn('fecha_fin', function ($charters) {
+                return Carbon::parse($charters->fecha_fin)->format('d-m-Y');
+            })
+            ->addColumn('patente', function ($charters) {
+                return "";
+            })
+            ->addColumn('programa', function ($charters) {
+                return "";
+            })
+            ->addColumn('estatus', function ($charters) {
+                return "";
+            })
+            ->addColumn('action', function ($charters) {
+                return '<a href="editar-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a><a href="#" onclick="eliminar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
+            })
+            ->order(function ($query) {
+                if (request()->has('fecha_inicio')) {
+                    $query->orderBy('fecha_inicio', 'ASC');
+                }
+            })
+            ->make(true);
     }
 
     /**
@@ -42,7 +82,7 @@ class CharterController extends Controller
      */
     public function create()
     {
-        //
+        return view('charters.crear');
     }
 
     /**
