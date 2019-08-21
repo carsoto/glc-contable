@@ -43,7 +43,7 @@ class PedidosController extends Controller
         $pedidos = Pedido::all();    
         return Datatables::of($pedidos)
             ->addColumn('fecha', function ($pedidos) {
-                return Carbon::parse($pedidos->fecha)->format('d-m-Y');
+                return Carbon::parse($pedidos->fecha)->format('Y-m-d');
             })
             ->addColumn('compania', function ($pedidos) {
                 return $pedidos->compania;
@@ -67,8 +67,8 @@ class PedidosController extends Controller
                 return '<a href="#" onclick="seguimientos_pedido(\''.encrypt($pedidos['id']).'\')"><i class="fa fa-history fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_pedido(\''.encrypt($pedidos['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a> <a href="#" onclick="eliminar_pedido(\''.encrypt($pedidos['id']).'\')"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
             })
             ->order(function ($query) {
-                if (request()->has('prox_seguimiento')) {
-                    $query->orderBy('prox_seguimiento', 'desc');
+                if (request()->has('fecha')) {
+                    $query->orderBy('fecha', 'DESC');
                 }
             })
             ->make(true);

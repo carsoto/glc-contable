@@ -19,8 +19,16 @@ class Funciones{
 
     public static function calcular_totales($charter){ 
         $entrada = $broker = $operador = $deluxe = $apa = $other = $global = array();
-        
+        $global_gastos = 0;
+        $comisiones = $charter->comisiones;
+
+        foreach ($comisiones as $key => $comision) {
+            $global_gastos += $comision->abonado;
+        }
+
         $saldo_entrada = $charter->precio_venta + $charter->apa;
+        $saldo = $saldo_entrada - $charter->entradas->sum('monto');
+
         $entrada['total'] = "$ ".number_format($charter->entradas->sum('monto'), 2, '.', ',');
         $entrada['saldo'] = "$ ".number_format($saldo_entrada - $charter->entradas->sum('monto'), 2, '.', ',');
 
@@ -29,6 +37,8 @@ class Funciones{
         $broker['cliente'] = $charter->gastos->where('categoria', '=', 'BROKER')->sum('precio_cliente');
         $broker['ganancia'] = $charter->gastos->where('categoria', '=', 'BROKER')->sum('ganancia');
         $broker['saldo'] = $broker['total'] - $broker['gastos'];
+
+        $global_gastos += $broker['gastos'];
 
         $broker['total'] = "$ ".number_format($broker['total'], 2, '.', ',');
         $broker['gastos'] = "$ ".number_format($broker['gastos'], 2, '.', ',');
@@ -42,6 +52,8 @@ class Funciones{
         $operador['ganancia'] = $charter->gastos->where('categoria', '=', 'OPERADOR')->sum('ganancia');
         $operador['saldo'] = $operador['total'] - $operador['gastos'];
 
+        $global_gastos += $operador['gastos'];
+
         $operador['total'] = "$ ".number_format($operador['total'], 2, '.', ',');
         $operador['gastos'] = "$ ".number_format($operador['gastos'], 2, '.', ',');
         $operador['cliente'] = "$ ".number_format($operador['cliente'], 2, '.', ',');
@@ -53,6 +65,8 @@ class Funciones{
         $deluxe['cliente'] = $charter->gastos->where('categoria', '=', 'DELUXE')->sum('precio_cliente');
         $deluxe['ganancia'] = $charter->gastos->where('categoria', '=', 'DELUXE')->sum('ganancia');
         $deluxe['saldo'] = $deluxe['total'] - $deluxe['gastos'];
+
+        $global_gastos += $deluxe['gastos'];
 
         $deluxe['total'] = "$ ".number_format($deluxe['total'], 2, '.', ',');
         $deluxe['gastos'] = "$ ".number_format($deluxe['gastos'], 2, '.', ',');
@@ -66,6 +80,8 @@ class Funciones{
         $apa['ganancia'] = $charter->gastos->where('categoria', '=', 'APA')->sum('ganancia');
         $apa['saldo'] = $apa['total'] - $apa['gastos'];
 
+        $global_gastos += $apa['gastos'];
+
         $apa['total'] = "$ ".number_format($apa['total'], 2, '.', ',');
         $apa['gastos'] = "$ ".number_format($apa['gastos'], 2, '.', ',');
         $apa['cliente'] = "$ ".number_format($apa['cliente'], 2, '.', ',');
@@ -78,15 +94,17 @@ class Funciones{
         $other['ganancia'] = $charter->gastos->where('categoria', '=', 'OTHER')->sum('ganancia');
         $other['saldo'] = $other['total'] - $other['gastos'];
 
+        $global_gastos += $other['gastos'];
+
         $other['total'] = "$ ".number_format($other['total'], 2, '.', ',');
         $other['gastos'] = "$ ".number_format($other['gastos'], 2, '.', ',');
         $other['cliente'] = "$ ".number_format($other['cliente'], 2, '.', ',');
         $other['ganancia'] = "$ ".number_format($other['ganancia'], 2, '.', ',');
         $other['saldo'] = "$ ".number_format($other['saldo'], 2, '.', ',');
 
-        $global['total'] = $charter->entradas->sum('monto');
-        $global['gastos'] = $charter->gastos->sum('neto');
-        $global['saldo'] = $global['total'] - $global['gastos'];
+        $global['total'] = $charter->entradas->sum('monto') + $saldo;
+        $global['gastos'] = $global_gastos;
+        $global['saldo'] = $global['total'] - $global_gastos;
 
         $global['total'] = "$ ".number_format($global['total'], 2, '.', ',');
         $global['gastos'] = "$ ".number_format($global['gastos'], 2, '.', ',');

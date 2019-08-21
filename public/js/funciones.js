@@ -965,7 +965,7 @@ $("#tabla_pedidos").DataTable({
 	    "url": "pedidos/dashboard",
 	    "type": "GET",
   	},
-    "order": [[ 1, "ASC" ]],
+    //"order": [[ 0, "DESC" ]],
     "columns": [
     	{data: "fecha", name: "fecha"},
 		{data: "compania", name: "compania"},
