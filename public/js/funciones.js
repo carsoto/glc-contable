@@ -122,7 +122,7 @@ $("#tabla_comisiones").DataTable({
 $("#table-charters-eliminados").DataTable({
 	"processing": true,
     //"serverSide": true,
-    "ajax": "charters/eliminados",
+    "ajax": "charters-eliminados",
     "order": [[ 2, "desc" ]],
     "columns": [
     	{data: "usuario", name: "usuario"},
@@ -426,6 +426,7 @@ function eliminar_charter(id_charter){
 	            	if(response.status == 'success'){
 	            		swal("Hecho!", response.msg, response.status);
 	        			$("#tabla_comisiones").DataTable().ajax.reload();
+	        			$("#tabla_charters").DataTable().ajax.reload();
 	        			$("#table-charters-eliminados").DataTable().ajax.reload();
 	            	}else{
 	            		swal("Ocurrió un error!", response.msg, "error");
@@ -965,7 +966,7 @@ $("#tabla_pedidos").DataTable({
 	    "url": "pedidos/dashboard/ACTIVO",
 	    "type": "GET",
   	},
-    "order": [[ 5, "DESC" ]],
+    "order": [[ 1, "ASC" ]],
     "columns": [
     	{data: "fecha", name: "fecha"},
 		{data: "compania", name: "compania"},
@@ -1347,4 +1348,200 @@ function editar_seguimiento(id_seguimiento){
 	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
 	    }
     });
+}
+
+$("#tabla_charters").DataTable({
+	"processing": true,
+	"ajax": "charters-dashboard",
+	"columns": [
+    	{data: "codigo", name: "codigo"},
+    	{data: "broker", name: "broker"},
+    	{data: "cliente", name: "cliente"},
+    	{data: "yacht", name: "yacht"},
+    	{data: "fecha_inicio", name: "fecha_inicio"},
+    	{data: "fecha_fin", name: "fecha_fin"},
+    	{data: "patente", name: "patente"},
+    	{data: "programa", name: "programa"},
+    	{data: "status", render: function ( data, type, row ) {
+    		if(data){
+				return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+    		}else{
+    			return '<span style="font-size: 11px;" class="label label-danger">'+ data +'</span>';
+    		}
+    		
+		}},
+        {data: 'action', name: 'action', orderable: false}
+    ]
+});
+
+$('input[name="nuevo_intermediario[check]"]').on('ifChecked', function() {
+	document.getElementById('nuevo_intermediario').style.display = 'block';
+});
+
+$('input[name="nuevo_intermediario[check]"]').on('ifUnchecked', function() {
+	document.getElementById('nuevo_intermediario').style.display = 'none';
+});
+
+$('input[name="tipo_charter_selected"]').on('ifChecked', function() {
+	document.getElementById('nuevo_intermediario').style.display = 'block';
+});
+/*$('input[name="tipo_charter_selected"]').on('ifChecked', function() {
+	var tipo_seleccionado = $(this).val();
+	alert(tipo_seleccionado);
+	var block = "";
+	var title = '<label style="font-size: 11px;">CHARTER TÁNDEM</label><br>';
+	$.ajax({
+	    url: 'variantes-patente/'+tipo_seleccionado,
+	    type: 'GET',
+        processData: false,
+    	contentType: false,
+        success: function(response){
+        	//console.log(response.variantes);
+
+			init_check(tipo_seleccionado, response.variantes);
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+
+	    
+    });
+});*/
+
+$('#select_tipo_charter').change(function () { 
+	var tipo_seleccionado = $(this).val();
+	//alert(tipo_seleccionado);
+	var block = "";
+	//var title = '<label style="font-size: 11px;">CHARTER TÁNDEM</label><br>';
+	if(tipo_seleccionado != 0){
+		$.ajax({
+		    url: 'variantes-patente/'+tipo_seleccionado,
+		    type: 'GET',
+	        processData: false,
+	    	contentType: false,
+	        success: function(response){
+				//var block = "";
+				var title = '<div class="col-lg-3 col-md-3 col-sm-12"><label style="font-size: 11px;">CHARTER TÁNDEM</label><br><select class="form-control input-sm" name="charter_tandem" id="charter_tandem" onchange="tandem()"><option value="0">SELECCIONAR COMBINACIÓN</option>';
+
+				document.getElementById('tipo-charter-info').innerHTML = "";
+
+				$.each(response.variantes, function(key, variante) {
+					block = "";
+
+					$.each(variante, function(key2, patente) {
+						/*console.log(variante.length);
+						console.log(variante);
+						console.log(key2);
+						console.log();*/
+						if(variante.length > 1){
+							block += '<option primerorden="'+patente.primer_orden+'" sgdoorden="'+patente.segundo_orden+'" value="'+patente.primer_orden+'-'+patente.segundo_orden+'">'+(patente.descripcion).toUpperCase()+'</option>';
+						}else{
+							//title = '<div class="col-lg-12 col-md-12 col-sm-12"><label style="font-size: 11px;"><label style="font-size: 11px;">CHARTER '+patente.toUpperCase()+'</label><br>';
+							crear_patente(key, patente.toUpperCase());
+							block = '';
+						}
+					});
+				});
+
+				if(block != ""){
+					block += '</select></div>';
+					$('#tipo-charter-info').append(title+block);	
+				}
+				
+	        },
+
+	        error: function (xhr, ajaxOptions, thrownError) {
+		        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+		    }
+    	});	
+	}
+	
+});
+
+function tandem(){
+	var tandem_text = $("#charter_tandem option:selected").text();
+	var orden_1 = $("#charter_tandem option:selected").attr("primerorden");
+	var orden_2 = $("#charter_tandem option:selected").attr("sgdoorden"); 
+	var patentes = tandem_text.split('-');
+	//document.getElementById('tipo-charter-info').innerHTML = "";
+	$.each(patentes, function(key, patente) {
+		crear_patente(key, patente.toUpperCase());
+	});
+}
+
+function crear_patente(posicion, patente){
+	$.ajax({
+	    url: 'embarcaciones/'+patente,
+	    type: 'GET',
+        processData: false,
+    	contentType: false,
+        success: function(response){
+			var info = '<div class="col-lg-12 col-md-12 col-sm-12"><label style="font-size: 11px;">CHARTER '+patente+'</label></div>';
+			info += '<div class="col-lg-6 col-md-6 col-sm-12" style="padding-bottom: 10px;">';
+			info += '    <label style="font-size: 11px;">EMBARCACIÓN</label>';
+			info += '    <br>';
+			info += '    <select class="form-control input-sm" name="embarcacion[]" id="select_embarcacion_'+patente+'" onchange="cargar_itinerario(this, '+ posicion +', \''+patente+'\')">';
+			info += '        <option value="0">SELECCIONAR EMBARCACIÓN</option>';
+
+			$.each(response.embarcaciones, function(key, embarcacion) {
+				info += '    <option value="'+embarcacion.id+'">'+embarcacion.nombre+'</option>';
+			});
+
+			info += '    </select>';
+			info += '</div>';
+			info += '<div class="col-lg-6 col-md-6 col-sm-12" style="padding-bottom: 10px;">';
+			info += '    <label style="font-size: 11px;">ITINERARIO</label>';
+			info += '    <br>';
+			info += '    <select class="form-control input-sm select_itinerario_'+patente+'" name="itinerario[]">';
+			info += '        <option value="0">SELECCIONAR ITINERARIO</option>';
+			info += '    </select>';
+			info += '</div>';
+
+			$('#tipo-charter-info').append(info);
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+	});
+}
+
+function cargar_itinerario(obj, posicion, patente){
+	var obj_itinerario = $("select").closest(".select_itinerario_"+patente);
+	var id_embarcacion = $(obj).children("option:selected").val();
+	
+	if(obj_itinerario[posicion] == undefined){
+		posicion = 0;
+	}
+
+	obj_itinerario[posicion].options.length = 0;
+	var c = document.createElement("option");
+	c.text = "SELECCIONAR ITINERARIO";
+	c.value = 0;
+	obj_itinerario[posicion].options.add(c, 0);
+
+	if(id_embarcacion != 0){
+		$.ajax({
+           	url: 'embarcaciones/info/'+id_embarcacion,
+            dataType: "JSON",
+            type: 'GET',
+           
+            success: function (response) {
+            	var itinerarios = response.itinerarios;
+            	var i = 1;
+            	for(var k in itinerarios) {
+            		var c = document.createElement("option");
+					c.text = itinerarios[k].toUpperCase();
+					c.value = k;
+					obj_itinerario[posicion].options.add(c, i);
+					i++;
+				}
+            },
+
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+            }
+        });
+	}	
 }

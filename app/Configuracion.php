@@ -10,27 +10,28 @@ namespace App;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class TipoContacto
+ * Class Configuracion
  * 
  * @property int $id
  * @property string $descripcion
+ * @property int $cantd_dias_charter
+ * @property string $valor
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * 
- * @property \Illuminate\Database\Eloquent\Collection $pedidos
  *
  * @package App
  */
-class TipoContacto extends Eloquent
+class Configuracion extends Eloquent
 {
-	protected $table = 'tipo_contacto';
+	protected $table = 'configuracion';
 
-	protected $fillable = [
-		'descripcion'
+	protected $casts = [
+		'cantd_dias_charter' => 'int'
 	];
 
-	public function pedidos()
-	{
-		return $this->hasMany(\App\Pedido::class);
-	}
+	protected $fillable = [
+		'descripcion',
+		'cantd_dias_charter',
+		'valor'
+	];
 }

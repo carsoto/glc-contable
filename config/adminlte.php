@@ -114,23 +114,96 @@ return [
             'icon'        => 'dashboard',
         ],
         [
+            'text'        => 'Charters',
+            'url'         => 'admin/charters/index',
+            'icon'        => 'anchor',
+        ],
+        [
+            'text'    => 'Base de datos',
+            'icon'    => 'database',
+            'submenu' => [
+                [
+                    'text'        => 'Embarcaciones',
+                    'url'         => '#',
+                    'icon'        => '',
+                ],
+                [
+                    'text'        => 'Servicios',
+                    'url'         => '#',
+                    'icon'        => '',
+                ],
+                [
+                    'text'        => 'Actividades',
+                    'url'         => '#',
+                    'icon'        => '',
+                ],
+                [
+                    'text'        => 'Proveedores',
+                    'url'         => '#',
+                    'icon'        => '',
+                ],
+                [
+                    'text'        => 'Bebidas Alcohólicas',
+                    'url'         => '#',
+                    'icon'        => '',
+                ],
+                [
+                    'text'        => 'Alimentos',
+                    'url'         => '#',
+                    'icon'        => '',
+                ],
+                [
+                    'text'        => 'Brokers',
+                    'url'         => '#',
+                    'icon'        => '',
+                ],
+            ]
+        ],
+        [
+            'text'    => 'Pedidos',
+            'icon'    => 'calendar-o',
+            'submenu' => [
+                [
+                    'text'        => 'General',
+                    'url'         => 'admin/pedidos',
+                    'icon'        => '',
+                ],
+                [
+                    'text'        => 'Holds',
+                    'url'         => '#',
+                    'icon'        => '',
+                ],
+            ]
+        ],
+        [
             'text'    => 'Contabilidad',
             'icon'    => 'bar-chart-o',
             'submenu' => [
                 [
                     'text'        => 'Ventas',
                     'url'         => 'admin/ventas/comisiones-charters',
-                    'icon'        => 'dollar',
+                    'icon'        => '',
+                ],
+                [
+                    'text'        => 'Gastos',
+                    'url'         => '#',
+                    'icon'        => '',
                 ],
                 [
                     'text'        => 'Balance Comisiones',
-                    'url'         => 'admin/balance-socios',
-                    'icon'        => 'users',
-                ],
-                [
-                    'text'        => 'Pedidos',
-                    'url'         => 'admin/pedidos',
-                    'icon'        => 'calendar-o',
+                    'icon'        => '',
+                    'submenu' => [
+                        [
+                            'text'        => 'GLC',
+                            'url'         => 'admin/balance-socios',
+                            'icon'        => '',
+                        ],
+                        [
+                            'text'        => 'Empleados',
+                            'url'         => '#',
+                            'icon'        => '',
+                        ],
+                    ]
                 ],
             ]
         ]

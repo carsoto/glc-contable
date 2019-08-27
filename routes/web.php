@@ -20,6 +20,19 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
 
+	/********************************************************* CHARTERS *****************************************************************************************************/
+	Route::group(['middleware' => 'auth', 'prefix' => 'charters'], function () {
+		Route::get('/index', 'CharterController@index')->name('admin.charters.index');
+		Route::get('/create', 'CharterController@create')->name('admin.charters.create');
+		Route::get('/charters-dashboard', 'CharterController@dashboard')->name('admin.charters.dashboard');
+		Route::get('/charters-eliminados', 'CharterController@historial_charters')->name('admin.historial-charters-eliminados');
+		Route::get('/variantes-patente/{id_patente}', 'CharterController@variantes_patente')->name('admin.variantes-patente');
+		Route::get('/embarcaciones/{patente}', 'EmbarcacionController@embarcaciones')->name('admin.embarcaciones.patente');
+		Route::get('/embarcaciones/info/{patente}', 'EmbarcacionController@embarcaciones_informacion')->name('admin.embarcaciones.info');
+		Route::post('/crear-charter', 'CharterController@store')->name('admin.crear-charter');
+		Route::get('/eliminar-charter/{charter_id}', 'CharterController@destroy')->name('admin.eliminar-charter');
+	});
+
 	/********************************************************* VENTAS *****************************************************************************************************/
 	Route::group(['middleware' => 'auth', 'prefix' => 'ventas'], function () {
 		//Charter
@@ -27,7 +40,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		Route::get('/actualizar-charter/{charter_id}', 'CharterController@edit')->name('admin.comisiones-actualizar-charter');
 		Route::post('/actualizar-charter', 'CharterController@update')->name('admin.comisiones-actualizar-info-charter');
 		Route::get('/eliminar-charter/{charter_id}', 'CharterController@destroy')->name('admin.comisiones-eliminar-charter');
-		Route::get('/charters/eliminados', 'CharterController@historial_charters')->name('admin.historial-charters-eliminados');
+		Route::get('/charters-eliminados', 'CharterController@historial_charters')->name('admin.historial-charters-eliminados');
 
 		Route::get('/comisiones-charters', 'ContabilidadController@index')->name('admin.comisiones-charters');
 

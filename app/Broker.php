@@ -10,20 +10,22 @@ namespace App;
 use Reliese\Database\Eloquent\Model as Eloquent;
 
 /**
- * Class Socio
+ * Class Broker
  * 
  * @property int $id
  * @property string $nombre
+ * @property string $email
+ * @property string $empresa
+ * @property string $telefono
  * @property int $porcentaje
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property \Illuminate\Database\Eloquent\Collection $comisiones
- * @property \Illuminate\Database\Eloquent\Collection $socios_regla_negocios
+ * @property \Illuminate\Database\Eloquent\Collection $charters
  *
  * @package App
  */
-class Socio extends Eloquent
+class Broker extends Eloquent
 {
 	protected $casts = [
 		'porcentaje' => 'int'
@@ -31,16 +33,14 @@ class Socio extends Eloquent
 
 	protected $fillable = [
 		'nombre',
+		'email',
+		'empresa',
+		'telefono',
 		'porcentaje'
 	];
 
-	public function comisiones()
+	public function charters()
 	{
-		return $this->hasMany(\App\Comisione::class, 'socios_id');
-	}
-
-	public function socios_regla_negocios()
-	{
-		return $this->hasMany(\App\SociosReglaNegocio::class, 'socios_id');
+		return $this->hasMany(\App\Charter::class, 'brokers_id');
 	}
 }

@@ -12,6 +12,9 @@ use App\Entrada;
 use App\TipoGasto;
 use App\Gasto;
 use App\Historial;
+use App\Broker;
+use App\Programa;
+use App\TiposPatente;
 use Carbon\Carbon;
 use DB;
 use Redirect;
@@ -30,9 +33,49 @@ class CharterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index(){
+        return view('charters.index');
+    }
+
+    public function dashboard(){
+        $charters = Charter::all();
+        return Datatables::of($charters)
+            ->addColumn('codigo', function ($charters) {
+                return $charters->codigo;
+            })
+            ->addColumn('broker', function ($charters) {
+                return $charters->broker;
+            })
+            ->addColumn('cliente', function ($charters) {
+                return $charters->cliente;
+            })
+            ->addColumn('yacht', function ($charters) {
+                return $charters->yacht;
+            })
+            ->addColumn('fecha_inicio', function ($charters) {
+                return Carbon::parse($charters->fecha_inicio)->format('d-m-Y');
+            })
+            ->addColumn('fecha_fin', function ($charters) {
+                return Carbon::parse($charters->fecha_fin)->format('d-m-Y');
+            })
+            ->addColumn('patente', function ($charters) {
+                return "";
+            })
+            ->addColumn('programa', function ($charters) {
+                return "";
+            })
+            ->addColumn('estatus', function ($charters) {
+                return "";
+            })
+            ->addColumn('action', function ($charters) {
+                return '<a href="editar-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a><a href="#" onclick="eliminar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
+            })
+            ->order(function ($query) {
+                if (request()->has('fecha_inicio')) {
+                    $query->orderBy('fecha_inicio', 'ASC');
+                }
+            })
+            ->make(true);
     }
 
     /**
@@ -42,7 +85,10 @@ class CharterController extends Controller
      */
     public function create()
     {
-        //
+        $brokers = Broker::all();
+        $programas = Programa::all();
+        $tipos_patente = TiposPatente::all();
+        return view('charters.crear', ['brokers' => $brokers, 'programas' => $programas, 'tipos_patente' => $tipos_patente]);
     }
 
     /**
@@ -52,8 +98,7 @@ class CharterController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-
-        DB::beginTransaction();
+        /*DB::beginTransaction();
         try{
             $descripcion = "";
             $n_fecha_inicio = str_replace("-", "", $request->fecha_inicio);
@@ -101,6 +146,18 @@ class CharterController extends Controller
             }else{
                 $contrato = "Sin contrato";
             } 
+    
+            if(isset($request->nuevo_intermediario["check"])){
+                $broker = new Broker();
+                $broker->nombre = $request->nuevo_intermediario["nombre"];
+                $broker->email = $request->nuevo_intermediario["email"];
+                $broker->empresa = $request->nuevo_intermediario["empresa"];
+                $broker->telefono = $request->nuevo_intermediario["telefono"];
+                $broker->save();
+                $broker_id = $broker->id;
+            }else{
+                $broker_id = $request->broker;
+            }
 
             $ffi = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
             $ff_init = explode("-", $ffi);
@@ -109,7 +166,9 @@ class CharterController extends Controller
             $charter->codigo = $codigo_charter;
             $charter->descripcion = strtoupper($descripcion);
             $charter->yacht = strtoupper($request->yacht);
-            $charter->broker = strtoupper($request->broker);
+            $charter->brokers_id = $broker_id;
+            $charter->programa_id = $request->programa;
+            //$charter->broker = strtoupper($request->broker);
             $charter->cliente = strtoupper($request->cliente);
             $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
             $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
@@ -124,7 +183,8 @@ class CharterController extends Controller
             $charter->comision_glc = $request->comision_glc;
             $charter->apa = $request->apa;
             $charter->contrato = $contrato;
-            
+            $charter->status = $request->status;
+
             if($charter->save()){
                 $count_comision = 0;
             
@@ -190,7 +250,9 @@ class CharterController extends Controller
         catch(Exception $e){
             return Response::json(array('msg' => 'Error en la transacción', 'status' => 'error'));
             DB::rollBack();
-        }
+        }*/
+
+        dd($request);
     }
 
     /**
@@ -377,5 +439,20 @@ class CharterController extends Controller
                 }
             })
             ->make(true);
+    }
+
+    public function variantes_patente($id_tipo){
+        $patente = TiposPatente::find($id_tipo);
+        if(count($patente->variacion_patentes) > 0){
+            foreach ($patente->variacion_patentes as $key => $patente) {
+                $primer_orden = TiposPatente::where('id', $patente->primer_orden)->first()->descripcion;
+                $segundo_orden = TiposPatente::where('id', $patente->segundo_orden)->first()->descripcion;
+                $variantes[$id_tipo][] = array('primer_orden' => $patente->primer_orden, 'segundo_orden' => $patente->segundo_orden, 'descripcion' => $primer_orden."-".$segundo_orden);
+            }    
+        }else{
+            $variantes[$id_tipo][] = TiposPatente::find($id_tipo)->descripcion;
+        }
+
+        return Response::json(['variantes' => $variantes]);
     }
 }
