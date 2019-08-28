@@ -1036,6 +1036,7 @@ function historial_pedidos(){
 	    	{data: "usuario", name: "usuario"},
 	    	{data: "comentario", name: "comentario"},
 	    	{data: "fecha", name: "fecha"},
+	    	{data: "hora", name: "hora"},
 	    ]
 	});
 

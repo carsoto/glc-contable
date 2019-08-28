@@ -307,6 +307,7 @@
                                 <th>Usuario</th>
                                 <th>Comentario</th>
                                 <th>Fecha</th>
+                                <th>Hora</th>
                             </thead>
                             <tbody></tbody>
                         </table>

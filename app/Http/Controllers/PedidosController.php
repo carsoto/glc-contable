@@ -279,6 +279,9 @@ class PedidosController extends Controller
             ->addColumn('fecha', function ($historial) { 
                 return Carbon::parse($historial->created_at)->format('d-m-Y');
             })
+            ->addColumn('hora', function ($historial) { 
+                return Carbon::parse($historial->created_at)->format('H:i:s');
+            })
             ->order(function ($query) {
                 if (request()->has('fecha')) {
                     $query->orderBy('created_at', 'DESC');
