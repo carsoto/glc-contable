@@ -1360,11 +1360,12 @@ $("#tabla_charters").DataTable({
     	{data: "yacht", name: "yacht"},
     	{data: "fecha_inicio", name: "fecha_inicio"},
     	{data: "fecha_fin", name: "fecha_fin"},
-    	{data: "patente", name: "patente"},
     	{data: "programa", name: "programa"},
     	{data: "status", render: function ( data, type, row ) {
-    		if(data){
+    		if(data == 'EJECUTADO'){
 				return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+    		}else if(data == 'ACTIVO'){
+    			return '<span style="font-size: 11px;" class="label label-primary">'+ data +'</span>';
     		}else{
     			return '<span style="font-size: 11px;" class="label label-danger">'+ data +'</span>';
     		}

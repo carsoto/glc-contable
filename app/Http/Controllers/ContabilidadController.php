@@ -541,7 +541,7 @@ class ContabilidadController extends Controller
         $id_charter = decrypt($id);
         $charter = Charter::find($id_charter);
         $totales = Funciones::calcular_totales($charter);
-        $pdf = PDF::loadView('comisiones.pdf.comisiones', ['charter' => $charter, 'totales' => $totales]);
+        $pdf = PDF::loadView('ventas.pdf.comisiones', ['charter' => $charter, 'totales' => $totales]);
         return $pdf->stream("resumen-".$charter->codigo.".pdf");
     }
 
@@ -761,7 +761,13 @@ class ContabilidadController extends Controller
     /************************ BALANCE ************************/
     public function balance_socios(){
         $charters = Charter::all();
-        $socios = Socio::all();
+        $socios = Socio::where('porcentaje', '>', 0)->get();
         return view('ventas.balance_socios', ['charters' => $charters, 'socios' => $socios]);
+    }
+
+    public function balance_empleados(){
+        $charters = Charter::all();$socios = Socio::where('porcentaje', '=', 0)->get();
+        $socios = Socio::where('porcentaje', '=', 0)->get();
+        return view('ventas.balance_empleados', ['charters' => $charters, 'socios' => $socios]);
     }
 }

@@ -1,31 +1,31 @@
 @extends('adminlte::page')
 
-@section('title', 'Comisiones Socios')
+@section('title', 'Comisiones Empleados')
 
 @section('content_header')
-    <h1>COMISIONES SOCIOS</h1>
+    <h1>COMISIONES EMPLEADOS</h1>
 @stop
 @section('content')
     <div class="box box-danger">
-        <div class="box-body">
-            <div class="table-responsive">
-                <table class="table table-striped table-condensed table-bordered" style="font-size: 11px;">
-                    <thead>
-                        <tr>
+    	<div class="box-body">
+    		<div class="table-responsive">
+    			<table class="table table-striped table-condensed table-bordered" style="font-size: 11px;">
+    				<thead>
+    					<tr>
                             <th style="vertical-align: middle;text-align:center;" rowspan="2">CHARTER</th>
-                            @foreach($socios AS $key => $socio)
-                                <th class="text-center" colspan="3">{{ $socio->nombre }} ({{ $socio->porcentaje }}%)</th>
-                            @endforeach
-                        </tr>
-                        <tr>
-                            @foreach($socios AS $key => $socio)
-                                <th class="text-center success" width="80px">Comisión</th>
-                                <th class="text-center warning" width="80px">Abono</th>
+	    					@foreach($socios AS $key => $socio)
+	    						<th class="text-center" colspan="3">{{ $socio->nombre }} ({{ $socio->porcentaje }}%)</th>
+	    					@endforeach
+						</tr>
+						<tr>
+							@foreach($socios AS $key => $socio)
+		    					<th class="text-center success" width="80px">Comisión</th>
+		    					<th class="text-center warning" width="80px">Abono</th>
                                 <th class="text-center danger" width="80px">Saldo</th>
-                                <!-- MONTO - ABONO = SALDO -->  
-                            @endforeach
-                        </tr>
-                    </thead>
+                                <!-- MONTO - ABONO = SALDO -->	
+	    					@endforeach
+						</tr>
+    				</thead>
                     <tbody>
                         @foreach($charters AS $key => $charter)
                             <tr>
@@ -58,8 +58,8 @@
                             @endforeach
                         </tr>
                     </tfoot>
-                </table>
-            </div>
-        </div>
+    			</table>
+    		</div>
+    	</div>
     </div>
 @stop

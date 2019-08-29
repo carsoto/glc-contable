@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		Route::get('/embarcaciones/info/{patente}', 'EmbarcacionController@embarcaciones_informacion')->name('admin.embarcaciones.info');
 		Route::post('/crear-charter', 'CharterController@store')->name('admin.crear-charter');
 		Route::get('/eliminar-charter/{charter_id}', 'CharterController@destroy')->name('admin.eliminar-charter');
+		Route::get('/opciones-charter/{charter_id}', 'CharterController@opciones')->name('admin.opciones-charter');
 	});
 
 	/********************************************************* VENTAS *****************************************************************************************************/
@@ -74,6 +75,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 	/********************************************************* BALANCE SOCIOS ********************************************************************************************/
 	Route::group(['middleware' => 'auth', 'prefix' => 'balance-socios'], function () {
 		Route::get('/', 'ContabilidadController@balance_socios')->name('admin.balance-socios');
+		Route::get('/empleados', 'ContabilidadController@balance_empleados')->name('admin.balance-empleados');
 	});
 
 	/********************************************************* PEDIDOS ********************************************************************************************/

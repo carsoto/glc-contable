@@ -5025,3 +5025,110 @@ table.text-center th {
 .with-nav-tabs.panel-primary .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
     background-color: #4a9fe9;
 }
+
+/*
+ * Component: Panel Box
+ * --------------------
+ */
+.panel-box {
+  border-radius: 0px;
+  position: relative;
+  display: block;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.panel-box > .inner {
+  padding: 5px;
+}
+
+.inner {
+  color: white;
+}
+
+.panel-box > .panel-box-footer {
+  position: relative;
+  /*text-align: center;*/
+  padding: 3px 0;
+  color: #fff;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+}
+
+.panel-box-footer a {
+  color: white;
+}
+.panel-box-footer a:hover {
+  color: white;
+  font-size: 18px;
+}
+
+.panel-box > .panel-box-footer:hover {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.15);
+}
+.panel-box h3 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.panel-box p {
+  font-size: 15px;
+}
+
+.panel-box p > panel {
+  display: block;
+  color: #f9f9f9;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.panel-box h3,
+.panel-box p {
+  z-index: 5;
+}
+
+.panel-box .icon {
+  -webkit-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  z-index: 0;
+  font-size: 40px;
+  color: rgba(0, 0, 0, 0.15);
+}
+
+.panel-box:hover {
+  text-decoration: none;
+  color: #f9f9f9;
+}
+.panel-box:hover .icon {
+  font-size: 45px;
+}
+@media (max-width: 767px) {
+  .panel-box {
+    /*text-align: center;*/
+  }
+  .panel-box {
+    /*text-align: center;*/
+    border-radius: 0px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .panel-box .icon {
+    display: none;
+  }
+
+  .panel-box p {
+    font-size: 12px;
+  }
+}

@@ -9,12 +9,14 @@ use App\Comisione;
 use App\AbonosComisione;
 use App\GastosDetalle;
 use App\Entrada;
+use App\Embarcacion;
 use App\TipoGasto;
 use App\Gasto;
 use App\Historial;
 use App\Broker;
 use App\Programa;
 use App\TiposPatente;
+use App\ChartersEmbarcacion;
 use Carbon\Carbon;
 use DB;
 use Redirect;
@@ -37,6 +39,12 @@ class CharterController extends Controller
         return view('charters.index');
     }
 
+    public function opciones($id){
+        $id = decrypt($id);
+        $charter = Charter::find($id);
+        return view('charters.opciones', ['charter' => $charter]);
+    }
+
     public function dashboard(){
         $charters = Charter::all();
         return Datatables::of($charters)
@@ -44,7 +52,9 @@ class CharterController extends Controller
                 return $charters->codigo;
             })
             ->addColumn('broker', function ($charters) {
-                return $charters->broker;
+                if($charters->broker != null){
+                   return strtoupper($charters->broker->nombre);
+                }
             })
             ->addColumn('cliente', function ($charters) {
                 return $charters->cliente;
@@ -58,17 +68,17 @@ class CharterController extends Controller
             ->addColumn('fecha_fin', function ($charters) {
                 return Carbon::parse($charters->fecha_fin)->format('d-m-Y');
             })
-            ->addColumn('patente', function ($charters) {
-                return "";
-            })
             ->addColumn('programa', function ($charters) {
+                if($charters->programa != null){
+                    return $charters->programa->desc_programa;
+                }
                 return "";
             })
             ->addColumn('estatus', function ($charters) {
-                return "";
+                return $charters->status;
             })
             ->addColumn('action', function ($charters) {
-                return '<a href="editar-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a><a href="#" onclick="eliminar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
+                return '<a href="opciones-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="opciones-charter/'.encrypt($charters['id']).'"><i class="fa fa-pencil fa-fw" title="Editar"></i></a><a href="#" onclick="eliminar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
             })
             ->order(function ($query) {
                 if (request()->has('fecha_inicio')) {
@@ -98,13 +108,15 @@ class CharterController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request){
-        /*DB::beginTransaction();
+        DB::beginTransaction();
+        
         try{
             $descripcion = "";
             $n_fecha_inicio = str_replace("-", "", $request->fecha_inicio);
             $codigo = "CHT-".$n_fecha_inicio;
             $charter_reg = Charter::where('codigo', '=', $codigo)->get();
             $socios = Socio::all();
+            $yacht = "";
 
             if(count($charter_reg) > 0){
                 $cod_reg = count($charter_reg);
@@ -122,10 +134,27 @@ class CharterController extends Controller
             $init_f = explode(" ", $f_init[0]);
             $end_f = explode(" ", $f_end[0]);
 
-            if($init_f[0] == $end_f[0]){
-                $descripcion = $f_init[0]." - ".$end_f[1].",".$f_end[1].". (".$request->yacht.")";
+            if($request->tipo_charter == 3){
+                foreach ($request->embarcacion as $key => $value) {
+                    $embarcacion_id = $value;
+                    $embarcacion = Embarcacion::find($embarcacion_id)->nombre;
+                    if($yacht != ""){
+                        $yacht = $yacht.'-'.strtoupper($embarcacion);
+                    }else{
+                        $yacht = strtoupper($embarcacion);
+                    }
+                }
+
             }else{
-                $descripcion = $f_init[0]." - ".$f_end[0].",".$f_end[1].". (".$request->yacht.")";   
+                $embarcacion_id = $request->embarcacion[0];
+                $embarcacion = Embarcacion::find($embarcacion_id)->nombre;
+                $yacht = strtoupper($embarcacion);
+            }
+
+            if($init_f[0] == $end_f[0]){
+                $descripcion = $f_init[0]." - ".$end_f[1].",".$f_end[1].". (".$yacht.")";
+            }else{
+                $descripcion = $f_init[0]." - ".$f_end[0].",".$f_end[1].". (".$yacht.")";   
             }
             $directorio_images = 'images/charters/'.$codigo_charter;
             
@@ -149,7 +178,7 @@ class CharterController extends Controller
     
             if(isset($request->nuevo_intermediario["check"])){
                 $broker = new Broker();
-                $broker->nombre = $request->nuevo_intermediario["nombre"];
+                $broker->nombre = strtoupper($request->nuevo_intermediario["nombre"]);
                 $broker->email = $request->nuevo_intermediario["email"];
                 $broker->empresa = $request->nuevo_intermediario["empresa"];
                 $broker->telefono = $request->nuevo_intermediario["telefono"];
@@ -165,10 +194,9 @@ class CharterController extends Controller
             $charter->creado_por = Auth::id();
             $charter->codigo = $codigo_charter;
             $charter->descripcion = strtoupper($descripcion);
-            $charter->yacht = strtoupper($request->yacht);
+            $charter->yacht = $yacht;
             $charter->brokers_id = $broker_id;
             $charter->programa_id = $request->programa;
-            //$charter->broker = strtoupper($request->broker);
             $charter->cliente = strtoupper($request->cliente);
             $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
             $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');
@@ -187,7 +215,40 @@ class CharterController extends Controller
 
             if($charter->save()){
                 $count_comision = 0;
-            
+                
+                if($request->tipo_charter == 3){
+                    foreach ($request->embarcacion as $key => $value) {
+                        $charter_embarcacion = new ChartersEmbarcacion();
+                        $charter_embarcacion->charters_id = $charter->id;
+                        
+                        if($value != 0){
+                            $charter_embarcacion->embarcacion_id = $value;
+                        }
+
+                        if($request->itinerario[$key] != 0){
+                            $charter_embarcacion->itinerarios_id = $request->itinerario[$key];    
+                        }
+                        
+                        $charter_embarcacion->save();
+                    }
+                }else{
+                    $embarcacion_id = $request->embarcacion[0];
+                    $itinerario_id = $request->itinerario[0];
+
+                    $charter_embarcacion = new ChartersEmbarcacion();
+                    $charter_embarcacion->charters_id = $charter->id;
+                    
+                    if($embarcacion_id != 0){
+                        $charter_embarcacion->embarcacion_id = $embarcacion_id;    
+                    }
+
+                    if($itinerario_id != 0){
+                        $charter_embarcacion->itinerarios_id = $itinerario_id;    
+                    }
+                    
+                    $charter_embarcacion->save();
+                }
+
                 foreach ($socios as $key => $socio) {
                     $new_comision = new Comisione();
                     $new_comision->users_id = Auth::id();
@@ -250,9 +311,7 @@ class CharterController extends Controller
         catch(Exception $e){
             return Response::json(array('msg' => 'Error en la transacción', 'status' => 'error'));
             DB::rollBack();
-        }*/
-
-        dd($request);
+        }
     }
 
     /**

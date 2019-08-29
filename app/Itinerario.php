@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 23 Aug 2019 21:05:15 +0000.
+ * Date: Tue, 27 Aug 2019 21:28:47 +0000.
  */
 
 namespace App;
@@ -18,6 +18,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
+ * @property \Illuminate\Database\Eloquent\Collection $charters_embarcacions
  * @property \Illuminate\Database\Eloquent\Collection $embarcacions
  *
  * @package App
@@ -28,6 +29,11 @@ class Itinerario extends Eloquent
 		'nombre',
 		'url_imagen'
 	];
+
+	public function charters_embarcacions()
+	{
+		return $this->hasMany(\App\ChartersEmbarcacion::class, 'itinerarios_id');
+	}
 
 	public function embarcacions()
 	{

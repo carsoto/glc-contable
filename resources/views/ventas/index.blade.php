@@ -1,9 +1,9 @@
 @extends('adminlte::page')
 
-@section('title', 'Comisiones Charters')
+@section('title', 'VENTAS')
 
 @section('content_header')
-    <h1>COMISIONES CHARTERS</h1>
+    <h1>VENTAS</h1>
 @stop
 
 @section('content')

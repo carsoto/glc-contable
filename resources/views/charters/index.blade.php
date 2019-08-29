@@ -23,7 +23,6 @@
                             <th style="vertical-align: middle; text-align:center;">YACHT</th>
                             <th style="vertical-align: middle; text-align:center;">F. INICIO</th>
                             <th style="vertical-align: middle; text-align:center;">F. FIN</th>
-	    					<th style="vertical-align: middle; text-align:center;">PATENTE</th>
 	    					<th style="vertical-align: middle; text-align:center;">PROGRAMA</th>
                             <th style="vertical-align: middle; text-align:center;">ESTATUS</th>
                             <th style="vertical-align: middle; text-align:center;"><i class="fa fa-gears"></i></th>

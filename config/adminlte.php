@@ -190,7 +190,7 @@ return [
                     'icon'        => '',
                 ],
                 [
-                    'text'        => 'Balance Comisiones',
+                    'text'        => 'Comisiones',
                     'icon'        => '',
                     'submenu' => [
                         [
@@ -200,7 +200,7 @@ return [
                         ],
                         [
                             'text'        => 'Empleados',
-                            'url'         => '#',
+                            'url'         => 'admin/balance-socios/empleados',
                             'icon'        => '',
                         ],
                     ]
