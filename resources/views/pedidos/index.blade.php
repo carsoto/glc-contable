@@ -14,15 +14,15 @@
                     <button class="btn btn-sm btn-success btn-flat" data-toggle="modal" data-target="#registrarPedido"><i class="fa fa-plus"></i> Nuevo pedido</button>
                     <button class="btn btn-sm btn-info btn-flat" data-toggle="modal" onclick="historial_pedidos()"><i class="fa fa-history"></i> Historial</button>
                 </div>
-                <div style="float: right;">
+                <!--<div style="float: right;">
                     <button class="btn btn-sm btn-danger btn-flat" data-toggle="modal" onclick="historial_status_pedidos('inactivo')"><i class="fa fa-ban"></i> Pedidos inactivos</button>
                     <button class="btn btn-sm btn-primary btn-flat" data-toggle="modal" onclick="historial_status_pedidos('vendido')"><i class="fa fa-check"></i> Pedidos vendidos</button>
-                </div>
+                </div>-->
             </div>
             <div class="hidden-md hidden-lg">
                 <button class="btn btn-block btn-sm btn-success btn-flat" data-toggle="modal" data-target="#registrarPedido"><i class="fa fa-plus"></i> Nuevo pedido</button>
-                <button class="btn btn-block btn-sm btn-danger btn-flat" data-toggle="modal" onclick="historial_status_pedidos('inactivo')"><i class="fa fa-ban"></i> Pedidos inactivos</button>
-                <button class="btn btn-block btn-sm btn-primary btn-flat" data-toggle="modal" onclick="historial_status_pedidos('vendido')"><i class="fa fa-check"></i> Pedidos vendidos</button>
+                <!--<button class="btn btn-block btn-sm btn-danger btn-flat" data-toggle="modal" onclick="historial_status_pedidos('inactivo')"><i class="fa fa-ban"></i> Pedidos inactivos</button>
+                <button class="btn btn-block btn-sm btn-primary btn-flat" data-toggle="modal" onclick="historial_status_pedidos('vendido')"><i class="fa fa-check"></i> Pedidos vendidos</button>-->
                 <button class="btn btn-block btn-sm btn-info btn-flat" data-toggle="modal" onclick="historial_pedidos()"><i class="fa fa-history"></i> Historial</button>
             </div>
     	</div>
@@ -307,6 +307,7 @@
                                 <th>Usuario</th>
                                 <th>Comentario</th>
                                 <th>Fecha</th>
+                                <th>Hora</th>
                             </thead>
                             <tbody></tbody>
                         </table>

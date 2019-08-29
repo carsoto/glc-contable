@@ -275,11 +275,12 @@ function editar_charter(id_charter){
         processData: false,
     	contentType: false,
         success: function(response){
-			//console.log(response);
+			//console.log(response.charter.broker.id);
 			document.getElementById('id_charter').value = response.id;
 			document.getElementById('charter_yacht').value = response.charter.yacht;
 			document.getElementById('charter_yacht_rack').value = response.charter.yacht_rack;
-			document.getElementById('charter_broker').value = response.charter.broker;
+			//document.getElementById('charter_broker').value = response.charter.broker;
+			document.getElementById('charter_broker').value = response.charter.broker.id;
 			document.getElementById('charter_cliente').value = response.charter.cliente;
 			document.getElementById('charter_f_inicio').value = response.charter.fecha_inicio;
 			document.getElementById('charter_f_fin').value = response.charter.fecha_fin;
@@ -963,7 +964,7 @@ $("#tabla_pedidos").DataTable({
 	"processing": true,
     //"serverSide": true,
     "ajax": {
-	    "url": "pedidos/dashboard/ACTIVO",
+	    "url": "pedidos/dashboard",
 	    "type": "GET",
   	},
     "order": [[ 1, "ASC" ]],
@@ -975,7 +976,14 @@ $("#tabla_pedidos").DataTable({
 		{data: "f_fin", name: "f_fin"},
 		{data: "prox_seguimiento", name: "prox_seguimiento"},
 		{data: "status", render: function ( data, type, row ) {
-    		return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+    		if(data.toUpperCase() == 'ACTIVO'){
+    			return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+    		}
+    		else if(data.toUpperCase() == 'VENDIDO'){
+				return '<span style="font-size: 11px;" class="label label-primary">'+ data +'</span>';
+			}else{
+				return '<span style="font-size: 11px;" class="label label-danger">'+ data +'</span>';
+			}
 		}},
 		{data: "action", name: "action", orderable: false},
     ]
@@ -1030,6 +1038,7 @@ function historial_pedidos(){
 	    	{data: "usuario", name: "usuario"},
 	    	{data: "comentario", name: "comentario"},
 	    	{data: "fecha", name: "fecha"},
+	    	{data: "hora", name: "hora"},
 	    ]
 	});
 

@@ -13,6 +13,8 @@ use App\TipoGasto;
 use App\Gasto;
 use App\Pedido;
 use App\Historial;
+use App\Broker;
+use App\Embarcacion;
 use Carbon\Carbon;
 use DB;
 use Redirect;
@@ -29,7 +31,9 @@ class ContabilidadController extends Controller
     /************************ VENTAS ************************/
     public function index(){
         $socios = Socio::all();
-        return view('ventas.index', ['socios' => $socios]);
+        $brokers = Broker::all();
+        $embarcaciones = Embarcacion::all();
+        return view('ventas.index', ['socios' => $socios, 'brokers' => $brokers, 'embarcaciones' => $embarcaciones]);
     }
 
     public function edit($id){

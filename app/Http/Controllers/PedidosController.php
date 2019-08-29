@@ -33,17 +33,17 @@ class PedidosController extends Controller
         return view('pedidos.index', ['tipos_contacto' => $tipos_contacto, 'statuses' => $statuses]);
     }
 
-    public function dashboard($estatus){
-        $pedido_estatus = PedidosStatus::where('descripcion', '=', $estatus)->first();
+    public function dashboard(){
+        /*$pedido_estatus = PedidosStatus::where('descripcion', '=', $estatus)->first();
         $pedidos = array();
 
         if($pedido_estatus != null){
             $pedidos = Pedido::where('pedidos_status_id', '=', $pedido_estatus->id)->get();    
-        }
-        
+        }*/
+        $pedidos = Pedido::all();    
         return Datatables::of($pedidos)
             ->addColumn('fecha', function ($pedidos) {
-                return Carbon::parse($pedidos->fecha)->format('d-m-Y');
+                return Carbon::parse($pedidos->fecha)->format('Y-m-d');
             })
             ->addColumn('compania', function ($pedidos) {
                 return $pedidos->compania;
@@ -67,8 +67,8 @@ class PedidosController extends Controller
                 return '<a href="#" onclick="seguimientos_pedido(\''.encrypt($pedidos['id']).'\')"><i class="fa fa-history fa-fw" title="Detalles"></i></a> <a href="#" onclick="editar_pedido(\''.encrypt($pedidos['id']).'\')"><i class="fa fa-pencil fa-fw" title="Editar"></i></a> <a href="#" onclick="eliminar_pedido(\''.encrypt($pedidos['id']).'\')"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
             })
             ->order(function ($query) {
-                if (request()->has('prox_seguimiento')) {
-                    $query->orderBy('prox_seguimiento', 'desc');
+                if (request()->has('fecha')) {
+                    $query->orderBy('fecha', 'DESC');
                 }
             })
             ->make(true);
@@ -278,6 +278,9 @@ class PedidosController extends Controller
             })
             ->addColumn('fecha', function ($historial) { 
                 return Carbon::parse($historial->created_at)->format('d-m-Y');
+            })
+            ->addColumn('hora', function ($historial) { 
+                return Carbon::parse($historial->created_at)->format('H:i:s');
             })
             ->order(function ($query) {
                 if (request()->has('fecha')) {

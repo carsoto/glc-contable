@@ -79,6 +79,7 @@ class CharterController extends Controller
             })
             ->addColumn('action', function ($charters) {
                 return '<a href="opciones-charter/'.encrypt($charters['id']).'"><i class="fa fa-eye fa-fw" title="Detalles"></i></a> <a href="opciones-charter/'.encrypt($charters['id']).'"><i class="fa fa-pencil fa-fw" title="Editar"></i></a><a href="#" onclick="eliminar_charter(\''.encrypt($charters['id']).'\')"><i class="fa fa-trash fa-fw" title="Eliminar"></i></a>';
+
             })
             ->order(function ($query) {
                 if (request()->has('fecha_inicio')) {
@@ -146,9 +147,11 @@ class CharterController extends Controller
                 }
 
             }else{
-                $embarcacion_id = $request->embarcacion[0];
-                $embarcacion = Embarcacion::find($embarcacion_id)->nombre;
-                $yacht = strtoupper($embarcacion);
+                if(isset($request->embarcacion)){
+                    $embarcacion_id = $request->embarcacion[0];
+                    $embarcacion = Embarcacion::find($embarcacion_id)->nombre;
+                    $yacht = strtoupper($embarcacion);    
+                }
             }
 
             if($init_f[0] == $end_f[0]){
@@ -403,7 +406,7 @@ class CharterController extends Controller
 
         $charter->descripcion = strtoupper($descripcion);
         $charter->yacht = strtoupper($request->yacht);
-        $charter->broker = strtoupper($request->broker);
+        $charter->brokers_id = $request->broker;
         $charter->cliente = strtoupper($request->cliente);
         $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
         $charter->fecha_fin = Carbon::parse($request->fecha_fin)->format('Y-m-d');

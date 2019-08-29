@@ -25,7 +25,7 @@
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">BROKER</label>
-                            <input class="form-control input-sm" type="text" name="broker" value="{{ $charter->broker }}" readonly="readonly">
+                            <input class="form-control input-sm" type="text" name="broker" value="{{ $charter->broker->nombre }}" readonly="readonly">
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-12">

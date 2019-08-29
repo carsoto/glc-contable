@@ -67,13 +67,26 @@
                                     <label style="font-size: 11px;">YACHT</label>
                                     <div class="form-group">
                                         <input class="form-control input-sm" type="text" name="yacht">
+
+                                        <select class="form-control input-sm" name="embarcacion[]">
+                                            <option value="0">SELECCIONAR YACHT</option>
+                                            @foreach($embarcaciones AS $key => $embarcacion)
+                                                <option value="{{ $embarcacion->id }}">{{ $embarcacion->nombre }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-3 col-sm-12">
+                            <!--<div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">BROKER</label>
                                     <input class="form-control input-sm" type="text" name="broker">
+                                </div>
+                            </div>-->
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">YACHT RACK</label>
+                                    <input class="form-control input-sm" type="text" name="yacht_rack" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="yacht_rack">
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-12">
@@ -85,10 +98,57 @@
 
                             <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
-                                    <label style="font-size: 11px;">YACHT RACK</label>
-                                    <input class="form-control input-sm" type="text" name="yacht_rack" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="yacht_rack">
+                                    <label style="font-size: 11px;">BROKER</label>
+                                    <select class="form-control input-sm" name="broker">
+                                        <option value="0">SELECCIONAR BROKER</option>
+                                        @foreach($brokers AS $key => $broker)
+                                            <option value="{{ $broker->id }}">{{ $broker->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <label style="font-size: 11px;">
+                                    <input type="checkbox" name="nuevo_intermediario[check]" data-toggle="collapse" data-target="#nuevo_intermediario" value="1"><span class="label-text"> NUEVO BROKER</span>
+                                </label>
+                            </div>
+                            
+                            <div id="nuevo_intermediario" aria-expanded="false" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="display: none;">
+                                <div class="row">
+                                    <div class="alert alert-danger alert-dismissible" role="alert" id="div_interm_error" hidden>
+                                        <button type="button" class="close" onclick="$('#div_interm_error').hide();" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <span id="detalles_interm_error"></span>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label style="font-size: 11px;">NOMBRE Y APELLIDO <span style="color: red;">*</span></label>
+                                            <input name="nuevo_intermediario[nombre]" id="interm_nombre" class="form-control input-sm" placeholder="Nombre y apellido">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label style="font-size: 11px;">COMPAÑÍA <span style="color: red;">*</span></label>
+                                            <input name="nuevo_intermediario[empresa]" id="interm_empresa" class="form-control input-sm" placeholder="Compañía">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label style="font-size: 11px;">E-MAIL <span style="color: red;">*</span></label>
+                                            <input name="nuevo_intermediario[email]" id="interm_email" class="form-control input-sm" placeholder="Correo">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="form-group">
+                                            <label style="font-size: 11px;">TELÉFONO <span style="color: red;">*</span></label>
+                                            <input name="nuevo_intermediario[telefono]" id="interm_telef" class="form-control input-sm" placeholder="+593999999999">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="clearfix"></div>
+                            
                             <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">F. INICIO</label>
@@ -190,10 +250,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-3 col-sm-12">
+                            <!--<div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label style="font-size: 11px;">BROKER</label>
                                     <input class="form-control input-sm" type="text" name="broker" id="charter_broker">
+                                </div>
+                            </div>-->
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label style="font-size: 11px;">BROKER</label>
+                                    <select class="form-control input-sm" name="broker" id="charter_broker">
+                                        <option value="0">SELECCIONAR BROKER</option>
+                                        @foreach($brokers AS $key => $broker)
+                                            <option value="{{ $broker->id }}">{{ $broker->nombre }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-12">
