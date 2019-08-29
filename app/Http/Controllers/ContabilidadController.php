@@ -541,7 +541,7 @@ class ContabilidadController extends Controller
         $id_charter = decrypt($id);
         $charter = Charter::find($id_charter);
         $totales = Funciones::calcular_totales($charter);
-        $pdf = PDF::loadView('comisiones.pdf.comisiones', ['charter' => $charter, 'totales' => $totales]);
+        $pdf = PDF::loadView('ventas.pdf.comisiones', ['charter' => $charter, 'totales' => $totales]);
         return $pdf->stream("resumen-".$charter->codigo.".pdf");
     }
 
