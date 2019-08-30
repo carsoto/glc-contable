@@ -993,7 +993,7 @@ function historial_status_pedidos(status){
 	
 	document.getElementById("hist-estatus-pedidos-title").innerHTML = "PEDIDOS "+status.toUpperCase();
 	
-	$("#tabla_pedidos_por_estatus").DataTable().destroy();
+	/*$("#tabla_pedidos_por_estatus").DataTable().destroy();
 	
 	$("#tabla_pedidos_por_estatus").DataTable({
 		"processing": true,
@@ -1022,7 +1022,7 @@ function historial_status_pedidos(status){
 	    ]
 	});
 
-	$("#estatus-pedidos").modal("toggle"); 
+	$("#estatus-pedidos").modal("toggle");**/ 
 }
 
 function historial_pedidos(){
@@ -1065,7 +1065,7 @@ function eliminar_pedido(id_pedido){
 	            	if(response.status == 'success'){
 	            		swal("Hecho!", response.msg, response.status);
 	        			$("#tabla_pedidos").DataTable().ajax.reload();
-						$("#tabla_pedidos_por_estatus").DataTable().ajax.reload();
+						//$("#tabla_pedidos_por_estatus").DataTable().ajax.reload();
 	            	}else{
 	            		swal("Ocurrió un error!", response.msg, "error");
 	            	}
