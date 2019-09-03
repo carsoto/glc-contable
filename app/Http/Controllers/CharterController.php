@@ -359,6 +359,48 @@ class CharterController extends Controller
         return Response::json(['charter' => $info, 'id' => $id]);
     }
 
+    public function editar($id)
+    {
+        $id_charter = decrypt($id);
+        $charter = Charter::find($id_charter);
+        $brokers = Broker::all();
+        $programas = Programa::all();
+        $tipos_patente = TiposPatente::all();
+        $tipo_charter = 0;
+        $charter_embarcacion = array();
+
+        if(count($charter->embarcacions) == 0){
+            $tipo_charter = 0;
+        }
+        if(count($charter->embarcacions) > 1){
+            $tipo_charter = 3;
+
+            foreach ($charter->embarcacions as $key => $value) {
+                $itinerarios = array();
+                $embarcaciones = Embarcacion::where('tipos_patente_id', '=', $value->tipos_patente->id)->get();
+
+                foreach ($value->itinerarios as $key => $itinerario) {
+                    $itinerarios[$itinerario->id] = $itinerario->nombre;
+                }
+
+                $charter_embarcacion[] = array('id' => $value->pivot->id, 'patente' => strtoupper($value->tipos_patente->descripcion), 'embarcacion_selected' => $value->id, 'itinerario_selected' => $value->pivot->itinerarios_id, 'itinerarios' => $itinerarios, 'embarcaciones' => $embarcaciones);
+            }
+        }else{
+            foreach ($charter->embarcacions as $key => $value) {
+                $tipo_charter = $value->tipos_patente_id;
+                $itinerarios = array();
+                $embarcaciones = Embarcacion::where('tipos_patente_id', '=', $value->tipos_patente_id)->get();
+
+                foreach ($value->itinerarios as $key => $itinerario) {
+                    $itinerarios[$itinerario->id] = $itinerario->nombre;
+                }
+
+                $charter_embarcacion[] = array('id' => $value->pivot->id, 'patente' => strtoupper($value->tipos_patente->descripcion), 'embarcacion_selected' => $value->id, 'itinerario_selected' => $value->pivot->itinerarios_id, 'itinerarios' => $itinerarios, 'embarcaciones' => $embarcaciones);
+            }
+        }
+
+        return view('charters.editar', ['charter' => $charter, 'brokers' => $brokers, 'programas' => $programas, 'tipos_patente' => $tipos_patente, 'tipo_charter' => $tipo_charter, 'charter_embarcacion' => $charter_embarcacion]);
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -367,7 +409,9 @@ class CharterController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request){
-        $charter = Charter::find(decrypt($request->id_charter));
+
+        dd($request);
+        /*$charter = Charter::find(decrypt($request->id_charter));
         $socios = Socio::all();
         $contrato = "Sin contrato";
         
@@ -438,7 +482,7 @@ class CharterController extends Controller
             $status = 'error';
         }
 
-        return Response::json(array('msg' => $msg, 'status' => $status));
+        return Response::json(array('msg' => $msg, 'status' => $status));*/
     }
 
     /**

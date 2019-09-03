@@ -28,10 +28,12 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		Route::get('/charters-eliminados', 'CharterController@historial_charters')->name('admin.historial-charters-eliminados');
 		Route::get('/variantes-patente/{id_patente}', 'CharterController@variantes_patente')->name('admin.variantes-patente');
 		Route::get('/embarcaciones/{patente}', 'EmbarcacionController@embarcaciones')->name('admin.embarcaciones.patente');
-		Route::get('/embarcaciones/info/{patente}', 'EmbarcacionController@embarcaciones_informacion')->name('admin.embarcaciones.info');
+		Route::get('/embarcaciones/info/{id_embarcacion}', 'EmbarcacionController@embarcaciones_informacion')->name('admin.embarcaciones.info');
 		Route::post('/crear-charter', 'CharterController@store')->name('admin.crear-charter');
 		Route::get('/eliminar-charter/{charter_id}', 'CharterController@destroy')->name('admin.eliminar-charter');
 		Route::get('/opciones-charter/{charter_id}', 'CharterController@opciones')->name('admin.opciones-charter');
+		Route::get('/editar-charter/{charter_id}', 'CharterController@editar')->name('admin.editar-charter');
+		Route::post('/actualizar-charter', 'CharterController@update')->name('admin.actualizar-info-charter');
 	});
 
 	/********************************************************* VENTAS *****************************************************************************************************/
@@ -39,7 +41,6 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		//Charter
 		Route::post('/crear-charter', 'CharterController@store')->name('admin.comisiones-crear-charter');
 		Route::get('/actualizar-charter/{charter_id}', 'CharterController@edit')->name('admin.comisiones-actualizar-charter');
-		Route::post('/actualizar-charter', 'CharterController@update')->name('admin.comisiones-actualizar-info-charter');
 		Route::get('/eliminar-charter/{charter_id}', 'CharterController@destroy')->name('admin.comisiones-eliminar-charter');
 		Route::get('/charters-eliminados', 'CharterController@historial_charters')->name('admin.historial-charters-eliminados');
 

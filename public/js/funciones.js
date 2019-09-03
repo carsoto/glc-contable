@@ -690,7 +690,8 @@ $("#actualizar-charter-form").on('submit', function(e){
     e.preventDefault();
     
     $.ajax({
-	    url: 'actualizar-charter',
+	    //url: 'actualizar-charter',
+	    url: route('admin.actualizar-info-charter').url(),
 	    type: 'POST',
         data: new FormData(this),
         processData: false,
@@ -1395,6 +1396,7 @@ $('input[name="nuevo_intermediario[check]"]').on('ifUnchecked', function() {
 $('input[name="tipo_charter_selected"]').on('ifChecked', function() {
 	document.getElementById('nuevo_intermediario').style.display = 'block';
 });
+
 /*$('input[name="tipo_charter_selected"]').on('ifChecked', function() {
 	var tipo_seleccionado = $(this).val();
 	alert(tipo_seleccionado);
@@ -1425,8 +1427,11 @@ $('#select_tipo_charter').change(function () {
 	var block = "";
 	//var title = '<label style="font-size: 11px;">CHARTER TÁNDEM</label><br>';
 	if(tipo_seleccionado != 0){
+		console.log(route('admin.variantes-patente', {id_patente: tipo_seleccionado}).url());
+		/*console.log(route('admin.variantes-patente', {tipo: tipo_seleccionado}).template);*/
 		$.ajax({
-		    url: 'variantes-patente/'+tipo_seleccionado,
+		    //url: 'variantes-patente/'+tipo_seleccionado,
+		    url: route('admin.variantes-patente', {id_patente: tipo_seleccionado}).url(),
 		    type: 'GET',
 	        processData: false,
 	    	contentType: false,
@@ -1456,7 +1461,7 @@ $('#select_tipo_charter').change(function () {
 
 				if(block != ""){
 					block += '</select></div>';
-					$('#tipo-charter-info').append(title+block);	
+					$('#tipo-charter-info-select').append(title+block);	
 				}
 				
 	        },
@@ -1464,7 +1469,7 @@ $('#select_tipo_charter').change(function () {
 	        error: function (xhr, ajaxOptions, thrownError) {
 		        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
 		    }
-    	});	
+    	});
 	}
 	
 });
@@ -1481,8 +1486,10 @@ function tandem(){
 }
 
 function crear_patente(posicion, patente){
+	$('#tipo-charter-info').html('');
 	$.ajax({
-	    url: 'embarcaciones/'+patente,
+	    //url: 'embarcaciones/'+patente,
+	    url: route('admin.embarcaciones.patente', {patente: patente}).url(),
 	    type: 'GET',
         processData: false,
     	contentType: false,
@@ -1533,7 +1540,8 @@ function cargar_itinerario(obj, posicion, patente){
 
 	if(id_embarcacion != 0){
 		$.ajax({
-           	url: 'embarcaciones/info/'+id_embarcacion,
+           	//url: 'embarcaciones/info/'+id_embarcacion,
+           	url: route('admin.embarcaciones.info', {id_embarcacion: id_embarcacion}).url(),
             dataType: "JSON",
             type: 'GET',
            

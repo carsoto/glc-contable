@@ -72,6 +72,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
 @endif
 
+@routes
 @yield('adminlte_js')
 
 </body>

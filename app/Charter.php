@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Tue, 27 Aug 2019 21:28:47 +0000.
+ * Date: Fri, 30 Aug 2019 21:47:27 +0000.
  */
 
 namespace App;
@@ -20,7 +20,6 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property string $yacht
  * @property string $cliente
  * @property int $brokers_id
- * @property string $broker
  * @property \Carbon\Carbon $fecha_inicio
  * @property \Carbon\Carbon $fecha_fin
  * @property int $programa_id
@@ -39,6 +38,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
+ * @property \App\Broker $broker
  * @property \App\Programa $programa
  * @property \Illuminate\Database\Eloquent\Collection $embarcacions
  * @property \Illuminate\Database\Eloquent\Collection $comisiones
@@ -79,7 +79,6 @@ class Charter extends Eloquent
 		'yacht',
 		'cliente',
 		'brokers_id',
-		'broker',
 		'fecha_inicio',
 		'fecha_fin',
 		'programa_id',

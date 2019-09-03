@@ -14,7 +14,8 @@
         <div class="box-body">
             <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="panel-box bg-red">
-                    <a href="https://www.google.com">
+                    <a href="{{ route('admin.editar-charter', ['id' => encrypt($charter->id) ]) }}">
+                        
                         <div class="box-header with-border">
                             <div class="inner">
                                 <h3>EDITAR <div class="icon"><i class="fa fa-pencil"></i></div></h3>
