@@ -13,6 +13,7 @@
         <div class="box-body">
             <form role="form" enctype="multipart/form-data" id="actualizar-charter-form">
                 {{ csrf_field() }}
+                    <input type="hidden" name="id_charter" value="{{ encrypt($charter->id) }}">
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label style="font-size: 11px;">F. INICIO</label>

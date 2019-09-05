@@ -285,7 +285,6 @@ class CharterController extends Controller
                                     $count_comision = $count_comision + $comision;
                                 }
                             }
-
                         }
                     }
 
@@ -372,6 +371,7 @@ class CharterController extends Controller
         if(count($charter->embarcacions) == 0){
             $tipo_charter = 0;
         }
+
         if(count($charter->embarcacions) > 1){
             $tipo_charter = 3;
 
@@ -401,6 +401,7 @@ class CharterController extends Controller
 
         return view('charters.editar', ['charter' => $charter, 'brokers' => $brokers, 'programas' => $programas, 'tipos_patente' => $tipos_patente, 'tipo_charter' => $tipo_charter, 'charter_embarcacion' => $charter_embarcacion]);
     }
+
     /**
      * Update the specified resource in storage.
      *
@@ -410,11 +411,11 @@ class CharterController extends Controller
      */
     public function update(Request $request){
 
-        dd($request);
-        /*$charter = Charter::find(decrypt($request->id_charter));
+        $charter = Charter::find(decrypt($request->id_charter));
         $socios = Socio::all();
         $contrato = "Sin contrato";
-        
+        $yacht = "";
+
         if(($charter->contrato != $request->contrato) && ($request->contrato != "") && ($request->contrato != "Sin contrato")){
             $directorio_images = 'images/charters/'.$charter->codigo;
             if(count($request->file()) > 0){
@@ -448,8 +449,42 @@ class CharterController extends Controller
             $descripcion = $f_init[0]." - ".$f_end[0].",".$f_end[1].". (".$request->yacht.")";   
         }
 
-        $charter->descripcion = strtoupper($descripcion);
-        $charter->yacht = strtoupper($request->yacht);
+        if(isset($request->yacht_rack)){
+            $yacht_rack = $request->yacht_rack;
+        } else{
+            $yacht_rack = $charter->yacht_rack;
+        }
+
+        if(isset($request->neto)){
+            $neto = $request->neto;
+        }else{
+            $neto = $charter->neto;
+        }
+
+        if (isset($request->costo_deluxe)) {
+            $costo_deluxe = $request->costo_deluxe;
+        }else{
+            $costo_deluxe = $charter->costo_deluxe;
+        }
+
+        if (isset($request->comision_glc)) {
+            $comision_glc = $request->comision_glc;
+        }else{
+            $comision_glc = $charter->comision_glc;
+        }
+
+        $n_fecha_inicio = str_replace("-", "", $request->fecha_inicio);
+        $codigo = "CHT-".$n_fecha_inicio;
+        $charter_reg = Charter::where('codigo', '=', $codigo)->get();
+
+        if(count($charter_reg) > 0){
+            $cod_reg = count($charter_reg);
+            $codigo_charter = $codigo."-".($cod_reg+1);  
+        }else{
+            $codigo_charter = $codigo;
+        }
+
+        $charter->codigo = $codigo_charter;    
         $charter->brokers_id = $request->broker;
         $charter->cliente = strtoupper($request->cliente);
         $charter->fecha_inicio = Carbon::parse($request->fecha_inicio)->format('Y-m-d');
@@ -457,17 +492,70 @@ class CharterController extends Controller
         $charter->anyo = $ff_init[0];
         $charter->mes = $ff_init[1];
         $charter->precio_venta = $request->precio_venta;
-        $charter->yacht_rack = $request->yacht_rack;
-        $charter->neto = $request->neto;
+        $charter->yacht_rack = $yacht_rack;
+        $charter->neto = $neto;
         $charter->porcentaje_comision_broker = $request->porcentaje_comision_broker;
         $charter->comision_broker = $request->comision_broker;
-        $charter->costo_deluxe = $request->costo_deluxe;
-        $charter->comision_glc = $request->comision_glc;
+        $charter->costo_deluxe = $costo_deluxe;
+        $charter->comision_glc = $comision_glc;
         $charter->apa = $request->apa;
         $charter->contrato = $contrato;
+
+        if(isset($request->status)){
+            $charter->status = $request->status;
+        }
         
         if($charter->save()){
+            if(isset($request->embarcacion)){
+                $reg_emb = ChartersEmbarcacion::where('charters_id', '=', decrypt($request->id_charter))->get();
 
+                if(count($reg_emb) > 0){
+                    foreach ($reg_emb as $key => $emb_reg) {
+                        $emb_reg->delete();
+                    }
+                }
+
+                foreach ($request->embarcacion as $key1 => $value) {
+                    $emb_charter = new ChartersEmbarcacion();
+                    $emb_charter->charters_id = $charter->id;
+                    
+                    if($value != 0){
+                        $emb_charter->embarcacion_id = $value;
+                    }else{
+                        $emb_charter->embarcacion_id = NULL;
+                    }
+                    
+                    if($request->itinerario[$key1] != 0){
+                        $emb_charter->itinerarios_id = $request->itinerario[$key1];  
+                    }else{
+                        $emb_charter->itinerarios_id = NULL;
+                    }
+                    $emb_charter->save();
+                }
+            }
+
+            if(count($charter->embarcacions) > 0){
+                foreach ($charter->embarcacions as $key => $embarcacion) {
+                    if($yacht != ""){
+                        $yacht = $yacht.'-'.strtoupper($embarcacion->nombre);
+                    }else{
+                        $yacht = strtoupper($embarcacion->nombre);
+                    }
+                }
+                if($init_f[0] == $end_f[0]){
+                    $descripcion = $f_init[0]." - ".$end_f[1].",".$f_end[1].". (".$yacht.")";
+                }else{
+                    $descripcion = $f_init[0]." - ".$f_end[0].",".$f_end[1].". (".$yacht.")";   
+                }
+                $charter->descripcion = strtoupper($descripcion);
+                $charter->yacht = $yacht;
+                $charter->save();
+
+            }else{
+                $charter->yacht = "";
+                $charter->save();
+            }
+            
             $new_action = new Historial();
             $new_action->users_id = Auth::id();
             $new_action->item = 'CHARTER';
@@ -477,12 +565,13 @@ class CharterController extends Controller
 
             $msg = 'Charter actualizado exitosamente';
             $status = 'success';
+
         }else{
             $msg = "Ocurrió un error durante la edición del charter";
             $status = 'error';
         }
 
-        return Response::json(array('msg' => $msg, 'status' => $status));*/
+        return Response::json(array('msg' => $msg, 'status' => $status));
     }
 
     /**

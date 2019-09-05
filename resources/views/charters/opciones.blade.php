@@ -9,13 +9,12 @@
     <div class="box box-danger">
         <div class="box-header">
             <div class="text-right text-muted" style="float: absolute;">{{ strtoupper($charter->cliente) }}</div>
-            <h3><a href="{{ URL::previous() }}"><i class="fa fa-arrow-circle-o-left"></i></a> {{ $charter->codigo }}</h3>
+            <h3><a href="{{ route('admin.charters.index') }}"><i class="fa fa-arrow-circle-o-left"></i></a> {{ $charter->codigo }}</h3>
         </div>
         <div class="box-body">
             <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="panel-box bg-red">
                     <a href="{{ route('admin.editar-charter', ['id' => encrypt($charter->id) ]) }}">
-                        
                         <div class="box-header with-border">
                             <div class="inner">
                                 <h3>EDITAR <div class="icon"><i class="fa fa-pencil"></i></div></h3>
