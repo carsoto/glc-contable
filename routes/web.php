@@ -92,5 +92,13 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
 		Route::post('/registrar-seguimiento', 'PedidosController@registrar_seguimiento')->name('admin.registrar-seguimiento');
 		Route::get('/editar-seguimiento/{seguimiento_id}', 'PedidosController@editar_seguimiento')->name('admin.editar-seguimiento');
 		Route::post('/actualizar-seguimiento', 'PedidosController@actualizar_seguimiento')->name('admin.actualizar-seguimiento');
+
+		Route::get('/holds/', 'HoldController@index')->name('admin.pedidos.holds');
+		Route::get('/holds/dashboard', 'HoldController@dashboard')->name('admin.pedidos.holds.dashboard');
+		Route::post('/holds/crear-hold', 'HoldController@store')->name('admin.pedidos.holds.store');
+		Route::get('/holds/eliminar-hold/{id}', 'HoldController@destroy')->name('admin.pedidos.holds.delete');
+		Route::get('/holds/historial', 'HoldController@historial')->name('admin.pedidos.holds.history');
+		Route::get('/holds/editar-hold/{id}', 'HoldController@edit')->name('admin.pedidos.holds.edit');
+		Route::post('/holds/actualizar-hold', 'HoldController@update')->name('admin.pedidos.holds.update');
 	});
 });

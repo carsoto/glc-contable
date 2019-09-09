@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 30 Aug 2019 21:47:27 +0000.
+ * Date: Fri, 06 Sep 2019 16:59:06 +0000.
  */
 
 namespace App;
@@ -20,6 +20,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * 
  * @property \Illuminate\Database\Eloquent\Collection $charters_embarcacions
  * @property \Illuminate\Database\Eloquent\Collection $embarcacions
+ * @property \Illuminate\Database\Eloquent\Collection $holds
  *
  * @package App
  */
@@ -39,5 +40,10 @@ class Itinerario extends Eloquent
 	{
 		return $this->belongsToMany(\App\Embarcacion::class, 'embarcacion_itinerarios', 'itinerarios_id')
 					->withPivot('id', 'islas_puntos_visita_id', 'orden', 'dias_id', 'hora');
+	}
+
+	public function holds()
+	{
+		return $this->hasMany(\App\Hold::class);
 	}
 }

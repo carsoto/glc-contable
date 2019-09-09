@@ -170,7 +170,7 @@ return [
                 ],
                 [
                     'text'        => 'Holds',
-                    'url'         => '#',
+                    'url'         => 'admin/pedidos/holds',
                     'icon'        => '',
                 ],
             ]

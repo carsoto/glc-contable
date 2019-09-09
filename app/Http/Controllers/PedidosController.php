@@ -98,9 +98,9 @@ class PedidosController extends Controller
             if($request->next_follow == null){
                 $fecha = Carbon::parse($request->fecha_pedido)->format('Y-m-d');
                 $next_follow = Carbon::createFromFormat('d-m-Y',$request->fecha_pedido)->addDays(2)->toDateString();
-            }else{
+            }/*else{
                 $next_follow = Carbon::parse($request->next_follow)->format('Y-m-d');
-            }
+            }*/
 
             $new_pedido = new Pedido();
             $new_pedido->fecha = Carbon::parse($request->fecha_pedido)->format('Y-m-d');
@@ -116,10 +116,10 @@ class PedidosController extends Controller
             $new_pedido->pedidos_status_id = 1;
 
             if($new_pedido->save()){
-                $new_seguimiento = new SeguimientoPedido();
+                /*$new_seguimiento = new SeguimientoPedido();
                 $new_seguimiento->pedidos_id = $new_pedido->id;
                 $new_seguimiento->fecha = $next_follow;
-                $new_seguimiento->save();
+                $new_seguimiento->save();*/
 
                 $new_action = new Historial();
                 $new_action->users_id = Auth::id();

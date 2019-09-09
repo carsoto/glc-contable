@@ -14,15 +14,10 @@
                     <button class="btn btn-sm btn-success btn-flat" data-toggle="modal" data-target="#registrarPedido"><i class="fa fa-plus"></i> Nuevo pedido</button>
                     <button class="btn btn-sm btn-info btn-flat" data-toggle="modal" onclick="historial_pedidos()"><i class="fa fa-history"></i> Historial</button>
                 </div>
-                <!--<div style="float: right;">
-                    <button class="btn btn-sm btn-danger btn-flat" data-toggle="modal" onclick="historial_status_pedidos('inactivo')"><i class="fa fa-ban"></i> Pedidos inactivos</button>
-                    <button class="btn btn-sm btn-primary btn-flat" data-toggle="modal" onclick="historial_status_pedidos('vendido')"><i class="fa fa-check"></i> Pedidos vendidos</button>
-                </div>-->
             </div>
             <div class="hidden-md hidden-lg">
                 <button class="btn btn-block btn-sm btn-success btn-flat" data-toggle="modal" data-target="#registrarPedido"><i class="fa fa-plus"></i> Nuevo pedido</button>
-                <!--<button class="btn btn-block btn-sm btn-danger btn-flat" data-toggle="modal" onclick="historial_status_pedidos('inactivo')"><i class="fa fa-ban"></i> Pedidos inactivos</button>
-                <button class="btn btn-block btn-sm btn-primary btn-flat" data-toggle="modal" onclick="historial_status_pedidos('vendido')"><i class="fa fa-check"></i> Pedidos vendidos</button>-->
+                
                 <button class="btn btn-block btn-sm btn-info btn-flat" data-toggle="modal" onclick="historial_pedidos()"><i class="fa fa-history"></i> Historial</button>
             </div>
     	</div>
@@ -60,13 +55,13 @@
                     <div class="modal-body">
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">DATE OF INQUIRY</label>
+                                <label style="font-size: 11px;">FECHA</label>
                                 <input class="form-control input-sm datepicker" type="text" name="fecha_pedido" autocomplete="off" id="create_pedido_fecha">
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">TYPE OF CONTACT</label>
+                                <label style="font-size: 11px;">TIPO DE CONTACTO</label>
                                 <div class="form-group">
                                     <select class="form-control input-sm" type="text" name="tipo_contacto" autocomplete="off">
                                         @foreach($tipos_contacto AS $key => $contacto)
@@ -78,7 +73,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">COMPANY</label>
+                                <label style="font-size: 11px;">COMPAÑÍA</label>
                                 <div class="form-group">
                                     <input class="form-control input-sm" type="text" name="company">
                                 </div>
@@ -86,7 +81,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">NAME</label>
+                                <label style="font-size: 11px;">NOMBRE</label>
                                 <div class="form-group">
                                     <input class="form-control input-sm" type="text" name="name">
                                 </div>
@@ -94,7 +89,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">PHONE</label>
+                                <label style="font-size: 11px;">TELÉFONO</label>
                                 <input class="form-control input-sm" type="text" name="phone" onKeyPress="return tipoNumeros(event)" autocomplete="off">
                             </div>
                         </div>
@@ -106,28 +101,28 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">START REQUESTED</label>
+                                <label style="font-size: 11px;">F. INICIO</label>
                                 <input class="form-control input-sm datepicker" type="text" name="date_start" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">FINISH REQUESTED</label>
+                                <label style="font-size: 11px;">F. FIN</label>
                                 <input class="form-control input-sm datepicker" type="text" name="date_finish" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">DETAILS</label>
+                                <label style="font-size: 11px;">DETALLES</label>
                                 <textarea class="form-control input-sm" type="text" name="details" autocomplete="off" style="resize: none;"></textarea>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-12">
+                        <!--<div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
                                 <label style="font-size: 11px;">NEXT FOLLOW UP</label>
                                 <input class="form-control input-sm datepicker" type="text" name="next_follow" autocomplete="off" id="create_next_follow">
                             </div>
-                        </div>
+                        </div>-->
                         <div class="clearfix"></div>
                     </div>
                     <div class="modal-footer">
@@ -153,13 +148,13 @@
                         <input class="form-control input-sm" type="hidden" name="pedido_id" autocomplete="off" id="pedido_id">
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">DATE OF INQUIRY</label>
+                                <label style="font-size: 11px;">FECHA</label>
                                 <input class="form-control input-sm datepicker" type="text" name="fecha_pedido" autocomplete="off" id="pedido_fecha">
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">TYPE OF CONTACT</label>
+                                <label style="font-size: 11px;">TIPO DE CONTACTO</label>
                                 <div class="form-group">
                                     <select class="form-control input-sm" type="text" name="tipo_contacto" autocomplete="off" id="pedido_contacto">
                                         @foreach($tipos_contacto AS $key => $contacto)
@@ -171,7 +166,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">COMPANY</label>
+                                <label style="font-size: 11px;">COMPAÑÍA</label>
                                 <div class="form-group">
                                     <input class="form-control input-sm" type="text" name="company" id="pedido_company">
                                 </div>
@@ -179,7 +174,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">NAME</label>
+                                <label style="font-size: 11px;">NOMBRE</label>
                                 <div class="form-group">
                                     <input class="form-control input-sm" type="text" name="name" id="pedido_name">
                                 </div>
@@ -187,7 +182,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">PHONE</label>
+                                <label style="font-size: 11px;">TELÉFONO</label>
                                 <input class="form-control input-sm" type="text" name="phone" onKeyPress="return tipoNumeros(event)" autocomplete="off" id="pedido_phone">
                             </div>
                         </div>
@@ -199,25 +194,25 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">START REQUESTED</label>
+                                <label style="font-size: 11px;">F. INICIO</label>
                                 <input class="form-control input-sm datepicker" type="text" name="date_start" autocomplete="off" id="pedido_date_start">
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">FINISH REQUESTED</label>
+                                <label style="font-size: 11px;">F. FIN</label>
                                 <input class="form-control input-sm datepicker" type="text" name="date_finish" autocomplete="off" id="pedido_date_finish">
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">DETAILS</label>
+                                <label style="font-size: 11px;">DETALLES</label>
                                 <textarea class="form-control input-sm" type="text" name="details" autocomplete="off" style="resize: none;" id="pedido_details"></textarea>
                             </div>
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">STATUS</label>
+                                <label style="font-size: 11px;">ESTATUS</label>
                                 <div class="form-group">
                                     <select class="form-control input-sm" type="text" name="pedido_status" autocomplete="off" id="pedido_status">
                                         @foreach($statuses AS $key => $status)
@@ -253,13 +248,13 @@
                         <input class="form-control input-sm" type="hidden" name="seguimiento_id" autocomplete="off" id="seguimiento_id">
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">DATE</label>
+                                <label style="font-size: 11px;">FECHA</label>
                                 <input class="form-control input-sm datepicker" type="text" name="fecha_seguimiento" autocomplete="off" id="fecha_seguimiento">
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="form-group">
-                                <label style="font-size: 11px;">DETAILS</label>
+                                <label style="font-size: 11px;">DETALLES</label>
                                 <textarea class="form-control input-sm" type="text" name="details_seguimiento" autocomplete="off" style="resize: none;" id="details_seguimiento"></textarea>
                             </div>
                         </div>
@@ -273,9 +268,9 @@
                                 <table class="table table-striped table-condensed table-bordered" style="font-size: 11px;" width="100%" id="tabla_seguimientos">
                                     <thead>
                                         <tr>
-                                            <th style="vertical-align:middle; text-align:center;">DATE</th>
-                                            <th style="vertical-align:middle; text-align:center;">USER</th>
-                                            <th style="vertical-align:middle; text-align:center;">DETAILS</th>
+                                            <th style="vertical-align:middle; text-align:center;">FECHA</th>
+                                            <th style="vertical-align:middle; text-align:center;">USUARIO</th>
+                                            <th style="vertical-align:middle; text-align:center;">DETALLES</th>
                                             <th><i class="fa fa-gears"></i></th>
                                         </tr>
                                     </thead>

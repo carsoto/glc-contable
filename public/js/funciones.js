@@ -1427,7 +1427,7 @@ $('#select_tipo_charter').change(function () {
 	var block = "";
 	//var title = '<label style="font-size: 11px;">CHARTER TÁNDEM</label><br>';
 	if(tipo_seleccionado != 0){
-		console.log(route('admin.variantes-patente', {id_patente: tipo_seleccionado}).url());
+		//console.log(route('admin.variantes-patente', {id_patente: tipo_seleccionado}).url());
 		/*console.log(route('admin.variantes-patente', {tipo: tipo_seleccionado}).template);*/
 		$.ajax({
 		    //url: 'variantes-patente/'+tipo_seleccionado,
@@ -1524,7 +1524,7 @@ function crear_patente(posicion, patente){
 	});
 }
 
-function cargar_itinerario(obj, posicion, patente){
+function cargar_itinerario(obj, posicion, patente, optionSelected = null){
 	var obj_itinerario = $("select").closest(".select_itinerario_"+patente);
 	var id_embarcacion = $(obj).children("option:selected").val();
 	
@@ -1552,6 +1552,12 @@ function cargar_itinerario(obj, posicion, patente){
             		var c = document.createElement("option");
 					c.text = itinerarios[k].toUpperCase();
 					c.value = k;
+
+					if(optionSelected != null){
+						if(k == optionSelected){
+							c.selected = "selected";
+						}
+					}
 					obj_itinerario[posicion].options.add(c, i);
 					i++;
 				}
@@ -1562,4 +1568,202 @@ function cargar_itinerario(obj, posicion, patente){
             }
         });
 	}	
+}
+
+$("#tabla_holds").DataTable({
+	"processing": true,
+    //"serverSide": true,
+    "ajax": {
+	    "url": route('admin.pedidos.holds.dashboard').url(),
+	    "type": "GET",
+  	},
+    "order": [[ 1, "DESC" ]],
+    "columns": [
+		{data: "f_inicio", name: "f_inicio"},
+		{data: "f_fin", name: "f_fin"},
+		{data: "yacht", name: "yacht"},
+		{data: "itinerario", name: "itinerario"},
+		{data: "tarifa", name: "tarifa"},
+		{data: "f_limite", name: "f_limite"},
+		{data: "status", render: function ( data, type, row ) {
+    		if(data.toUpperCase() == 'BLOQUEADO'){
+    			return '<span style="font-size: 11px;" class="label label-success">'+ data +'</span>';
+    		}
+    		else if(data.toUpperCase() == 'LISTA DE ESPERA'){
+				return '<span style="font-size: 11px;" class="label label-info">'+ data +'</span>';
+			}
+    		else if(data.toUpperCase() == 'EXTENSIÓN'){
+				return '<span style="font-size: 11px;" class="label label-primary">'+ data +'</span>';
+			}else{
+				return '<span style="font-size: 11px;" class="label label-danger">'+ data +'</span>';
+			}
+		}},
+		{data: "action", name: "action", orderable: false},
+    ]
+});
+
+function historial_holds(){
+
+	$("#table-historial-holds").DataTable().destroy();
+
+	$("#table-historial-holds").DataTable({
+		"processing": true,
+	    //"serverSide": true,
+	    "ajax": route('admin.pedidos.holds.history').url(),
+	    "order": [[ 3, "desc" ]],
+	    "columns": [
+	    	{data: "usuario", name: "usuario"},
+	    	{data: "comentario", name: "comentario"},
+	    	{data: "fecha", name: "fecha"},
+	    	{data: "hora", name: "hora"},
+	    ]
+	});
+
+	$("#historial-holds").modal("toggle");
+}
+
+$("#registrar-hold-form").on('submit', function(e){
+    e.preventDefault();
+    
+    $.ajax({
+	    url: route('admin.pedidos.holds.store').url(),
+	    type: 'POST',
+        data: new FormData(this),
+        processData: false,
+    	contentType: false,
+
+        beforeSend: function(){
+            $('.submitBtn').attr("disabled","disabled");
+            $('#registrar-hold-form').css("opacity",".5");
+        },
+
+        success: function(response){
+
+            if(response.status == 'success'){
+            	$('#registrar-hold-form')[0].reset();
+            	$('#registrarHold').modal('toggle');
+            	$('#tabla_holds').DataTable().ajax.reload();
+	            swal("Hecho!", response.msg, "success");
+	        }else{
+	        	$('#registrar-hold-form').css("opacity","");
+            	$(".submitBtn").removeAttr("disabled");
+	            swal("Ocurrió un error!", response.msg, "error");
+	        }
+
+            $('#registrar-hold-form').css("opacity","");
+            $(".submitBtn").removeAttr("disabled");
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+        	$('#registrar-hold-form').css("opacity","");
+            $(".submitBtn").removeAttr("disabled");
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+    });
+});
+
+function editar_hold(id){
+	document.getElementById("hold_id").value = id;
+
+	$.ajax({
+	    url: route('admin.pedidos.holds.edit', {id: id}).url(),
+	    type: 'GET',
+        processData: false,
+    	contentType: false,
+        success: function(response){
+			document.getElementById("hold_f_inicio_charter").value = response.hold.f_inicio;
+			document.getElementById("hold_f_fin_charter").value = response.hold.f_fin;
+			$('#hold_status option[value="'+ response.hold.status +'"]').attr("selected", "selected");
+			$('#hold_yacht option[value="'+ response.hold.yacht +'"]').attr("selected", "selected");
+			//document.getElementById("hold_itinerario_yacht").value = "";
+
+			cargar_itinerario(document.getElementById('hold_yacht'), 0, "hold", response.hold.itinerario_id);
+			console.log(document.getElementById('hold_itinerario_yacht'));
+
+			var itinerario = document.getElementById('hold_itinerario_yacht');
+
+			document.getElementById("hold_tarifa_yacht").value = response.hold.tarifa;
+			document.getElementById("hold_comentario").innerHTML = response.hold.comentario;
+			document.getElementById("hold_f_limite").value = response.hold.f_limite;
+
+            $("#editarHold").modal('toggle');
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+    });
+}
+
+$("#actualizar-hold-form").on('submit', function(e){
+	e.preventDefault();
+
+    $.ajax({
+	    url: route('admin.pedidos.holds.update').url(),
+	    type: 'POST',
+        data: new FormData(this),
+        processData: false,
+    	contentType: false,
+
+        beforeSend: function(){
+            $('.submitBtn').attr("disabled","disabled");
+            $('#actualizar-hold-form').css("opacity",".5");
+        },
+
+        success: function(response){
+            
+            if(response.status == 'success'){
+            	$('#actualizar-hold-form')[0].reset();
+	            swal("Hecho!", response.msg, "success");
+	        }else{
+	        	$('#actualizar-hold-form').css("opacity","");
+            	$(".submitBtn").removeAttr("disabled");
+	            swal("Ocurrió un error!", response.msg, "error");
+	        }
+
+	        $('#tabla_holds').DataTable().ajax.reload();
+            $('#actualizar-hold-form').css("opacity","");
+            $(".submitBtn").removeAttr("disabled");
+
+			$("#editarHold").modal("toggle");
+        },
+
+        error: function (xhr, ajaxOptions, thrownError) {
+        	$('#actualizar-hold-form').css("opacity","");
+            $(".submitBtn").removeAttr("disabled");
+	        swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	    }
+    });
+});
+
+function eliminar_hold(id){
+	swal({		        
+		title: "¿Está seguro?",
+		text: "Una vez eliminado, no podrá recuperar su información!",
+		icon: "error",
+	    showCancelButton: true,
+	    confirmButtonColor: '#DD4B39',
+	    cancelButtonColor: '#00C0EF',
+	    buttons: ["Cancelar", true],
+	    closeOnConfirm: false
+	}).then(function(isConfirm) {
+	    if (isConfirm) {
+			$.ajax({
+	           	url: route('admin.pedidos.holds.delete', {id: id}).url(),
+	            dataType: "JSON",
+	            type: 'GET',
+	            success: function (response) {
+	            	if(response.status == 'success'){
+	            		swal("Hecho!", response.msg, response.status);
+	        			$("#tabla_holds").DataTable().ajax.reload();
+	            	}else{
+	            		swal("Ocurrió un error!", response.msg, "error");
+	            	}
+	            },
+	            error: function (xhr, ajaxOptions, thrownError) {
+	                swal("Ocurrió un error!", "Por favor, intente de nuevo", "error");
+	            }
+	        });
+	    }
+	});
 }

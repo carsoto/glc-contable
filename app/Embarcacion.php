@@ -2,7 +2,7 @@
 
 /**
  * Created by Reliese Model.
- * Date: Fri, 30 Aug 2019 21:47:27 +0000.
+ * Date: Fri, 06 Sep 2019 16:59:06 +0000.
  */
 
 namespace App;
@@ -46,6 +46,7 @@ use Reliese\Database\Eloquent\Model as Eloquent;
  * @property \App\TiposPatente $tipos_patente
  * @property \Illuminate\Database\Eloquent\Collection $charters
  * @property \Illuminate\Database\Eloquent\Collection $itinerarios
+ * @property \Illuminate\Database\Eloquent\Collection $holds
  * @property \Illuminate\Database\Eloquent\Collection $imagenes_embarcacions
  *
  * @package App
@@ -122,6 +123,11 @@ class Embarcacion extends Eloquent
 	{
 		return $this->belongsToMany(\App\Itinerario::class, 'embarcacion_itinerarios', 'embarcacion_id', 'itinerarios_id')
 					->withPivot('id', 'islas_puntos_visita_id', 'orden', 'dias_id', 'hora');
+	}
+
+	public function holds()
+	{
+		return $this->hasMany(\App\Hold::class, 'yacht');
 	}
 
 	public function imagenes_embarcacions()
