@@ -27,11 +27,19 @@
             <div class="clearfix"></div>
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="text-center">
-                    <span style="font-size: 15px; color: #E42223; font-family: Arial, Helvetica, sans-serif;"><strong>PEDIDOS</strong></span>
+                    <span style="font-size: 15px; color: #E42223; font-family: Arial, Helvetica, sans-serif;"><strong>INGRESO DE PEDIDOS</strong></span>
+                </div>
+                <hr>
+                <canvas id="pedidos-entrantes-por-meses" data-render="chart-js"></canvas>    
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="text-center">
+                    <span style="font-size: 15px; color: #E42223; font-family: Arial, Helvetica, sans-serif;"><strong>FECHA DE PEDIDOS</strong></span>
                 </div>
                 <hr>
                 <canvas id="pedidos-por-meses" data-render="chart-js"></canvas>    
             </div>
+            <div class="clearfix"></div>
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <div class="text-center">
                     <span style="font-size: 15px; color: #E42223; font-family: Arial, Helvetica, sans-serif;"><strong>BALANCE DE PEDIDOS</strong></span>

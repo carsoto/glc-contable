@@ -15,6 +15,7 @@ function colorRandom() {
 var var_ventas = new Array();
 var var_ganancias = new Array();
 var var_pedidos = new Array();
+var var_pedidos_entrantes = new Array();
 var var_pedidos_status = new Array();
 
 $(document).ready(function(){
@@ -166,8 +167,41 @@ $(document).ready(function(){
               data: data_pedidos,
           });
 
-          //pedidos-por-status
-          /******************************************************************************************************************/
+          /**************************************************** PEDIDOS ENTRANTES *******************************************************/
+          $.each(response.pedidos_entrantes, function(key, valores) {
+            
+            var color = colorRandom();
+            var data = {
+                label: key,
+                data: valores,
+                lineTension: 0.7,
+                //fill: true,
+                //spanGaps: true,
+                //fillColor : "blue",
+                backgroundColor: color,
+                borderColor: color,
+            };
+            var_pedidos_entrantes.push(data);
+          });
+
+          var data_pedidos_entrantes = {
+            labels: ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."],
+            datasets: var_pedidos_entrantes
+          };
+
+          var chart_pedidos_entrantes = document.getElementById('pedidos-entrantes-por-meses').getContext('2d');
+          new Chart(chart_pedidos_entrantes, {
+              type: 'bar',
+              animation: true,
+              animationSteps: 100,
+              animationEasing: "easeOutQuart",
+              scaleFontSize: 16,
+              responsive: true,
+              showTooltip: true,
+              data: data_pedidos_entrantes,
+          });
+
+          /**************************************************** PEDIDOS POR ESTATUS ****************************************************/
           var data_pedidos_status = {
             labels: [
               "ACTIVOS",
