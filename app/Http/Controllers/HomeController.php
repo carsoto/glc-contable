@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Response;
 use App\Charter;
+use App\Pedido;
 use Funciones;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -30,25 +32,22 @@ class HomeController extends Controller
     }
 
     public function dashboard(){
-        $ventas_por_mes = $ganancias_monetarias = array();
+        $ventas_por_mes = $ganancias_monetarias = $pedidos_por_mes = $pedidos_status = array();
         $controller_comisiones = new ContabilidadController();
         $charters = Charter::all();
+        $pedidos = Pedido::all();
+        $ventas_por_mes[date('Y')-1] = $ventas_por_mes[date('Y')] = $ventas_por_mes[date('Y')+1] = $ventas_por_mes[date('Y')+2] = array();
 
-        $ventas_por_mes[date('Y')-1] = array();
-        $ventas_por_mes[date('Y')] = array();
-        $ventas_por_mes[date('Y')+1] = array();
-        $ventas_por_mes[date('Y')+2] = array();
+        $ganancias_monetarias[date('Y')-1] = $ganancias_monetarias[date('Y')] = $ganancias_monetarias[date('Y')+1] = $ganancias_monetarias[date('Y')+2] = array();
 
-        $ganancias_monetarias[date('Y')-1] = array();
-        $ganancias_monetarias[date('Y')] = array();
-        $ganancias_monetarias[date('Y')+1] = array();
-        $ganancias_monetarias[date('Y')+2] = array();
+        $pedidos_por_mes[date('Y')-1] = $pedidos_por_mes[date('Y')] = $pedidos_por_mes[date('Y')+1] = $pedidos_por_mes[date('Y')+2] = array();
 
         foreach ($ventas_por_mes as $key => $arr) {
             # code...
             for ($i=0; $i < 12; $i++) {
                 $ventas_por_mes[$key][$i] = 0;
                 $ganancias_monetarias[$key][$i] = 0;
+                $pedidos_por_mes[$key][$i] = 0;
             }
         }
 
@@ -64,6 +63,17 @@ class HomeController extends Controller
             
         }
 
-        return response()->json(['ganancias' => $ganancias_monetarias, 'ventas' => $ventas_por_mes]);
+        foreach ($pedidos as $key => $pedido) {
+            $mes = Carbon::parse($pedido->f_inicio)->format('m');
+            $anyo = Carbon::parse($pedido->f_inicio)->format('Y');
+            $mes = $mes - 1;
+            $pedidos_por_mes[$anyo][$mes] = $pedidos_por_mes[$anyo][$mes]+1;
+            if(array_key_exists($pedido->pedidos_status->descripcion, $pedidos_status)){
+                $pedidos_status[$pedido->pedidos_status->descripcion] = $pedidos_status[$pedido->pedidos_status->descripcion]+1;    
+            }else{
+                $pedidos_status[$pedido->pedidos_status->descripcion] = 1;
+            }
+        }
+        return response()->json(['ganancias' => $ganancias_monetarias, 'ventas' => $ventas_por_mes, 'pedidos' => $pedidos_por_mes, 'pedidos_status' => $pedidos_status]);
     }
 }

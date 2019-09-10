@@ -12,8 +12,11 @@ function colorRandom() {
   return color;
 };
 
-var variable_data = new Array();
-var variable_data2 = new Array();
+var var_ventas = new Array();
+var var_ganancias = new Array();
+var var_pedidos = new Array();
+var var_pedidos_status = new Array();
+
 $(document).ready(function(){
   var vv = document.getElementById('ventas-por-meses');
   if(vv != null){
@@ -23,7 +26,9 @@ $(document).ready(function(){
       processData: false,
       contentType: false,
         success: function(response){
-          console.log(response.ventas);
+          //console.log(response.ventas);
+
+          /************************************* VENTAS ****************************************************/
           $.each(response.ventas, function(key, valores) {
             
             var color = colorRandom();
@@ -37,17 +42,16 @@ $(document).ready(function(){
                 backgroundColor: color,
                 borderColor: color,
             };
-            variable_data.push(data);
-
+            var_ventas.push(data);
           });
 
-          var speedData1 = {
+          var data_ventas = {
             labels: ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."],
-            datasets: variable_data
+            datasets: var_ventas
           };
      
-          var ctx = document.getElementById('ventas-por-meses').getContext('2d');
-          new Chart(ctx, {
+          var chart_ventas = document.getElementById('ventas-por-meses').getContext('2d');
+          new Chart(chart_ventas, {
               type: 'bar',
               animation: true,
               animationSteps: 100,
@@ -55,9 +59,10 @@ $(document).ready(function(){
               scaleFontSize: 16,
               responsive: true,
               showTooltip: true,
-              data: speedData1,
+              data: data_ventas,
           });
 
+          /************************************ GANANCIAS ************************************************/
           $.each(response.ganancias, function(key, valores) {
             var color = colorRandom();
             var data = {
@@ -82,19 +87,18 @@ $(document).ready(function(){
                 pointBorderWidth: 2,
                 pointStyle: 'rectRounded'
             };
-            variable_data2.push(data);
-
+            var_ganancias.push(data);
           });
 
-          var speedData2 = {
+          var data_ganancias = {
             labels: ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."],
-            datasets: variable_data2
+            datasets: var_ganancias
           };
      
-          var ctx2 = document.getElementById('ganancias-por-meses').getContext('2d');
-          new Chart(ctx2, {
+          var chart_ganancias = document.getElementById('ganancias-por-meses').getContext('2d');
+          new Chart(chart_ganancias, {
               type: 'line',
-              data: speedData2,
+              data: data_ganancias,
               options: {
                 animation: false,
                 //legend: {display: false},
@@ -127,6 +131,78 @@ $(document).ready(function(){
                 }
               }
           });
+
+          /************************************ PEDIDOS ************************************************/
+          $.each(response.pedidos, function(key, valores) {
+            
+            var color = colorRandom();
+            var data = {
+                label: key,
+                data: valores,
+                lineTension: 0.7,
+                //fill: true,
+                //spanGaps: true,
+                //fillColor : "blue",
+                backgroundColor: color,
+                borderColor: color,
+            };
+            var_pedidos.push(data);
+          });
+
+          var data_pedidos = {
+            labels: ["Ene.", "Feb.", "Mar.", "Abr.", "May.", "Jun.", "Jul.", "Ago.", "Sep.", "Oct.", "Nov.", "Dic."],
+            datasets: var_pedidos
+          };
+
+          var chart_pedidos = document.getElementById('pedidos-por-meses').getContext('2d');
+          new Chart(chart_pedidos, {
+              type: 'bar',
+              animation: true,
+              animationSteps: 100,
+              animationEasing: "easeOutQuart",
+              scaleFontSize: 16,
+              responsive: true,
+              showTooltip: true,
+              data: data_pedidos,
+          });
+
+          //pedidos-por-status
+          /******************************************************************************************************************/
+          var data_pedidos_status = {
+            labels: [
+              "ACTIVOS",
+              "INACTIVOS",
+              "VENDIDOS"
+            ],
+            datasets: [{
+              data: [response.pedidos_status.ACTIVO, response.pedidos_status.INACTIVO, response.pedidos_status.VENDIDO],
+              backgroundColor: [
+              "#00A65A",
+              "#DD4B39",
+              "#3C8DBC"
+            ],
+            //borderColor: "black",
+            //borderWidth: 2
+            }]
+          };
+
+          var chart_pedidos_status = document.getElementById('pedidos-por-status').getContext('2d');
+          var myDoughnutChart = new Chart(chart_pedidos_status, {
+              type: 'doughnut',
+              data: data_pedidos_status,
+              options: {
+                  //rotation: -Math.PI,
+                  //cutoutPercentage: 30,
+                  //circumference: Math.PI,
+                  /*legend: {
+                    position: 'center'
+                  },*/
+                  animation: {
+                    animateRotate: false,
+                    animateScale: true
+                  }
+                }
+          });
         },
 
         error: function (xhr, ajaxOptions, thrownError) {
@@ -138,5 +214,5 @@ $(document).ready(function(){
 });
 
 
-//var variable_data = [dataFirst, dataSecond];
-//console.log(variable_data);
+//var var_ventas = [dataFirst, dataSecond];
+//console.log(var_ventas);
